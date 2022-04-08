@@ -1,0 +1,401 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Create a role
+                <!-- <small>list of doctors</small> -->
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Roles</li>
+                <li><a class="link-effect" href="">Create</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed">
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <form name="roleForm" ng-submit="saveRole(roleForm.$valid)" novalidate>
+          <div class="block-content">
+              <div class="row items-push">
+                  <div class="col-sm-6 col-sm-offset-1">
+                    <div class="form-group" ng-class="{ 'has-error' : roleForm.name.$invalid && (!roleForm.name.$pristine || roleForm.$submitted)}">
+                        <!-- <div class="col-xs-12"> -->
+                            <label for="external_id">Name</label>
+                            <input class="form-control input-lg" type="text" id="name" name="name" ng-model="role.name" ng-pattern= "/^[a-z0-9\s]+$/i" placeholder="Enter role name" required>
+                            <p ng-show="roleForm.name.$error.required && (!roleForm.name.$pristine || roleForm.$submitted)" class="help-block">Name is required.</p>
+                            <p ng-show="!roleForm.name.$valid && !roleForm.name.$error.required  && (!roleForm.name.$pristine || roleForm.$submitted)" class="help-block">Name can only contain alphanumeric characters.</p>
+                        <!-- </div> -->
+                    </div>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-6 col-sm-offset-1">
+                    <div class="form-group" ng-class="{ 'has-error' : roleForm.type.$invalid && (!roleForm.type.$pristine || roleForm.$submitted)}">
+                        <!-- <div class="col-xs-12"> -->
+                            <label for="external_id">Type</label>
+                            <select class="form-control" id="type" name="type" size="1" ng-model="role.role" required>
+                              <option value="admin">Administrator</option>
+                              <option value="doctor">Doctor</option>
+                              <option value="delivery">Driver</option>
+                              <option value="pharmacist">Pharmacist</option>
+                            </select>
+                            <p ng-show="roleForm.type.$error.required && (!roleForm.type.$pristine || roleForm.$submitted)" class="help-block">Type is required.</p>
+                          <!-- </div> -->
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="block-content">
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Documents</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="documents-view">
+                        <input type="checkbox" id="documents-view" name="documents-view" ng-model="role.permissions.document.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="documents-create">
+                        <input type="checkbox" id="documents-create" name="documents-create" ng-model="role.permissions.document.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="documents-edit">
+                        <input type="checkbox" id="documents-edit" name="documents-edit" ng-model="role.permissions.document.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="documents-process">
+                        <input type="checkbox" id="documents-process" name="documents-process" ng-model="role.permissions.document.process"><span></span> Process
+                    </label>
+                    <label class="css-input switch switch-primary" for="documents-delete">
+                        <input type="checkbox" id="documents-delete" name="documents-delete" ng-model="role.permissions.document.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Calendar</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="calendar-view">
+                        <input type="checkbox" id="calendar-view" name="calendar-view" ng-model="role.permissions.calendar.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="calendar-create">
+                        <input type="checkbox" id="calendar-create" name="calendar-create" ng-model="role.permissions.calendar.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="calendar-edit">
+                        <input type="checkbox" id="calendar-edit" name="calendar-edit" ng-model="role.permissions.calendar.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="calendar-process">
+                        <input type="checkbox" id="calendar-process" name="calendar-process" ng-model="role.permissions.calendar.process"><span></span> Process
+                    </label>
+                    <label class="css-input switch switch-primary" for="calendar-delete">
+                        <input type="checkbox" id="calendar-delete" name="calendar-delete" ng-model="role.permissions.calendar.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Patients</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="patients-view">
+                        <input type="checkbox" id="patients-view" name="patients-view" ng-model="role.permissions.patient.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="patients-create">
+                        <input type="checkbox" id="patients-create" name="patients-create" ng-model="role.permissions.patient.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="patients-edit">
+                        <input type="checkbox" id="patients-edit" name="patients-edit" ng-model="role.permissions.patient.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="patients-process">
+                        <input type="checkbox" id="patients-process" name="patients-process" ng-model="role.permissions.patient.process"><span></span> Process
+                    </label>
+                    <label class="css-input switch switch-primary" for="patients-delete">
+                        <input type="checkbox" id="patients-delete" name="patients-delete" ng-model="role.permissions.patient.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Medical Review</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="med_review-view">
+                        <input type="checkbox" id="med_review-view" name="med_review-view" ng-model="role.permissions.med_review.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="med_review-create">
+                        <input type="checkbox" id="med_review-create" name="med_review-create" ng-model="role.permissions.med_review.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="med_review-edit">
+                        <input type="checkbox" id="med_review-edit" name="med_review-edit" ng-model="role.permissions.med_review.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="med_review-delete">
+                        <input type="checkbox" id="med_review-delete" name="med_review-delete" ng-model="role.permissions.med_review.delete"><span></span> Delete
+                    </label>
+                    <label class="css-input switch switch-primary" for="med_review-process">
+                        <input type="checkbox" id="med_review-process" name="med_review-process" ng-model="role.permissions.med_review.process"><span></span> Process
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Facilities</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="facilities-view">
+                        <input type="checkbox" id="facilities-view" name="facilities-view" ng-model="role.permissions.facility.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="facilities-create">
+                        <input type="checkbox" id="facilities-create" name="facilities-create" ng-model="role.permissions.facility.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="facilities-edit">
+                        <input type="checkbox" id="facilities-edit" name="facilities-edit" ng-model="role.permissions.facility.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Facility Devices</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="facility_device-view">
+                        <input type="checkbox" id="facility_device-view" name="facility_device-view" ng-model="role.permissions.facility_device.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="facility_device-create">
+                        <input type="checkbox" id="facility_device-create" name="facility_device-create" ng-model="role.permissions.facility_device.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="facility_device-edit">
+                        <input type="checkbox" id="facility_device-edit" name="facility_device-edit" ng-model="role.permissions.facility_device.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="facility_device-delete">
+                        <input type="checkbox" id="facility_device-delete" name="facility_device-delete" ng-model="role.permissions.facility_device.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Doctors</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="doctors-create">
+                        <input type="checkbox" id="doctors-create" name="doctors-create" ng-model="role.permissions.doctor.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="doctors-view">
+                        <input type="checkbox" id="doctors-view" name="doctors-view" ng-model="role.permissions.doctor.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="doctors-edit">
+                        <input type="checkbox" id="doctors-edit" name="doctors-edit" ng-model="role.permissions.doctor.edit"><span></span> Edit
+                    </label>
+                    <label class="css-input switch switch-primary" for="doctors-delete">
+                        <input type="checkbox" id="doctors-delete" name="doctors-delete" ng-model="role.permissions.doctor.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Pharmacies</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="pharmacies-view">
+                        <input type="checkbox" id="pharmacies-view" name="pharmacies-view" ng-model="role.permissions.pharmacy.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="pharmacies-edit">
+                        <input type="checkbox" id="pharmacies-edit" name="pharmacies-edit" ng-model="role.permissions.pharmacy.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Rx Orders</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="orders-view">
+                        <input type="checkbox" id="orders-view" name="orders-view" ng-model="role.permissions.order.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="orders-create">
+                        <input type="checkbox" id="orders-create" name="orders-create" ng-model="role.permissions.order.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="orders-process">
+                        <input type="checkbox" id="orders-process" name="orders-process" ng-model="role.permissions.order.process"><span></span> Process
+                    </label>
+                    <label class="css-input switch switch-primary" for="orders-edit">
+                        <input type="checkbox" id="orders-edit" name="orders-edit" ng-model="role.permissions.order.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Rx Orders Refill Request</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="orders-refill">
+                        <input type="checkbox" id="orders-refill" name="orders-refill" ng-model="role.permissions.order_refill.process"><span></span> Submit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Rx Order Signatures</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="order-signs-view">
+                        <input type="checkbox" id="order-signs-view" name="order-signs-view" ng-model="role.permissions.order_sign.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="order-signs-create">
+                        <input type="checkbox" id="order-signs-create" name="order-signs-create" ng-model="role.permissions.order_sign.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="order-signs-delete">
+                        <input type="checkbox" id="order-signs-delete" name="order-signs-delete" ng-model="role.permissions.order_sign.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Rx Orders Prescription</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="orders-prescription-view">
+                        <input type="checkbox" id="orders-prescription-view" name="orders-prescription-view" ng-model="role.permissions.order_prescription.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="orders-prescription">
+                        <input type="checkbox" id="orders-prescription" name="orders-prescription" ng-model="role.permissions.order_prescription.process"><span></span> Upload
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Delivery Orders</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="delivery-orders-view">
+                        <input type="checkbox" id="delivery-orders-view" name="delivery-orders-view" ng-model="role.permissions.delivery_order.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="delivery-orders-create">
+                        <input type="checkbox" id="delivery-orders-create" name="delivery-orders-create" ng-model="role.permissions.delivery_order.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="delivery-orders-edit">
+                        <input type="checkbox" id="delivery-orders-edit" name="delivery-orders-edit" ng-model="role.permissions.delivery_order.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Delivery Order Signatures</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="delivery-order-signs-view">
+                        <input type="checkbox" id="delivery-order-signs-view" name="delivery-order-signs-view" ng-model="role.permissions.delivery_order_sign.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="delivery-order-signs-create">
+                        <input type="checkbox" id="delivery-order-signs-create" name="delivery-order-signs-create" ng-model="role.permissions.delivery_order_sign.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="delivery-order-signs-edit">
+                        <input type="checkbox" id="delivery-order-signs-edit" name="delivery-order-signs-delete" ng-model="role.permissions.delivery_order_sign.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Drivers</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="drivers-view">
+                        <input type="checkbox" id="drivers-view" name="drivers-view" ng-model="role.permissions.delivery.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="drivers-edit">
+                        <input type="checkbox" id="drivers-edit" name="drivers-edit" ng-model="role.permissions.delivery.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Drugs</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="drugs-view">
+                        <input type="checkbox" id="drugs-view" name="drugs-view" ng-model="role.permissions.drug.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="drugs-edit">
+                        <input type="checkbox" id="drugs-edit" name="drugs-edit" ng-model="role.permissions.drug.edit"><span></span> Edit
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Users</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="person-view">
+                        <input type="checkbox" id="person-view" name="person-view" ng-model="role.permissions.person.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="person-process">
+                        <input type="checkbox" id="person-process" name="person-edit" ng-model="role.permissions.person.process"><span></span> Process
+                    </label>
+                    <label class="css-input switch switch-primary" for="person-delete">
+                        <input type="checkbox" id="person-delete" name="person-delete" ng-model="role.permissions.person.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Users Invitation</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="person-invite-view">
+                        <input type="checkbox" id="person-invite-view" name="person-invite-view" ng-model="role.permissions.person_invite.view"><span></span> View
+                    </label>
+                    <label class="css-input switch switch-primary" for="person-invite-create">
+                        <input type="checkbox" id="person-invite-create" name="person-invite-create" ng-model="role.permissions.person_invite.create"><span></span> Create
+                    </label>
+                    <label class="css-input switch switch-primary" for="person-invite-delete">
+                        <input type="checkbox" id="person-invite-delete" name="person-invite-delete" ng-model="role.permissions.person_invite.delete"><span></span> Delete
+                    </label>
+                  </div>
+              </div>
+
+              <div class="row items-push">
+                  <div class="col-sm-4 col-sm-offset-1">
+                    <h4>Address</h4>
+                  </div>
+                  <div class="col-sm-7">
+                    <label class="css-input switch switch-primary" for="address-view">
+                        <input type="checkbox" id="address-view" name="address-view" ng-model="role.permissions.address.view"><span></span> View
+                    </label>
+                  </div>
+              </div>
+
+          </div>
+          <div class="block-content block-content-full">
+              <div class="row items-push">
+                <div class="col-sm-10 col-sm-offset-1">
+                  <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                  <p ng-show="saveSuccess" class="text-success">Role have been created.</p>
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col-xs-12">
+                  <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Create</button>
+                  <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-undo push-5-r"></i> Reset</button>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

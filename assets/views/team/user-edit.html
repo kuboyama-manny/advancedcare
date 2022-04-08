@@ -1,0 +1,107 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadDetail()">
+
+  <!-- User Header -->
+  <div class="block">
+      <!-- Basic Info -->
+      <div class="bg-image" style="background-image: url('assets/img/photos/photo2@2x.jpg');">
+          <div class="block-content bg-primary-op text-center overflow-hidden">
+              <div class="buttons-block">
+                <a href="javascript:void(0)" class="btn btn-sm btn-danger pull-right" ng-click="deleteUser()" ng-show="check('person', 'delete')"><i class="fa fa-times"></i> Delete Profile</a>
+              </div>
+              <div class="push-30-t push animated fadeInDown">
+                  <img class="img-avatar img-avatar96 img-avatar-thumb" src="assets/img/avatars/user_icon.png" alt="">
+              </div>
+              <div class="push-30 animated fadeInUp">
+                  <h2 class="h4 font-w600 text-white push-5">{{ user.first_name }} {{ user.last_name }}</h2>
+              </div>
+          </div>
+      </div>
+      <!-- END Basic Info -->
+  </div>
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+  <form name="userForm" ng-submit="save(userForm.$valid)" novalidate>
+      <div class="block" id="main-block">
+          <div class="block-content tab-content">
+              <div class="row items-push">
+                  <div class="col-sm-6">
+                      <!-- General Info -->
+                      <div class="block block-bordered">
+                          <div class="block-header">
+                              <h3 class="block-title">General Information</h3>
+                          </div>
+                          <div class="block-content block-content-full">
+                              <div class="h4 push-5">{{ user.first_name }} {{ user.last_name }}</div>
+                              <i class="fa fa-envelope-o push-5-r push-5-r"></i> {{ user.login }}<br><br>
+                              <button class="btn btn-sm btn-primary" type="button" ng-click="resendInvite()"><i class="fa fa-save"></i> Resend invitation</button>
+                          </div>
+                      </div>
+                      <!-- END General Info -->
+                  </div>
+                  <div class="col-sm-6">
+                      <!-- Role -->
+                      <div class="block block-bordered">
+                          <div class="block-header">
+                              <h3 class="block-title">Role</h3>
+                          </div>
+                          <div class="block-content block-content-full">
+                              <!-- <div class="h4 push-5">{{ user.role_name }}</div> -->
+                              <div class="form-group">
+                                <select class="form-control" id="user_id" name="user_id" ng-options="role.id as role.name for role in roles" size="1" ng-model="user.role_id" >
+                                </select>
+                              </div>
+                              <p ng-show="roleSaveFailed"class="text-danger">Save failed. {{ role_error_m | etranslate }}</p>
+                              <p ng-show="roleSaveSuccess" class="text-success">Assigned a new role.</p>
+                              <button class="btn btn-sm btn-primary" type="button" ng-click="assignRole()"><i class="fa fa-save"></i> Save new role</button>
+                          </div>
+                      </div>
+                      <!-- END Role -->
+                  </div>
+              </div>
+          </div>
+          <!-- <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">Doctor profile has been saved.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+                <button class="btn btn-sm btn-warning" type="button" ui-sref="doctor-view({doctorId: doctor.id})"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+              </div>
+            </div>
+          </div> -->
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+  <!-- Fade In Modal -->
+  <div class="modal fade" id="modal-invitation-success" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="block block-themed block-transparent remove-margin-b">
+                  <div class="block-header bg-success">
+                      <ul class="block-options">
+                          <li>
+                              <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                          </li>
+                      </ul>
+                      <h3 class="block-title">Invitation success<span id="role"></span></h3>
+                  </div>
+                  <div class="block-content">
+                    <p>An invitation has been successfully sent to the user.</p>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-sm btn-default" type="button" data-dismiss="modal"><i class="fa fa-check"></i> Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+<!-- END Page Content -->

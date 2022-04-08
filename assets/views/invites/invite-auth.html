@@ -1,0 +1,116 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- register Content -->
+<div class="bg-white pulldown-tall">
+    <div class="content content-boxed overflow-hidden" ng-init="initAuth()">
+        <div class="block" id="main-block">
+            <div class="block-content">
+                <div class="push-30-t push-50 animated fadeIn">
+                    <!-- Register Title -->
+                    <div class="text-center">
+                        <img src="assets/img/logo.png">
+                        <p class="text-muted push-15-t" ng-show="!skipPhoneVerify && signup_status != 'signup_waiting' && !sessionInvalid && !formSuccess">Verify your AdvancedCare account.</p>
+                        <p class="text-muted push-15-t" ng-show="skipPhoneVerify || signup_status == 'signup_waiting'">Complete your AdvancedCare account setup.</p>
+                    </div>
+                    <!-- END Register Title -->
+
+                    <form name="callForm" class="main-form js-validation-register form-horizontal push-30-t" novalidate ng-show="!skipPhoneVerify && !sessionInvalid && !formSuccess && signup_status != 'signup_waiting'">
+                        <div class="form-group" >
+                            <div class="col-xs-12">
+                                <p><strong>VERIFICATION VIA PHONE CALL</strong></p>
+                                <p class="text-info">Firstly, we need to verify you as a AdvancedCare user. Please click the button below to prompt a call.</p>
+                                <p class="text-info">Enter this code to verify yourself on your phone followed by '#' sign.</p>
+                                <p ng-show="signup_status == 'phone_ready' || signup_status == 'phone_calling' || signup_status == 'phone_error'"><strong>YOUR UNIQUE VERIFICATION CODE: {{ phone_digits }}</strong></p>
+                                <p class="text-danger" ng-show="had_phone_error"><em>We did not receive your verification code. Please click the button to repeat the call.</em></p>
+                                <button class="btn btn-block btn-primary btn-s btn-large" type="button" ng-click="callNow()" ng-disabled="signup_status == 'phone_calling'">
+                                    <i class="si si-call-in"></i> {{ signup_status == 'phone_calling' ? 'Calling...' : had_phone_error ? 'Repeat Call' : 'Call Me Now' }}
+                                </button>
+                                <p class="text-info push-20-t text-center" ng-show="signup_status == 'phone_calling'"><em>Calling your phone now, please enter the verification digits.</em></p>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form name="authForm" class="main-form js-validation-register form-horizontal push-30-t" ng-submit="submitAuthForm(authForm.$valid)" novalidate ng-show="(skipPhoneVerify || signup_status == 'signup_waiting') && !formSuccess" autocomplete="off">
+                        <div class="form-group" >
+                            <div class="col-xs-12">
+                                <p ng-show="signup_status == 'signup_waiting'" class="text-info">You are almost ready, finish setting up your account below.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : authForm.password.$invalid && (!authForm.password.$pristine || formSubmitted) }">
+                          	<div class="col-xs-12">
+                          		  <div class="form-material form-material-primary floating">
+                              			<input class="form-control" type="password" name="password" id="password" ng-model="authuser.password" required  ng-disabled="sessionInvalid">
+                              			<label for="password">Password</label>
+                              			<p ng-show="authForm.password.$error.required && (!authForm.password.$pristine || formSubmitted)" class="help-block">Password is required.</p>
+                          		  </div>
+                          	</div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : authForm.confirmpassword.$invalid && (!authForm.confirmpassword.$pristine || formSubmitted) }">
+                          	<div class="col-xs-12">
+                            		<div class="form-material form-material-primary floating">
+                              			<input class="form-control" type="password" name="confirmpassword" id="confirmpassword" ng-model="authuser.confirmpassword" required pw-check="password" ng-disabled="sessionInvalid">
+                              			<label for="confirmpassword">Confirm Password</label>
+                              			<p ng-show="authForm.confirmpassword.$error.required && (!authForm.confirmpassword.$pristine || formSubmitted)" class="help-block">Confirm Password is required.</p>
+                              			<p ng-show="authForm.confirmpassword.$error.pwmatch && (!authForm.confirmpassword.$pristine || formSubmitted)" class="help-block">Password should match.</p>
+                            		</div>
+                          	</div>
+                        </div>
+                        <div class="form-group" >
+                            <div class="col-xs-12">
+                                <p ng-show="formFailed" class="text-danger">Error found, please try again. {{ error_m | etranslate }}</p>
+                                <p ng-show="formSuccess && approvalRequired" class="text-success">Thanks for joining AdvancedCare, your account will be reviewed shortly.</p>
+                                <p ng-show="sessionInvalid" class="text-danger">Your session appears to be invalid, please contact your pharmacy administrator.</p>
+                            </div>
+                        </div>
+                        <div class="form-group push-30-t">
+                            <div class="col-xs-12">
+                                <button ng-show="!sessionInvalid" class="btn btn-sm btn-block btn-primary btn-s btn-large btn-block" type="submit">Sign Up</button>
+                                <button ng-show="phone_waiting" class="btn btn-sm btn-block btn-info btn-s btn-large btn-block" type="button" ng-click="refreshDigits()"><i class="fa fa-phone"></i> Get Another Digits</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center push-50-t">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END register Form -->
+
+                    <form name="messageForm" class="main-form form-horizontal push-30-t" novalidate ng-show="formSuccess || sessionInvalid">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <p ng-show="sessionInvalid" class="text-danger text-center">Your session appears to be invalid, please try again.</p>
+                                <p ng-show="!sessionInvalid" class="text-info text-center"><strong>CONGRATULATIONS!</strong></p>
+
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">We have notified the Administrator of your Pharmacy to complete your approval process.</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">You will receive an e-mail as soon as you have been approved. Hang tight!</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">If you have not been approved within 24 hours, please contact your administrator or e-mail us at support@miqare.com.</p>
+
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'doctor' || role == 'delivery')">Thanks for joining AdvancedCare, your account will be reviewed shortly.</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'doctor' || role == 'delivery')">If you have not been approved within 24 hours, please contact your administrator or e-mail us at support@miqare.com.</p>
+
+                                <p ng-show="!sessionInvalid && !approvalRequired" class="text-center">Your AdvancedCare account has been created. Login now.</p>
+                            </div>
+                        </div>
+                        <div class="form-group push-50-t">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END register Content -->

@@ -1,0 +1,142 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- register Content -->
+<div class="bg-white" ng-class="{ 'pulldown-tall': error_m == 'e_phone_number_exists' || error_m == 'e_email_exists' }">
+    <div class="content content-boxed overflow-hidden" ng-init="initRegister()">
+      <div class="block" id="main-block">
+          <div class="block-content tab-content">
+              <div class="push-30-t push-50 animated fadeIn">
+                  <!-- Register Title -->
+                  <div class="text-center">
+                      <img src="assets/img/logo.png">
+                      <p class="text-muted push-15-t">Please complete the form to sign up.</p>
+                  </div>
+                  <!-- END Register Title -->
+
+                  <!-- Register Form -->
+                  <form name="registerForm" class="main-form js-validation-register form-horizontal push-30-t" ng-submit="submitRegisterForm(registerForm.$valid)" novalidate ng-show="error_m != 'e_phone_number_exists' && error_m != 'e_email_exists'" autocomplete="off">
+                      <div class="form-group" >
+                          <div class="col-xs-12">
+                              <p ng-show="sessionNotFound" class="text-danger">Your activation link is invalid, please try again.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : registerForm.first_name.$invalid && (!registerForm.first_name.$pristine || registerSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" maxlength="12" id="first_name" name="first_name" ng-model="registeruser.profile.first_name" ng-pattern= "/^[a-zA-Z$][0-9a-zA-Z_$]*$/" required>
+                                  <label for="first_name">First Name *</label>
+                              </div>
+                              <p ng-show="registerForm.first_name.$error.required && (!registerForm.first_name.$pristine || registerSubmitted)" class="help-block">First Name is required.</p>
+                              <p ng-show="!registerForm.first_name.$valid && !registerForm.first_name.$error.required  && (!registerForm.first_name.$pristine || registerForm.$submitted)" class="help-block">First Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : registerForm.last_name.$invalid && (!registerForm.last_name.$pristine || registerSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" maxlength="12" name="last_name" id="last_name" ng-model="registeruser.profile.last_name" ng-pattern= "/^[a-zA-Z$][0-9a-zA-Z_$]*$/" required>
+                                  <label for="last_name">Last Name *</label>
+                              </div>
+                              <p ng-show="registerForm.last_name.$error.required && (!registerForm.last_name.$pristine || registerSubmitted)" class="help-block">Last Name is required.</p>
+                              <p ng-show="!registerForm.last_name.$valid && !registerForm.last_name.$error.required  && (!registerForm.last_name.$pristine || registerForm.$submitted)" class="help-block">Last Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : registerForm.email.$invalid && (!registerForm.email.$pristine || registerSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" name="email" id="email" ng-model="registeruser.profile.email" ng-pattern = "/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/" required>
+                                  <label for="email">Email *</label>
+                              </div>
+                              <p ng-show="registerForm.email.$error.required && (!registerForm.email.$pristine || registerSubmitted)" class="help-block">Email is required.</p>
+                              <p ng-show="!registerForm.email.$valid && !registerForm.email.$error.required  && (!registerForm.email.$pristine || registerForm.$submitted)" class="help-block">Please provide a valid email address.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : registerForm.phone_number.$invalid && (!registerForm.phone_number.$pristine || registerSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" maxlength="20" name="phone_number" id="phone_number" ng-model="registeruser.profile.phone_number" ng-pattern= "/^[0-9]+$/i" required>
+                                  <label for="phone_number">Phone Number *</label>
+                              </div>
+                              <p><em>You will get a verification call at this number.</em></p>
+                              <p ng-show="registerForm.phone_number.$error.required && (!registerForm.phone_number.$pristine || registerSubmitted)" class="help-block">Phone number is required.</p>
+                              <p ng-show="!registerForm.phone_number.$valid && !registerForm.phone_number.$error.required && (!registerForm.phone_number.$pristine || registerForm.$submitted)" class="help-block">Phone Number can only contain number.</p>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                <select name="type" ng-model="registeruser.role" ng-init="registeruser.role = registeruser.role || 'doctor'" class="form-control">
+                                    <option value="patient">Patient</option>
+                                    <option value="doctor">Doctor</option>
+                                    <option value="delivery">Delivery</option>
+                                    <option value="pharmacist">Pharmacist</option>
+                                    <option value="pharmacy_admin">Pharmacy Admin</option>
+                                </select>
+                                <label for="type">Select a user type</label>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-show="registeruser.role == 'doctor'" ng-class="{ 'has-error' : registerForm.npi.$invalid && (!registerForm.npi.$pristine || registerSubmitted) }">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" maxlength="20" name="npi" id="npi" ng-model="registeruser.npi" ng-pattern= "/^[0-9]+$/i" ng-required="registeruser.role == 'doctor'">
+                                  <label for="npi">Doctor Number *</label>
+                                  <p ng-show="registerForm.npi.$error.required && (!registerForm.npi.$pristine || registerSubmitted)" class="help-block">Doctor number is required.</p>
+                                  <p ng-show="!registerForm.npi.$valid && !registerForm.npi.$error.required && (!registerForm.npi.$pristine || registerForm.$submitted)" class="help-block">Doctor Number can only contain number.</p>
+                                </div>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : registerForm.fax.$invalid && (!registerForm.fax.$pristine || registerSubmitted) }">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" maxlength="20" name="fax" id="fax" ng-model="registeruser.fax" ng-pattern= "/^[0-9]+$/i" >
+                                  <label for="fax">Fax Number</label>
+                                  <p ng-show="!registerForm.fax.$valid && !registerForm.fax.$error.required && (!registerForm.fax.$pristine || registerForm.$submitted)" class="help-block">Fax Number can only contain number.</p>
+                                </div>
+                          </div>
+                      </div>
+                      <div class="form-group" >
+                          <div class="col-xs-12">
+                              <p ng-show="registerFailed" class="text-danger">Register failed. {{ error_m | etranslate }}</p>
+                              <p ng-show="registerSuccess" class="text-success">Thanks for signing up, please check your mailbox and click the confirmation link.</p>
+                          </div>
+                      </div>
+                      <div class="form-group push-30-t">
+                          <div class="col-xs-12">
+                              <button class="btn btn-sm btn-block btn-primary btn-s btn-large btn-block" type="submit">Register</button>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-12">
+                              <div class="font-s13 text-center push-50-t">
+                                  <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+                  <!-- END register Form -->
+
+                  <!-- Other Form -->
+                  <form name="otherForm" class="main-form form-horizontal push-30-t" novalidate ng-show="error_m == 'e_phone_number_exists' || error_m == 'e_email_exists'">
+                      <div class="form-group" >
+                          <div class="col-xs-12 text-center">
+                              <p ng-show="error_m == 'e_phone_number_exists'">We already have an account for this phone number <strong>{{ registeruser.profile.phone_number }}</strong>.  Please login here</p>
+                              <p ng-show="error_m == 'e_email_exists'">We already have an account for this email address <strong>{{ registeruser.profile.email }}</strong>. Please login here.</p>
+                              <a class="btn btn-sm btn-block btn-primary btn-s btn-large btn-block" type="button" data-ui-sref="login">Login</a>
+                              <p class="push-30-t text-center">or reset your password.</p>
+                              <a class="btn btn-sm btn-block btn-danger btn-s btn-large btn-block" type="button" data-ui-sref="forgot">Reset password</a>
+                              <div class="font-s13 text-center push-30-t">
+                                  <a href="javascript:void(0)" class="link-s text-success" ng-click="resumeRegister()" ><u>Go back to Sign Up</u></a>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+                  <!-- END other Form -->
+              </div>
+          </div>
+      </div>
+    </div>
+</div>
+<!-- END register Content -->

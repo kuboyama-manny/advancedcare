@@ -1,0 +1,101 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Drugs
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Drugs</li>
+                <li><a class="link-effect" href="">List</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed">
+
+    <div class="block">
+        <div class="block-content">
+            <div class="row items-push">
+                <div class="col-sm-6">
+                    <div class="block block-bordered" id="search-block">
+                        <div class="block-header">
+                            <h3 class="block-title">Search Drug Product</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="form-group hidden">
+                                <select class="form-control" id="formulary_id" name="formulary_id" ng-options="formulary.id as formulary.name for formulary in formulary_list" size="1" ng-change="changeFormulary()" ng-model="formulary_id">
+                                  <option value="">Choose a formulary</option>
+                                </select>
+                            </div>
+                            <div class="form-group" ng-class="{ 'has-error' : orderForm.drug.$invalid && (!orderForm.drug.$pristine || orderForm.$submitted)}">
+                                <label for="drug_key">Choose a drug</label>
+                                <input class="form-control input-lg" type="text" name="drug_key" ng-model="drug_key" ng-change="searchDrugs()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" >
+                                <select class="form-control" id="drug" name="drug" ng-options="drug.id as drug.name for drug in drugs_list" size="6" ng-model="drug_id" ng-change="searchDrugProducts()" required>
+                                  <option value="">Choose a drug</option>
+                                </select>
+                                <p ng-show="orderForm.drug.$error.required && (!orderForm.drug.$pristine || orderForm.$submitted)" class="help-block">Drug is required.</p>
+                            </div>
+                            <div class="form-group" ng-class="{ 'has-error' : orderForm.drug_product.$invalid && (!orderForm.drug_product.$pristine || orderForm.$submitted)}">
+                                <select class="form-control" id="drug_product" name="drug_product" ng-options="drug_product as drug_product.product_name for drug_product in drug_products_list" size="5" ng-model="drug_product" ng-change="drugProductChosen()" required>
+                                  <option value="">Choose a drug product</option>
+                                </select>
+                                <p ng-show="orderForm.drug_product.$error.required && (!orderForm.drug_product.$pristine || orderForm.$submitted)" class="help-block">Drug product is required.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="block block-bordered" id="drug-block">
+                        <div class="block-header">
+                            <h3 class="block-title">Edit Drug Details</h3>
+                        </div>
+                        <div class="block-content block-content-full">
+                            <form name="drugForm" ng-submit="save(drugForm.$valid)" novalidate>
+                                <div class="form-group" ng-class="{ 'has-error' : drugForm.din.$invalid && drugFormSubmitted}">
+                                    <label for="din">Drug Identification Number</label>
+                                    <input class="form-control input-lg" type="text" id="din" name="din" ng-model="editing_drug_product.din" placeholder="Enter DIN" required>
+                                    <p ng-show="drugForm.din.$error.required && drugFormSubmitted" class="help-block">DIN is required.</p>
+                                </div>
+                                <div class="form-group" ng-class="{ 'has-error' : drugForm.product_name.$invalid && drugFormSubmitted}">
+                                    <label for="product_name">Product Name</label>
+                                    <input class="form-control input-lg" type="text" id="product_name" name="product_name" ng-model="editing_drug_product.product_name" placeholder="Enter product name" required>
+                                    <p ng-show="drugForm.product_name.$error.required && drugFormSubmitted" class="help-block">Product name is required.</p>
+                                </div>
+                                <div class="form-group" ng-class="{ 'has-error' : drugForm.strength.$invalid && drugFormSubmitted}">
+                                    <label for="strength">Strength</label>
+                                    <input class="form-control input-lg" type="text" id="strength" name="strength" ng-model="editing_drug_product.strength" placeholder="Enter strength" required>
+                                    <p ng-show="drugForm.strength.$error.required && drugFormSubmitted" class="help-block">Strength is required.</p>
+                                </div>
+                                <div class="form-group" ng-class="{ 'has-error' : drugForm.routex.$invalid && drugFormSubmitted}">
+                                    <label for="routex">Route</label>
+                                    <input class="form-control input-lg" type="text" id="routex" name="routex" ng-model="editing_drug_product.route" placeholder="Enter route" required>
+                                    <p ng-show="drugForm.routex.$error.required && drugFormSubmitted" class="help-block">Route is required.</p>
+                                </div>
+                                <div class="form-group" ng-class="{ 'has-error' : drugForm.form.$invalid && drugFormSubmitted}">
+                                    <label for="form">Form</label>
+                                    <input class="form-control input-lg" type="text" id="form" name="form" ng-model="editing_drug_product.form" placeholder="Enter form" required>
+                                    <p ng-show="drugForm.form.$error.required && drugFormSubmitted" class="help-block">Form is required.</p>
+                                </div>
+                                <div class="form-group">
+                                    <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                                    <p ng-show="saveSuccess" class="text-success">Drug details has been saved.</p>
+                                </div>
+                                <div class="form-group text-center">
+                                    <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+                                    <button class="btn btn-sm btn-warning" type="button" ng-click="drugProductChosen();"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Page Content -->

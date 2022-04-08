@@ -1,0 +1,72 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+  <div class="row items-push">
+    <div class="col-sm-7">
+      <h1 class="page-heading">
+        Patients
+        <!-- <small>list of patients</small> -->
+        <a data-ui-sref="emar-patient-new" class="btn btn-primary push-20-l" type="button" ng-show="check('patient', 'create')"><i class="si si-plus push-5-r"></i> <span>Add New</span></a>
+      </h1>
+    </div>
+  </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed">
+
+  <!-- Hover Table -->
+  <div class="block" id="main-block">
+    <div class="block-content">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">Name</a></th>
+              <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">Floor / Room</a></th>
+              <th ng-click="orderby='doctor_name'; reverse=!reverse;"><a href="javascript:void(0)">Doctor</a></th>
+              <th ng-repeat="column in time_columns" width=50px><a href="javascript:void(0)">{{column.name}}</a></th>
+              <th ng-click="orderby='active_since'; reverse=!reverse;"><a href="javascript:void(0)">Alert / Reminder</a></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="item in patients | orderBy:orderby:reverse" ui-sref="emar-patient-view({patientId: item.id})" class="clickable-item">
+              <!-- | limitTo:page_size -->
+              <td>{{ item.first_name }} {{ item.last_name }}</td>
+              <td>{{ item.address_note }}</td>
+              <td>{{ item.doctor.first_name }} {{ item.doctor.last_name }}</td>
+              <td ng-repeat="column in time_columns">
+                <a href="javascript:void(0)"><img ng-src="{{get_column_mark(item.med_schedules, column)}}" width=20px /></a>
+              </td>
+              <td><img ng-src="{{get_alerts_reminders_image(item.med_schedules)}}" width=20px /> {{get_alerts_reminders_text(item)}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p ng-show="patients.length == 0" class="text-danger">No patients found.</p>
+        <form class="form-horizontal">
+          <div class="form-group col-xs-4 col-sm-2">
+            <select class="form-control pagination" id="page_size" ng-options="page_size for page_size in page_sizes" ng-model="page_size" ng-change="loadData()">
+                        </select>
+          </div>
+          <div class="col-xs-8 col-sm-8 text-center">
+            <ul class="pagination" ng-show="patients.length > 0">
+              <li class="paginate_button previous" ng-class="{ 'disabled' : current_page <= 1}">
+                <a href="javascript:void(0)" ng-click="prevPage()"><i class="fa fa-angle-left"></i></a>
+              </li>
+              <li class="paginate_button">
+                <select class="form-control" id="current_page" ng-options="page_num for page_num in page_numbers" ng-model="current_page" ng-change="loadData()">
+                                </select>
+              </li>
+              <li class="paginate_button next" ng-class="{ 'disabled' : current_page * page_size >= page_total}">
+                <a href="javascript:void(0)" ng-click="nextPage()"><i class="fa fa-angle-right"></i></a>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- END Hover Table -->
+
+</div>
+<!-- END Page Content -->

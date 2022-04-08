@@ -1,0 +1,201 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()" id="main-block">
+  <!-- ng-if="order.status == 'draft'" -->
+  <div class="row">
+      <div class="col-sm-6">
+          <a class="block block-link-hover3 text-center" ui-sref="delivery-order-edit({orderId: orderId})" ng-show="(check('delivery_order', 'edit') && order.status == 'waiting_for_delivery') || checkRole('delivery')">
+              <div class="block-content block-content-full">
+                  <div class="h1 font-w700"><i class="fa fa-pencil"></i></div>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Edit Delivery Order</div>
+          </a>
+      </div>
+      <div class="col-sm-6">
+          <a class="block block-link-hover3 text-center" href="javascript:void(0)" ng-click="cancelOrder()" ng-show="check('delivery_order', 'cancel') && order.status == 'waiting_for_delivery'">
+              <div class="block-content block-content-full">
+                  <div class="h1 font-w700 text-danger"><i class="fa fa-times"></i></div>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-gray-lighter text-danger font-w600">Cancel Delivery Order</div>
+          </a>
+      </div>
+  </div>
+
+  <div class="row">
+      <div class="col-sm-6 col-md-3">
+          <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+              <div class="block-content block-content-full">
+                  <span class="item item-circle">#{{ order.id }}</span>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600">ORDER ID</div>
+          </a>
+      </div>
+      <div class="col-sm-6 col-md-3">
+          <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+              <div class="block-content block-content-full">
+                  <span class="item" style="width: auto;">
+                    <small><span class="label" ng-class="{'label-success' : order.status == 'delivered', 'label-info' : order.status == 'in_delivery', 'label-warning' : order.status == 'waiting_for_delivery', 'label-danger' : order.status == 'delayed'}">{{ order_status_labels[order.status] }}</span></small>
+                  </span>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600">Status</div>
+          </a>
+      </div>
+      <div class="col-sm-12 col-md-6">
+          <a class="block block-link-hover3 text-center" href="javascript:void(0)">
+              <div class="block-content block-content-full">
+                <span class="item" style="width: auto;">
+                  <small>{{ order.time_from | date: 'MM/dd/yy HH:mm' }} - {{ order.time_to | date: 'MM/dd/yy HH:mm' }}</small>
+                </span>
+              </div>
+              <div class="block-content block-content-full block-content-mini bg-gray-lighter font-w600">Scheduled At</div>
+          </a>
+      </div>
+  </div>
+
+  <!-- Details -->
+  <div class="row">
+      <div class="col-sm-6">
+          <!-- Recipient Details -->
+          <div class="block">
+              <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title">{{ order.recipient.patient ? 'Patient' : 'Facility' }} Recipient</h3>
+              </div>
+              <div class="block-content block-content-full" ng-if="order.recipient.patient">
+                  <div class="h4 push-5">{{ order.recipient.patient.profile.first_name }} {{ order.recipient.patient.profile.last_name }}</div>
+                  <br>
+                  <address>
+                      <i class="fa fa-map-marker"></i> {{ order.recipient.patient.profile.address.description }}<br><br>
+                      <i class="fa fa-phone"></i><a href="tel:{{ order.recipient.patient.profile.phone_number }}"> {{ order.recipient.patient.profile.phone_number }}</a><br>
+                      <i class="fa fa-envelope-o"></i> {{ order.recipient.patient.profile.email }}
+                  </address>
+                  <a ui-sref="patient-view({patientId: order.recipient.patient.id})">View Patient Details</a>
+              </div>
+              <div class="block-content block-content-full" ng-if="order.recipient.facility">
+                  <div class="h4 push-5">{{ order.recipient.facility.name }}</div>
+                  <br>
+                  <address>
+                      {{ order.recipient.facility.address.description }}<br>
+                  </address>
+                  <a href="#">View Facility Details</a>
+              </div>
+          </div>
+          <!-- END Recipient Details -->
+      </div>
+
+      <div class="col-sm-6">
+          <!-- Driver Details -->
+          <div class="block">
+              <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title">Driver</h3>
+              </div>
+              <div class="block-content block-content-full">
+                  <div class="h4 push-5">{{ order.delivery.profile.first_name }} {{ order.delivery.profile.last_name }}</div>
+                  <br>
+                  <address>
+                      <i class="fa fa-phone"></i> {{ order.delivery.profile.phone_number }}<br>
+                      <i class="fa fa-envelope-o"></i> {{ order.delivery.profile.email }}
+                  </address>
+                  <a ui-sref="driver-view({driverId: order.delivery.id})">View Driver Details</a>
+              </div>
+
+          </div>
+          <!-- END Driver Details -->
+      </div>
+  </div>
+  <!-- END Details -->
+
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Recipient Signature</h3>
+        </div>
+        <div class="block-content block-content-full" >
+            <span class="label label-primary" ng-show="order.recipient_sign_required" ng-class="{'label-warning': order.recipient_sign_required}">Required</span>
+            <span class="label label-primary" ng-show="order.has_recipient_sign" ng-class="{'label-success': order.has_recipient_sign}">Signed</span>
+            <div ng-if="order.has_recipient_sign">
+              <img class="img-avatar img-avatar128" ng-src="{{ order.recipient_signature_url }}">
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Driver Signature</h3>
+        </div>
+        <div class="block-content block-content-full" >
+            <span class="label label-primary" ng-show="order.delivery_sign_required" ng-class="{'label-warning': order.delivery_sign_required}">Required</span>
+            <span class="label label-primary" ng-show="order.has_delivery_sign"  ng-class="{'label-success': order.has_delivery_sign}">Signed</span>
+            <div ng-if="order.has_delivery_sign">
+              <img class="img-avatar img-avatar128" ng-src="{{ order.delivery_signature_url }}">
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rx Orders -->
+  <div class="block" ng-if="order.orders.list.length != 0">
+      <div class="block-header bg-gray-lighter">
+          <h3 class="block-title">Rx Orders</h3>
+      </div>
+      <div class="block-content">
+          <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                  <thead>
+                      <tr>
+                        <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                        <th ng-click="orderby='patient.name'; reverse=!reverse;"><a href="javascript:void(0)">Patient Name</a></th>
+                        <th ng-click="orderby='status'; reverse=!reverse;"><a href="javascript:void(0)">Status</a></th>
+                        <th ng-click="orderby='created_at'; reverse=!reverse;"><a href="javascript:void(0)">Created At</a></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="order in order.orders.list | orderBy:orderby:reverse" ui-sref="order-detail({orderId: order.id})">  <!-- | limitTo:page_size -->
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.patient.name }}</td>
+                        <td><span class="label" ng-class="{'label-success' : order.status == 'delivered', 'label-info' : order.status == 'in_delivery', 'label-warning' : order.status == 'waiting_for_delivery'}">{{ order_status_labels[order.status] }}</span></td>
+                        <td>{{ order.created_at | date:'MM/dd/yy HH:mm' }}</td>
+                      </tr>
+                  </tbody>
+              </table>
+              <p ng-show="order.orders.list.length == 0" class="text-danger">No Rx Orders found.</p>
+          </div>
+      </div>
+  </div>
+  <!-- END Rx Orders -->
+
+  <!-- Pharmacy -->
+  <div class="row">
+      <div class="col-sm-12">
+          <div class="block">
+              <div class="block-header bg-gray-lighter">
+                  <h3 class="block-title">Pharmacy</h3>
+              </div>
+              <div class="block-content block-content-full" >
+                  <div class="h4 push-5">{{ order.pharmacy.name }}</div>
+                  <br>
+                  <address>
+                      <i class="fa fa-map-marker"></i> {{ order.pharmacy.address.description }}<br><br>
+                  </address>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- END Pharmacy -->
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="block">
+        <div class="block-header bg-gray-lighter">
+            <h3 class="block-title">Notes</h3>
+        </div>
+        <div class="block-content block-content-full" >
+            {{ order.notes }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- END Page Content -->

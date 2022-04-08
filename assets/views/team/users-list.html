@@ -1,0 +1,140 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Users
+                <a data-ui-sref="user-invite" class="btn btn-primary push-20-l" type="button"><i class="si si-plus push-5-r" ng-show="check('person_invite', 'create')"></i> <span>Invite a User</span></a>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Users</li>
+                <li><a class="link-effect" href="">List</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadList()">
+
+    <!-- Hover Table -->
+    <div class="block" id="main-block">
+        <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+            <li class="active">
+                <a href="#tab-users"><i class="fa fa-fw fa-user"></i> Users</a>
+            </li>
+            <li ng-show="check('person_approval', 'view')">
+                <a href="#tab-requests"><i class="fa fa-fw fa-check"></i> Requests</a>
+            </li>
+            <li ng-show="check('person_invite', 'view')">
+                <a href="#tab-invites"><i class="fa fa-fw fa-paper-plane"></i> Invitations</a>
+            </li>
+        </ul>
+        <div class="block-content tab-content">
+            <div class="tab-pane fade in active" id="tab-users">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                      <thead>
+                          <tr>
+                              <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                              <th ng-click="orderby='[first_name, last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Name</a></th>
+                              <th ng-click="orderby='email'; reverse=!reverse;"><a href="javascript:void(0)">Email</a></th>
+                              <th ng-click="orderby='role_name'; reverse=!reverse;"><a href="javascript:void(0)">Role</a></th>
+                              <th ng-click="orderby='email'; reverse=!reverse;"><a href="javascript:void(0)">Status</a></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="user in users | orderBy:orderby:reverse" ui-sref="user-detail({userId: user.id})">  <!-- | limitTo:page_size -->
+                              <td>{{ user.id }}</td>
+                              <td>{{ user.first_name }} {{ user.last_name }}</td>
+                              <td>{{ user.login }}</td>
+                              <td>{{ user.role_name }}</td>
+                              <td><span class="label" ng-class="{'label-success' : user.status == 'approved', 'label-danger' : user.status == 'approval_declined', 'label-warning' : user.status == 'phone_waiting' || user.status == 'email_waiting' || user.status == 'password_waiting' || user.status == 'signup_waiting' || user.status == 'approval_waiting' }">{{ user_status_labels[user.status] }}</span></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                    <p ng-show="users.length == 0" class="text-danger">No users found.</p>
+                    <form class="form-horizontal">
+                        <div class="form-group col-xs-4 col-sm-2">
+                            <select class="form-control pagination" id="page_size" ng-options="page_size for page_size in page_sizes" ng-model="page_size" ng-change="loadList()">
+                            </select>
+                        </div>
+                        <div class="col-xs-8 col-sm-8 text-center">
+                            <ul class="pagination" ng-show="users.length > 0">
+                                <li class="paginate_button previous" ng-class="{ 'disabled' : current_page <= 1}">
+                                    <a href="javascript:void(0)" ng-click="prevPage()"><i class="fa fa-angle-left"></i></a>
+                                </li>
+                                <li class="paginate_button" >
+                                    <select class="form-control" id="current_page" ng-options="page_num for page_num in page_numbers" ng-model="current_page" ng-change="loadList()">
+                                    </select>
+                                </li>
+                                <li class="paginate_button next" ng-class="{ 'disabled' : current_page * page_size >= page_total}">
+                                    <a href="javascript:void(0)" ng-click="nextPage()"><i class="fa fa-angle-right"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab-requests" ng-show="check('person_approval', 'view')">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                      <thead>
+                          <tr>
+                              <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                              <th ng-click="orderby='[first_name, last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Name</a></th>
+                              <th ng-click="orderby='email'; reverse=!reverse;"><a href="javascript:void(0)">Email</a></th>
+                              <th ng-click="orderby='role'; reverse=!reverse;"><a href="javascript:void(0)">Role</a></th>
+                              <th></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="user in requests | orderBy:orderby:reverse">  <!-- | limitTo:page_size -->
+                              <td>{{ user.id }}</td>
+                              <td>{{ user.first_name }} {{ user.last_name }}</td>
+                              <td>{{ user.login }}</td>
+                              <td>{{ user.role | capitalize }}</td>
+                              <td class="text-right">
+                                <button class="btn btn-sm btn-success" type="button" ng-click="approve(user)"><i class="fa fa-check"></i> Approve</button>
+                                <button class="btn btn-sm btn-danger" type="button" ng-click="decline(user)"><i class="fa fa-times"></i> Decline</button>
+                              </td>
+                          </tr>
+                      </tbody>
+                    </table>
+                    <p ng-show="requests.length == 0" class="text-danger">No approval requests.</p>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tab-invites" ng-show="check('person_invite', 'view')">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                      <thead>
+                          <tr>
+                              <th ng-click="orderby='[first_name, last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Name</a></th>
+                              <th ng-click="orderby='login'; reverse=!reverse;"><a href="javascript:void(0)">Email</a></th>
+                              <th ng-click="orderby='role_name'; reverse=!reverse;"><a href="javascript:void(0)">Role</a></th>
+                              <th ng-click="orderby='invited_by'; reverse=!reverse;"><a href="javascript:void(0)">Invited By</a></th>
+                              <th ng-click="orderby='status'; reverse=!reverse;"><a href="javascript:void(0)">Status</a></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="user in invitations | orderBy:orderby:reverse" ui-sref="user-detail({userId: user.id})">  <!-- | limitTo:page_size -->
+                              <td>{{ user.first_name }} {{ user.last_name }}</td>
+                              <td>{{ user.login }}</td>
+                              <td>{{ user.role_name }}</td>
+                              <td>{{ user.invited_user.first_name }} {{ user.invited_user.last_name }}</td>
+                              <td><span class="label" ng-class="{'label-success' : user.status == 'approved', 'label-danger' : user.status == 'phone_error', 'label-warning' : user.status == 'phone_waiting' || user.status == 'email_waiting' || user.status == 'profile_waiting' || user.status == 'signup_waiting' || user.status == 'approval_waiting' }">{{ invite_status_labels[user.status] }}</span></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                    <p ng-show="invitations.length == 0" class="text-danger">No invitations found.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Hover Table -->
+
+</div>
+<!-- END Page Content -->

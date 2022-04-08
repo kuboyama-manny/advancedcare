@@ -1,0 +1,121 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+
+  <!-- Main Content -->
+  <form name="doctorForm" ng-submit="save(doctorForm.$valid)" novalidate>
+      <div class="block" id="main-block">
+          <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-profile-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+          </ul> -->
+          <div class="block-content tab-content">
+              <!-- General Tab -->
+              <div class="tab-pane fade in active" id="tab-profile-general">
+                  <div class="row items-push">
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.npi.$invalid && (!doctorForm.npi.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="npi">Doctor NPI</label>
+                                  <input class="form-control input-lg" type="text" id="npi" name="npi" ng-model="doctor.npi" placeholder="Enter NPI" required>
+                                  <p ng-show="doctorForm.npi.$error.required && (!doctorForm.npi.$pristine || doctorForm.$submitted)" class="help-block">NPI is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.msp.$invalid && (!doctorForm.msp.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="msp">Doctor MSP</label>
+                                  <input class="form-control input-lg" type="text" id="msp" name="msp" ng-model="doctor.msp" placeholder="Enter MSP" required>
+                                  <p ng-show="doctorForm.msp.$error.required && (!doctorForm.msp.$pristine || doctorForm.$submitted)" class="help-block">MSP is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.cps.$invalid && (!doctorForm.cps.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="cps">Doctor CPS</label>
+                                  <input class="form-control input-lg" type="text" id="cps" name="cps" ng-model="doctor.cps" placeholder="Enter CPS" required>
+                                  <p ng-show="doctorForm.cps.$error.required && (!doctorForm.cps.$pristine || doctorForm.$submitted)" class="help-block">CPS is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.first_name.$invalid && (!doctorForm.first_name.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="first_name">First Name</label>
+                                  <input class="form-control input-lg" type="text" maxlength="12" id="first_name" name="first_name" ng-model="doctor.profile.first_name" placeholder="Enter first name" ng-pattern= "/^[a-zA-Z$][0-9a-zA-Z_$]*$/" required>
+                                  <p ng-show="doctorForm.first_name.$error.required && (!doctorForm.first_name.$pristine || doctorForm.$submitted)" class="help-block">First name is required.</p>
+                                  <p ng-show="!doctorForm.first_name.$valid&& !doctorForm.first_name.$error.required  && (!doctorForm.first_name.$pristine || doctorForm.$submitted)" class="help-block">First Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.last_name.$invalid && (!doctorForm.last_name.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="last_name">Last Name</label>
+                                  <input class="form-control input-lg" type="text" maxlength="12" id="last_name" name="last_name" ng-model="doctor.profile.last_name" placeholder="Enter last name" ng-pattern= "/^[a-zA-Z$][0-9a-zA-Z_$]*$/" required>
+                                  <p ng-show="doctorForm.last_name.$error.required && (!doctorForm.last_name.$pristine || doctorForm.$submitted)" class="help-block">Last name is required.</p>
+                                  <p ng-show="!doctorForm.last_name.$valid&& !doctorForm.last_name.$error.required  && (!doctorForm.last_name.$pristine || doctorForm.$submitted)" class="help-block">Last Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-xs-12">Gender</label>
+                              <div class="col-xs-12" ng-init="doctor.profile.gender = 'F'">
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="gender" ng-model="doctor.profile.gender" value="F"><span></span> Female
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary">
+                                      <input type="radio" name="gender" ng-model="doctor.profile.gender" value="M"><span></span> Male
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.email.$invalid && (!doctorForm.email.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="email">Email Address</label>
+                                  <input class="form-control input-lg" type="text" id="email" name="email" ng-model="doctor.profile.email" placeholder="Enter email" ng-pattern = "/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/"required>
+                                  <p ng-show="doctorForm.email.$error.required && (!doctorForm.email.$pristine || doctorForm.$submitted)" class="help-block">Email is required.</p>
+                                  <p ng-show="!doctorForm.email.$valid && !doctorForm.email.$error.required  && (!doctorForm.email.$pristine || doctorForm.$submitted)" class="help-block">Please provide a valid email address.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : doctorForm.phone_number.$invalid && (!doctorForm.phone_number.$pristine || doctorForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="phone_number">Phone</label>
+                                  <input class="form-control input-lg" type="text" maxlength="20" id="phone_number" name="phone_number" ng-model="doctor.profile.phone_number" placeholder="Enter phone number" ng-pattern= "/^[0-9]+$/i" required>
+                                  <p ng-show="doctorForm.phone_number.$error.required && (!doctorForm.phone_number.$pristine || doctorForm.$submitted)" class="help-block">Phone number is required.</p>
+                                  <p ng-show="!doctorForm.phone_number.$valid && !doctorForm.phone_number.$error.required && (!doctorForm.phone_number.$pristine || doctorForm.$submitted)" class="help-block">Phone Number can only contain number.</p>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="col-xs-12" ng-class="{ 'has-error' : doctorForm.fax.$invalid && (!doctorForm.fax.$pristine || doctorForm.$submitted)}">
+                                  <label for="fax">Fax</label>
+                                  <input class="form-control input-lg" type="text" maxlength="20" id="fax" name="fax" ng-model="doctor.profile.fax" placeholder="Enter fax number" ng-pattern= "/^[0-9]+$/i">
+                                  <p ng-show="!doctorForm.fax.$valid && !doctorForm.fax.$error.required && (!doctorForm.fax.$pristine || doctorForm.$submitted)" class="help-block">Fax Number can only contain number.</p>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="facility">Enter address</label>
+                                  <input class="form-control input-lg" type="text" name="address_key" ng-model="address_key" ng-change="searchAddress()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter doctor address here" autocomplete="off">
+                                  <select class="form-control" id="place_id" name="place_id" ng-options="address.place_id as address.description for address in addresses_list" size="6" ng-model="doctor.profile.address.place_id">
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- END General Tab -->
+
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">doctor profile has been saved.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+                <button class="btn btn-sm btn-warning" type="button" ui-sref="doctors"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

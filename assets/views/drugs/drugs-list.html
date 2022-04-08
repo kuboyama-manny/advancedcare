@@ -1,0 +1,99 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Drugs Home
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Drugs</li>
+                <li><a class="link-effect" href="">Home</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed">
+
+    <!-- Header Tiles -->
+    <div class="row">
+        <div class="col-sm-6">
+            <a class="block block-link-hover3 text-center" ui-sref="drug-edit" ng-show="check('drug', 'edit')">
+                <div class="block-content block-content-full">
+                    <div class="h1 font-w700"><i class="si si-chemistry"></i></div>
+                </div>
+                <div class="block-content block-content-full block-content-mini bg-gray-lighter text-muted font-w600">Drugs Management</div>
+            </a>
+        </div>
+    </div>
+    <!-- END Header Tiles -->
+
+    <!-- Hover Table -->
+    <div class="block" id="main-block">
+        <div class="block-content">
+            <div class="row items-push">
+                <div class="col-sm-6">
+                    <div class="block block-bordered" id="history-block">
+                        <div class="block-header">
+                            <h3 class="block-title">Recent Drugs</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped">
+                                  <thead>
+                                      <tr>
+                                          <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                                          <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">Drug Name</a></th>
+                                          <th ng-click="orderby='formulary.name'; reverse=!reverse;" class="hidden"><a href="javascript:void(0)">Formulary</a></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr ng-repeat="drug in drugs.history | orderBy:orderby:reverse">  <!--  -->
+                                          <td>{{ drug.id }}</td>
+                                          <td>{{ drug.name }}</td>
+                                          <td class="hidden">{{ drug.formulary.name }}</td>
+                                      </tr>
+                                  </tbody>
+                                </table>
+                                <p ng-show="drugs.history.length == 0" class="text-danger">No recent drugs found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 hidden">
+                    <div class="block block-bordered" id="formularies-block">
+                        <div class="block-header">
+                            <h3 class="block-title">Formularies</h3>
+                        </div>
+                        <div class="block-content">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped">
+                                  <thead>
+                                      <tr>
+                                          <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                                          <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">Formulary Name</a></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr ng-repeat="formulary in drugs.formularies | orderBy:orderby:reverse" >  <!-- | limitTo:page_size -->
+                                          <td>{{ formulary.id }}</td>
+                                          <td>{{ formulary.name }}</td>
+                                      </tr>
+                                  </tbody>
+                                </table>
+                                <p ng-show="drugs.formularies.length == 0" class="text-danger">No formularies found.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END Hover Table -->
+
+</div>
+<!-- END Page Content -->

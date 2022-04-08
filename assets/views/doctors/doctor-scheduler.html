@@ -1,0 +1,53 @@
+<!-- Page Content -->
+<style type="text/css">
+    /* fix for popup modal drop down @important! */
+    html, body {
+        position: relative;
+    }
+
+    .km-pane-wrapper {
+        position: relative;
+    }
+    .no-bottom{
+         margin-bottom: 0px !important;
+    }
+   .title{
+    font-size:24px;
+    padding: 10px 10px 10px 25px;
+   }
+   .no-top-padding{
+    padding-top:0px;
+   }
+   .video-icon {
+    float: right;
+    margin-right: 40px;
+    font-size: 18px;
+    line-height: 35px;
+   }
+</style>
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+
+  <!-- User Header -->
+  <div class="block">
+      <!-- Basic Info -->
+      <div class="row items-push">
+        <div class="col-sm-12 title no-bottom">
+          Appointment Scheduler
+        </div>
+    </div>
+      <!-- END Basic Info -->
+  </div>
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <div class="block-content no-top-padding">
+          <div class="row">
+             <div id="scheduler"></div>
+          </div>
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

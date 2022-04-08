@@ -1,0 +1,252 @@
+<!-- Sidebar Scroll Container -->
+<style type="text/css">
+    .wid-100{
+        width: 100%;
+    }
+</style>
+<div id="sidebar-scroll">
+    <!-- Sidebar Content -->
+    <!-- Adding .sidebar-mini-hide to an element will hide it when the sidebar is in mini mode -->
+    <div class="sidebar-content">
+        <!-- Side Header -->
+        <div class="side-header side-content bg-white-op">
+            <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-ng-click="oneui.settings.sidebarOpenXs = false" data-js-blur>
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="btn-group pull-right" data-on-toggle="toggled(open)" data-uib-dropdown>
+                <!-- <button class="btn btn-link text-gray" type="button" data-uib-dropdown-toggle>
+                    <i class="si si-drop"></i>
+                </button> -->
+                <ul class="dropdown-menu-right font-s13 sidebar-mini-hide" data-uib-dropdown-menu>
+                    <li data-ng-class="{'active': ! oneui.settings.activeColorTheme}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = false" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-default pull-right"></i> <span class="font-w600">Default</span>
+                        </a>
+                    </li>
+                    <li data-ng-class="{'active': oneui.settings.activeColorTheme === 'amethyst'}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = 'amethyst'" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-amethyst pull-right"></i> <span class="font-w600">Amethyst</span>
+                        </a>
+                    </li>
+                    <li data-ng-class="{'active': oneui.settings.activeColorTheme === 'city'}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = 'city'" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-city pull-right"></i> <span class="font-w600">City</span>
+                        </a>
+                    </li>
+                    <li data-ng-class="{'active': oneui.settings.activeColorTheme === 'flat'}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = 'flat'" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-flat pull-right"></i> <span class="font-w600">Flat</span>
+                        </a>
+                    </li>
+                    <li data-ng-class="{'active': oneui.settings.activeColorTheme === 'modern'}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = 'modern'" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-modern pull-right"></i> <span class="font-w600">Modern</span>
+                        </a>
+                    </li>
+                    <li data-ng-class="{'active': oneui.settings.activeColorTheme === 'smooth'}">
+                        <a data-ng-click="oneui.settings.activeColorTheme = 'smooth'" tabindex="-1" href="javascript:void(0)">
+                            <i class="fa fa-circle text-smooth pull-right"></i> <span class="font-w600">Smooth</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <a class="h5 text-white" data-ui-sref="root" data-js-blur>
+                <!-- <i class="fa fa-circle-o-notch text-primary"></i> <span class="h4 font-w600 sidebar-mini-hide">ne</span> -->
+                <span class="h4 font-w600 sidebar-mini-hide">AdvancedCare</span>
+            </a>
+        </div>
+        <!-- END Side Header -->
+
+        <!-- Side Content -->
+        <div class="side-content">
+            <!-- Main navigation functionality (data-js-main-nav attribute is initialized in js/directives.js) -->
+            <ul class="nav-main" data-js-main-nav>
+
+                <li data-ng-class="{'open': (path.indexOf('/orders') > -1 || path.indexOf('/delivery-orders') > -1)}" ng-show="check('order', 'view') || check('order', 'create') || check('delivery_order', 'view')">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">Orders</span></a>
+                    <ul>
+                        <li ng-show="check('order', 'view') || check('order', 'create')">
+                            <a data-ui-sref="orders" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('order', 'view')" ng-click="clear_request()">
+                                <i class="si si-note"></i><span class="sidebar-mini-hide">Rx Orders</span>
+                            </a>
+                            <a data-ui-sref="order-new" data-ui-sref-active="active" class="pull-right" ng-show="check('order', 'view') && check('order', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('delivery_order', 'view')">
+                          <a data-ui-sref="delivery-orders-list" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('delivery_order', 'view')" ng-click="clear_request()">
+                              <i class="si si-bag"></i><span class="sidebar-mini-hide">Deliveries</span>
+                          </a>
+                          <a data-ui-sref="delivery-order-new" data-ui-sref-active="active" class="pull-right" ng-show="check('delivery_order', 'view') && check('delivery_order', 'create')">
+                              <span class="label label-primary"><i class="si si-plus"></i></span>
+                          </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-ng-class="{'open': (path.indexOf('/facilities') > -1 || path.indexOf('/patients') > -1)}" ng-show="check('patient', 'view') || check('patient', 'create') || check('facility', 'view') || check('facility', 'create')">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">Customers</span></a>
+                    <ul>
+                        <li ng-show="check('patient', 'view') || check('patient', 'create')">
+                            <a data-ui-sref="patients" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('patient', 'view')" ng-click="clear_request()">
+                                <i class="si si-users"></i><span class="sidebar-mini-hide">Patients</span>
+                            </a>
+                            <a data-ui-sref="patient-new" data-ui-sref-active="active" class="pull-right" ng-show="check('patient', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('facility', 'view') || check('facility', 'create')">
+                            <a data-ui-sref="facilities" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Facilities</span>
+                            </a>
+                            <a data-ui-sref="facility-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility', 'view') && check('facility', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <!-- <li ng-show="check('facility_device', 'view') || check('facility_device', 'create')">
+                            <a data-ui-sref="smartpens" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility_device', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Smartpens</span>
+                            </a>
+                            <a data-ui-sref="smartpen-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility_device', 'view') && check('facility_device', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('facility_device', 'view') || check('facility_device', 'create')">
+                            <a data-ui-sref="tablets" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility_device', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Tablets</span>
+                            </a>
+                            <a data-ui-sref="tablet-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility_device', 'view') && check('facility_device', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li> -->
+                   </ul>
+                </li>
+
+                <li data-ng-class="{'open': (path.indexOf('/doctors') > -1 || path.indexOf('/drugs') > -1)}" ng-show="check('doctor', 'view') || check('drug', 'view')">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">Providers</span></a>
+                    <ul>
+                        <li ng-show="check('doctor', 'view')">
+                            <a data-ui-sref="doctors" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('doctor', 'view')" ng-click="clear_request()">
+                                <i class="si si-users"></i><span class="sidebar-mini-hide">Doctors</span>
+                            </a>
+                        </li>
+                        <li ng-show="check('drug', 'view')">
+                            <a data-ui-sref="drugs" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('drug', 'view')" ng-click="clear_request()">
+                                <i class="si si-chemistry"></i><span class="sidebar-mini-hide">Drugs</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-ng-class="{'open': (path.startsWith('/docs') || path.startsWith('/mydocs') || path.startsWith('/tasks')) }" ng-show="check('document', 'view') || check('document', 'create') || check('document', 'edit') || check('document', 'process') || check('document', 'delete') ">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">Document Management</span></a>
+                    <ul>
+                        <li>
+                            <a data-ui-sref="docs ({folder: ''})" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active">
+                                <i class="si si-folder"></i><span class="sidebar-mini-hide">Documents</span>
+                            </a>
+
+                            <a data-ui-sref="mydocs ({folder: ''})" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active">
+                                <i class="si si-folder"></i><span class="sidebar-mini-hide">My Documents</span>
+                            </a>
+
+                            <a data-ui-sref="tasks" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active">
+                                <i class="si si-folder"></i><span class="sidebar-mini-hide">Waiting for review <span class="badge">{{SharedVariablesService.waitingForReviewFiles}}</span></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li data-ng-class="{'open': (path.indexOf('/emar-patients') > -1 || path.indexOf('/alerts') > -1 || path.indexOf('/reminders') > -1 || path.indexOf('/reports') > -1)}" ng-show="check('patient', 'view') || check('patient', 'create') || check('facility', 'view') || check('facility', 'create')">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">EMAR</span></a>
+                    <ul>
+                        <li ng-show="check('patient', 'view') || check('patient', 'create')">
+                            <a data-ui-sref="emar-patients" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('patient', 'view')" ng-click="clear_request()">
+                                <i class="si si-users"></i><span class="sidebar-mini-hide">Patient List</span>
+                            </a>
+                            <a data-ui-sref="emar-patient-new" data-ui-sref-active="active" class="pull-right" ng-show="check('patient', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <!-- <li ng-show="check('facility', 'view') || check('facility', 'create')">
+                            <a data-ui-sref="facilities" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Alerts</span>
+                            </a>
+                            <a data-ui-sref="facility-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility', 'view') && check('facility', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('facility_device', 'view') || check('facility_device', 'create')">
+                            <a data-ui-sref="smartpens" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility_device', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Reminders</span>
+                            </a>
+                            <a data-ui-sref="smartpen-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility_device', 'view') && check('facility_device', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('facility_device', 'view') || check('facility_device', 'create')">
+                            <a data-ui-sref="tablets" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('facility_device', 'view')" ng-click="clear_request()">
+                                <i class="si si-home"></i><span class="sidebar-mini-hide">Reports</span>
+                            </a>
+                            <a data-ui-sref="tablet-new" data-ui-sref-active="active" class="pull-right" ng-show="check('facility_device', 'view') && check('facility_device', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li> -->
+
+                    </ul>
+                </li>
+                <li ng-show="check('calendar', 'view') || check('calendar', 'create')">
+                    <a data-ui-sref="doctor-scheduler" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="get_role('doctor')" ng-click="clear_request()" class="nav-menu-parent wid-100" >
+                        <span class="nav-menu-parent">Calendar</span>
+                    </a>
+                    <a data-ui-sref="patient-scheduler" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="get_role('patient')" ng-click="clear_request()" class="nav-menu-parent wid-100" >
+                        <span class="nav-menu-parent">Calendar</span>
+                    </a>
+                </li>
+                <li data-ng-class="{'open': (path.indexOf('/users') > -1 || path.indexOf('/pharmacies') > -1 || path.indexOf('/drivers') > -1 || path.indexOf('/roles') > -1)}" ng-show="check('person', 'view') || check('person_invite', 'create') || check('delivery', 'view') || check('role', 'view') || check('role', 'create') ">
+                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><span class="sidebar-mini-hide nav-menu-parent">Team Management </span></a>
+                    <ul>
+                        <li ng-show="check('person', 'view')">
+                            <a data-ui-sref="users" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-click="clear_request()" >
+                                <i class="si si-users"></i><span class="sidebar-mini-hide">Users</span>
+                            </a>
+                            <a data-ui-sref="user-invite" data-ui-sref-active="active" class="pull-right" ng-show="check('person_invite', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                        <li ng-show="check('pharmacy', 'view') || check('pharmacy', 'create')">
+                          <a data-ui-sref="pharmacies" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('pharmacy', 'view')" ng-click="clear_request()">
+                              <i class="fa fa-plus-square"></i><span class="sidebar-mini-hide">Pharmacies</span>
+                          </a>
+                          <a data-ui-sref="pharmacy-new" data-ui-sref-active="active" class="pull-right" ng-show="check('pharmacy', 'view') && check('pharmacy', 'create')">
+                              <span class="label label-primary"><i class="si si-plus"></i></span>
+                          </a>
+                        </li>
+                        <li ng-show="check('delivery', 'view')">
+                            <a data-ui-sref="drivers" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('delivery', 'view')" ng-click="clear_request()">
+                                <i class="si si-users"></i><span class="sidebar-mini-hide">Drivers</span>
+                            </a>
+                        </li>
+                        <li ng-show="check('role', 'view') || check('role', 'create')">
+                            <a data-ui-sref="roles" data-ui-sref-opts="{reload: true}" data-ui-sref-active="active" ng-show="check('role', 'view')" ng-click="clear_request()">
+                                <i class="si si-key"></i><span class="sidebar-mini-hide">Roles</span>
+                            </a>
+                            <a data-ui-sref="role-new" data-ui-sref-active="active" class="pull-right" ng-show="check('role', 'create')">
+                                <span class="label label-primary"><i class="si si-plus"></i></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- <li>
+                    <a data-ui-sref="logout" data-ui-sref-active="active">
+                        <i class="si si-logout"></i><span class="sidebar-mini-hide">Logout</span>
+                    </a>
+                </li> -->
+            </ul>
+        </div>
+        <!-- END Side Content -->
+    </div>
+    <!-- Sidebar Content -->
+</div>
+<!-- END Sidebar Scroll Container -->

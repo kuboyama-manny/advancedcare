@@ -1,0 +1,319 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- register Content -->
+<div class="bg-white" ng-class="{ 'pulldown-tall': (formStep == 1 && role != 'pharmacy_admin') || formSuccess || sessionInvalid || signup_status != 'signup_waiting', 'pulldown' : formStep == 2 }">
+    <div class="content content-boxed overflow-hidden" ng-init="initAuth()">
+        <div class="block" id="main-block">
+            <div class="block-content">
+                <div class="push-30-t push-50 animated fadeIn">
+
+                    <form name="logoForm" class="main-form form-horizontal " novalidate>
+                        <div class="text-center">
+                            <img src="assets/img/logo.png">
+                            <p class="text-muted push-15-t" ng-show="!skipPhoneVerify && signup_status != 'signup_waiting' && !sessionInvalid && !formSuccess">Verify your AdvancedCare account.</p>
+                            <p class="text-muted push-15-t" ng-show="skipPhoneVerify || signup_status == 'signup_waiting'">Complete your AdvancedCare account setup.</p>
+                        </div>
+                    </form>
+
+                    <form name="callForm" class="main-form form-horizontal push-30-t" novalidate ng-show="!skipPhoneVerify && !sessionInvalid && !formSuccess">
+                        <div class="form-group" ng-show="signup_status != 'signup_waiting'">
+                            <div class="col-xs-12">
+                                <p><strong>VERIFICATION VIA PHONE CALL</strong></p>
+                                <p class="text-info">Firstly, we need to verify you as a AdvancedCare user. Please click the button below to prompt a call.</p>
+                                <p class="text-info">Enter this code to verify yourself on your phone followed by '#' sign.</p>
+                                <p ng-show="signup_status == 'phone_ready' || signup_status == 'phone_calling' || signup_status == 'phone_error'"><strong>YOUR UNIQUE VERIFICATION CODE: {{ phone_digits }}</strong></p>
+                                <p class="text-danger" ng-show="had_phone_error"><em>We did not receive your verification code. Please click the button to repeat the call.</em></p>
+                                <button class="btn btn-block btn-primary btn-s btn-large" type="button" ng-click="callNow()" ng-disabled="signup_status == 'phone_calling'">
+                                    <i class="si si-call-in"></i> {{ signup_status == 'phone_calling' ? 'Calling...' : had_phone_error ? 'Repeat Call' : 'Call Me Now' }}
+                                </button>
+                                <p class="text-info push-20-t text-center" ng-show="signup_status == 'phone_calling'"><em>Calling your phone now, please enter the verification digits.</em></p>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form name="authForm" class="main-form js-validation-register form-horizontal push-30-t" ng-submit="submitAuthForm(authForm.$valid)" novalidate ng-show="(skipPhoneVerify || signup_status == 'signup_waiting') && !formSuccess" autocomplete="off">
+                        <div ng-show="role != 'patient'">
+                            <div class="form-group" ng-show="formStep == 1">
+                                <div class="col-xs-12">
+                                    <p><strong>YOU'VE BEEN SUCCESSFULLY VERIFIED</strong></p>
+                                    <p class="text-info">Let's finish setting up your AdvancedCare account. Please complete the fields below.</p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="(role == 'delivery' || role == 'pharmacist') && formStep == 1" ng-class="{ 'has-error' : authForm.pharmacy.$invalid && (!authForm.pharmacy.$pristine || step1Validate) }">
+                                <div class="col-xs-12">
+                                    <h4 class="text-center push-10">Choose Your Pharmacy</h4>
+                                    <input class="form-control input-lg" type="text" name="pharmacy_key" ng-model="pharmacy_key" ng-change="searchPharmacy()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Pharmacy Name">
+                                    <select class="form-control" ng-show="pharmacy_key && !authForm.pharmacy_key.$pristine" id="pharmacy" name="pharmacy" ng-options="pharmacy as pharmacy.name + ' (' + pharmacy.address.description + ')' for pharmacy in pharmacies_list" size="6" ng-model="pharmacy_chosen" ng-change="pharmacyChosen(authForm.pharmacy_key)" ng-required="(role == 'delivery' || role == 'pharmacist')">
+                                        <option value="">Choose a pharmacy</option>
+                                    </select>
+                                    <p ng-show="authForm.pharmacy.$error.required && (!authForm.pharmacy.$pristine || step1Validate)" class="help-block">Pharmacy is required.</p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="role == 'pharmacy_admin' && formStep == 1">
+                              	<div class="col-xs-12">
+                                    <h4 class="text-center push-10">Enter your pharmacy details</h4>
+                                    <div class="form-group" ng-class="{ 'has-error' : authForm.pharmacy_name.$invalid && (!authForm.pharmacy_name.$pristine || step1Validate) && role == 'pharmacy_admin'}">
+                                        <div class="col-xs-12">
+                                      		  <div class="form-material form-material-primary floating">
+                                          			<input class="form-control" type="text" name="pharmacy_name" id="pharmacy_name" ng-model="newpharmacy.name" ng-required="role == 'pharmacy_admin'">
+                                          			<label for="pharmacy_name">Pharmacy name</label>
+                                      		  </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{ 'has-error' : authForm.pharmacy_address.$invalid && (!authForm.pharmacy_address.$pristine || step1Validate) && role == 'pharmacy_admin' && formStep == 1}">
+                                        <div class="col-xs-12">
+                                            <input class="form-control input-lg" type="text" id="pharmacy_address_key" name="pharmacy_address_key" ng-model="pharmacy_address_key" ng-change="searchPharmacyAddress()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter pharmacy address here">
+                                            <select class="form-control" ng-show="pharmacy_address_key && !authForm.pharmacy_address_key.$pristine" id="pharmacy_address" name="pharmacy_address" ng-options="address as address.description for address in pharmacy_addresses_list" size="6" ng-model="newpharmacy.address" ng-change="pharmacyAddressChosen(authForm.pharmacy_address_key)" ng-required="role == 'pharmacy_admin'">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-show="&& formStep == 1">
+                                        <div class="col-xs-12">
+                                            <div class="form-material form-material-primary floating">
+                                                <input class="form-control" type="text" name="note" id="note" ng-model="newpharmacy.address.note">
+                                                <label for="note">Address line 2</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                      <div class="col-xs-12">
+                                          <label for="pharmacy_type">Current Pharmacy Host Software Used</label>
+                                      </div>
+                                      <div class="col-xs-12">
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="ari"><span></span> Ari
+                                          </label>
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="kroll"><span></span> Kroll
+                                          </label>
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="telus"><span></span> Telus
+                                          </label>
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="pharma_clik_rx"><span></span> PharmaClik Rx
+                                          </label>
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="pro"><span></span> Other
+                                          </label>
+                                          <label class="css-input css-radio css-radio-primary push-10-r">
+                                              <input type="radio" name="pharmacy_type" ng-model="newpharmacy.type" value="none"><span></span> None
+                                          </label>
+                                      </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{ 'has-error' : authForm.pharmacy_working_hours.$invalid && (!authForm.pharmacy_working_hours.$pristine  || formSubmitted) }">
+                                        <div class="col-xs-12">
+                                            <label for="working_hours">Working Hours</label>
+                                            <table class="table table-hover" >
+                                                <tbody>
+                                                    <tr>
+                                                        <th class="col-xs-5">Day</th>
+                                                        <th class="col-xs-5">Operation</th>
+                                                        <th class="col-xs-2"></th>
+                                                    </tr>
+                                                    <tr ng-repeat="(key, item) in newpharmacy.working_hours">
+                                                        <td>{{ dayNames[key] }}</td>
+                                                        <td>{{ item[0].h | doubledigits }}:{{ item[0].m | doubledigits }} - {{ item[1].h | doubledigits }}:{{ item[0].m | doubledigits }}</td>
+                                                        <td class="text-right">
+                                                            <button class="btn btn-xs btn-danger" type="button" ng-click="removeHour(key)"><i class="fa fa-minus"></i></button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-show="noWorkingHours()">
+                                                        <td colspan="3">
+                                                            <p class="text-danger">No working hours set</p>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <select class="form-control" ng-model="newhour.day">
+                                                                <option value="">Choose a day</option>
+                                                                <option value="wd">Weekdays (Mon-Fri)</option>
+                                                                <option value="mon">Monday</option>
+                                                                <option value="tue">Tuesday</option>
+                                                                <option value="wed">Wednesday</option>
+                                                                <option value="thu">Thursday</option>
+                                                                <option value="fri">Friday</option>
+                                                                <option value="we">Weekends (Sat-Sun)</option>
+                                                                <option value="sat">Saturday</option>
+                                                                <option value="sun">Sunday</option>
+                                                            </select>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <select class="form-control half-width" ng-model="newhour.open">
+                                                                <option value="">Open</option>
+                                                                <option value="12:00">12:00</option>
+                                                                <option value="12:30">12:30</option>
+                                                                <option value="1:00">1:00</option>
+                                                                <option value="1:30">1:30</option>
+                                                                <option value="2:00">2:00</option>
+                                                                <option value="2:30">2:30</option>
+                                                                <option value="3:00">3:00</option>
+                                                                <option value="3:30">3:30</option>
+                                                                <option value="4:00">4:00</option>
+                                                                <option value="4:30">4:30</option>
+                                                                <option value="5:00">5:00</option>
+                                                                <option value="5:30">5:30</option>
+                                                                <option value="6:00">6:00</option>
+                                                                <option value="6:30">6:30</option>
+                                                                <option value="7:00">7:00</option>
+                                                                <option value="7:30">7:30</option>
+                                                                <option value="8:00">8:00</option>
+                                                                <option value="8:30">8:30</option>
+                                                                <option value="9:00">9:00</option>
+                                                                <option value="9:30">9:30</option>
+                                                                <option value="10:00">10:00</option>
+                                                                <option value="10:30">10:30</option>
+                                                                <option value="11:00">11:00</option>
+                                                                <option value="11:30">11:30</option>
+                                                                <option value="12:00">12:00</option>
+                                                                <option value="12:30">12:30</option>
+                                                                <option value="13:00">13:00</option>
+                                                                <option value="13:30">13:30</option>
+                                                                <option value="14:00">14:00</option>
+                                                                <option value="14:30">14:30</option>
+                                                            </select>
+                                                            -
+                                                            <select class="form-control half-width" ng-model="newhour.close">
+                                                                <option value="">Close</option>
+                                                                <option value="11:00">11:00</option>
+                                                                <option value="11:30">11:30</option>
+                                                                <option value="12:00">12:00</option>
+                                                                <option value="12:30">12:30</option>
+                                                                <option value="13:00">13:00</option>
+                                                                <option value="13:30">13:30</option>
+                                                                <option value="14:00">14:00</option>
+                                                                <option value="14:30">14:30</option>
+                                                                <option value="15:00">15:00</option>
+                                                                <option value="15:30">15:30</option>
+                                                                <option value="16:00">16:00</option>
+                                                                <option value="16:30">16:30</option>
+                                                                <option value="17:00">17:00</option>
+                                                                <option value="17:30">17:30</option>
+                                                                <option value="18:00">18:00</option>
+                                                                <option value="18:30">18:30</option>
+                                                                <option value="19:00">19:00</option>
+                                                                <option value="19:30">19:30</option>
+                                                                <option value="20:00">20:00</option>
+                                                                <option value="20:30">20:30</option>
+                                                                <option value="21:00">21:00</option>
+                                                                <option value="21:30">21:30</option>
+                                                                <option value="22:00">22:00</option>
+                                                                <option value="22:30">22:30</option>
+                                                                <option value="23:00">23:00</option>
+                                                                <option value="23:30">23:30</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <a class="link-effect" href="javascript:void(0)" ng-click="addHour()">+ Add another hour</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{ 'has-error' : authForm.pharmacy_main_phone.$invalid && (!authForm.pharmacy_main_phone.$pristine || formSubmitted) }">
+                                        <div class="col-xs-12">
+                                      		  <div class="form-material form-material-primary floating">
+                                          			<input class="form-control" type="text" name="pharmacy_main_phone" id="pharmacy_main_phone" ng-model="newpharmacy.main_phone" >
+                                          			<label for="pharmacy_main_phone">Main phone</label>
+                                      		  </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-class="{ 'has-error' : authForm.pharmacy_rx_phone.$invalid && (!authForm.pharmacy_rx_phone.$pristine || formSubmitted) }">
+                                        <div class="col-xs-12">
+                                      		  <div class="form-material form-material-primary floating">
+                                          			<input class="form-control" type="text" name="pharmacy_rx_phone" id="pharmacy_rx_phone" ng-model="newpharmacy.rx_phone">
+                                          			<label for="pharmacy_rx_phone">Rx phone</label>
+                                      		  </div>
+                                        </div>
+                                    </div>
+                              	</div>
+                            </div>
+                            <div class="form-group push-50" ng-show="role != 'doctor'">
+                                <div class="col-xs-12">
+                                    <button class="btn btn-block btn-info" ng-show="formStep == 1" ng-click="gotoStep2()" type="button">Continue <i class="si si-arrow-right"></i></button>
+                                    <button class="btn btn-block btn-info" ng-show="formStep == 2" ng-click="gotoStep1()" type="button"><i class="si si-arrow-left"></i> Go Back</button>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-show="formStep == 2">
+                                <div class="col-xs-12">
+                                    <p class="text-info">You are almost finished! Please fill out the fields below to complete your AdvancedCare setup.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-show="formStep == 2 || role == 'patient'">
+                            <div class="form-group" ng-class="{ 'has-error' : authForm.password.$invalid && (!authForm.password.$pristine || formSubmitted) && formStep == 2}">
+                              	<div class="col-xs-12">
+                              		  <div class="form-material form-material-primary floating">
+                                  			<input class="form-control" type="password" name="password" id="password" ng-model="authuser.password" required>
+                                  			<label for="password">Password</label>
+                                  			<p ng-show="authForm.password.$error.required && (!authForm.password.$pristine || formSubmitted) && formStep == 2" class="help-block">Password is required.</p>
+                              		  </div>
+                              	</div>
+                            </div>
+                            <div class="form-group" ng-class="{ 'has-error' : authForm.confirmpassword.$invalid && (!authForm.confirmpassword.$pristine || formSubmitted)  && formStep == 2}">
+                              	<div class="col-xs-12">
+                                		<div class="form-material form-material-primary floating">
+                                  			<input class="form-control" type="password" name="confirmpassword" id="confirmpassword" ng-model="authuser.confirmpassword" required pw-check="password">
+                                  			<label for="confirmpassword">Confirm Password</label>
+                                  			<p ng-show="authForm.confirmpassword.$error.required && (!authForm.confirmpassword.$pristine || formSubmitted) && formStep == 2" class="help-block">Confirm Password is required.</p>
+                                  			<p ng-show="authForm.confirmpassword.$error.pwmatch && (!authForm.confirmpassword.$pristine || formSubmitted) && formStep == 2" class="help-block">Password should match.</p>
+                                		</div>
+                              	</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <p ng-show="formFailed" class="text-danger">Signup failed. {{ error_m | etranslate }}</p>
+                                </div>
+                            </div>
+                            <div class="form-group push-30-t">
+                                <div class="col-xs-12">
+                                    <button ng-show="!sessionInvalid && !formSuccess" class="btn btn-block btn-primary btn-s btn-large" type="submit">Sign Up</button>
+                                    <a ng-show="sessionInvalid" class="btn btn-block btn-primary btn-s btn-large" data-ui-sref="register">Sign Up</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group push-50-t">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END register Form -->
+
+                    <form name="messageForm" class="main-form form-horizontal push-30-t" novalidate ng-show="formSuccess || sessionInvalid">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <p ng-show="sessionInvalid" class="text-danger text-center">Your session appears to be invalid, please try again.</p>
+                                <p ng-show="!sessionInvalid" class="text-info text-center"><strong>CONGRATULATIONS!</strong></p>
+
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">We have notified the Administrator of your Pharmacy to complete your approval process.</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">You will receive an e-mail as soon as you have been approved. Hang tight!</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'pharmacist' || role == 'pharmacy_admin')">If you have not been approved within 24 hours, please contact your administrator or e-mail us at support@miqare.com.</p>
+
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'doctor' || role == 'delivery')">Thanks for joining AdvancedCare, your account will be reviewed shortly.</p>
+                                <p ng-show="!sessionInvalid && approvalRequired && (role == 'doctor' || role == 'delivery')">If you have not been approved within 24 hours, please contact your administrator or e-mail us at support@miqare.com.</p>
+
+                                <p ng-show="!sessionInvalid && !approvalRequired" class="text-center">Your AdvancedCare account has been created. Login now.</p>
+                            </div>
+                        </div>
+                        <div class="form-group push-50-t">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END register Content -->

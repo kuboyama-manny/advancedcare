@@ -1,0 +1,49 @@
+<div class="form-group body" id="assignWorkflow">
+
+    <!--Assign to block-->
+    <div class="row margin-top-5-px">
+        <div class="col-xs-3"><label for="assign">Assign to</label></div>
+        <div class="col-xs-9">
+            <select ng-model="workflow.assignedTo" class="form-control" id="assign">
+                <option value="" disabled selected>Please select</option>
+                <option ng-repeat="user in users | orderBy: 'firstName'"
+                        ng-selected="'{{user.userName}}'=='{{workflow.assignedTo}}'"
+                        value="{{user.userName}}">
+                    {{user.firstName}} {{user.lastName}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <!--END Assign to block-->
+
+    <!--Select status block-->
+    <div class="row margin-top-5-px">
+        <div class="col-xs-3"><label for="status">Status</label></div>
+        <div class="col-xs-9">
+            <select ng-model="workflow.status" class="form-control" id="status">
+                <option value="" disabled selected>Please select</option>
+                <option value="Open">Open</option>
+                <option value="Data Entry">Data Entry</option>
+                <option value="RPH Review">RPH Review</option>
+                <option value="Clarification">Clarification</option>
+                <option value="Refill to Soon">Refill to Soon</option>
+                <option value="Ready to Submit">Ready to Submit</option>
+                <option value="Complete">Complete</option>
+            </select>
+        </div>
+    </div>
+    <!--END Select status block-->
+
+    <!--Send workflow button-->
+    <div class="row margin-top-5-px">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-9">
+            <button ng-disabled='!workflow.status || !workflow.assignedTo' class="btn btn-info btn-block inline-select"
+                    ng-click="assignWorkflow(current_nodeRef, currentUser, workflow)">
+                <i class="fa fa-paper-plane-o" aria-hidden="true"></i> Save
+            </button>
+        </div>
+    </div>
+    <!--END Send workflow button-->
+
+</div>

@@ -1,0 +1,273 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+  <div class="row items-push">
+    <div class="col-sm-7">
+      <h1 class="page-heading">
+        Add New Patient
+      </h1>
+    </div>
+    <div class="col-sm-5 text-right hidden-xs">
+      <ol class="breadcrumb push-10-t">
+        <li>Patients</li>
+        <li>
+          <a class="link-effect" href="">Add New</a>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+  <!-- Main Content -->
+  <form name="patientForm" ng-submit="save(patientForm.$valid)" novalidate>
+    <div class="block">
+      <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+        <li class="active">
+          <a href="#tab-profile-general">
+            <i class="fa fa-fw fa-pencil"></i> General</a>
+        </li>
+        <li>
+          <a href="#tab-profile-allergies">
+            <i class="fa fa-fw fa-asterisk"></i> Allergies</a>
+        </li>
+        <!-- <li>
+                  <a href="#tab-profile-payment"><i class="fa fa-fw fa-dollar"></i> Payment</a>
+              </li> -->
+      </ul>
+      <div class="block-content tab-content">
+        <!-- General Tab -->
+        <div class="tab-pane fade in active" id="tab-profile-general">
+          <div class="row items-push">
+            <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.external_id.$invalid && (!patientForm.external_id.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="external_id">Id</label>
+                  <input class="form-control input-lg" type="text" id="external_id" name="external_id" ng-model="patient.external_id" placeholder="Enter ID" required>
+                  <p ng-show="patientForm.external_id.$error.required && (!patientForm.external_id.$pristine || patientForm.$submitted)" class="help-block">ID is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.first_name.$invalid && (!patientForm.first_name.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="first_name">First Name</label>
+                  <input class="form-control input-lg" type="text" maxlength="15" id="first_name" name="first_name" ng-pattern="/^[a-zA-Z$][0-9a-zA-Z_$\s]*$/" ng-model="patient.profile.first_name" placeholder="Enter first name" required>
+                  <p ng-show="patientForm.first_name.$error.required && (!patientForm.first_name.$pristine || patientForm.$submitted)" class="help-block">First name is required.</p>
+                  <p ng-show="!patientForm.first_name.$valid&& !patientForm.first_name.$error.required  && (!patientForm.first_name.$pristine || patientForm.$submitted)" class="help-block">First Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.last_name.$invalid && (!patientForm.last_name.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="last_name">Last Name</label>
+                  <input class="form-control input-lg" type="text" maxlength="15" id="last_name" name="last_name" ng-model="patient.profile.last_name" ng-pattern="/^[a-zA-Z$][0-9a-zA-Z_$\s]*$/" placeholder="Enter last name" required>
+                  <p ng-show="patientForm.last_name.$error.required && (!patientForm.last_name.$pristine || patientForm.$submitted)" class="help-block">Last name is required.</p>
+                  <p ng-show="!patientForm.last_name.$valid && !patientForm.last_name.$error.required  && (!patientForm.last_name.$pristine || patientForm.$submitted)" class="help-block">Last Name can consist of alphanumeric characters. It should begin with a letter.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Gender</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                    <input type="radio" name="gender" ng-model="patient.profile.gender" value="F">
+                    <span></span> Female
+                  </label>
+                  <label class="css-input css-radio css-radio-primary">
+                    <input type="radio" name="gender" ng-model="patient.profile.gender" value="M">
+                    <span></span> Male
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12" for="dob">Date of Birth</label>
+                <div class="col-xs-12">
+                  <input data-js-datepicker class="form-control" type="text" id="dob" name="dob" ng-model="patient.profile.dob_format" data-date-format="mm/dd/yyyy" placeholder="mm/dd/yyyy">
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.phn.$invalid && (!patientForm.phn.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="phn">PHN (Personal health number)</label>
+                  <input class="form-control input-lg" type="text" id="phn" name="phn" ng-model="patient.phn" placeholder="Enter PHN" required>
+                  <p ng-show="patientForm.phn.$error.required && (!patientForm.phn.$pristine || patientForm.$submitted)" class="help-block">PHN is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.phone_number.$invalid && (!patientForm.phone_number.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="phone_number">Phone</label>
+                  <input class="form-control input-lg" type="text" id="phone_number" name="phone_number" ng-pattern="/^\+?(\d{1})?[ ]?\(?(\d{3})\)?[ ]?(\d{3})[ -]?([0-9])+$/i" ng-model="patient.profile.phone_number" phone-input="" placeholder="Enter phone number" required>
+                  <p ng-show="patientForm.phone_number.$error.required && (!patientForm.phone_number.$pristine || patientForm.$submitted)" class="help-block">Phone number is required.</p>
+                </div>
+              </div>
+              <!-- <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="fax">Fax</label>
+                                  <input class="form-control input-lg" type="text" id="fax" name="fax" ng-model="patient.profile.fax" placeholder="Enter fax number">
+                              </div>
+                          </div> -->
+              <div class="form-group" ng-class="{ 'has-error' : patientForm.email.$invalid && (!patientForm.email.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="email">Email Address</label>
+                  <input class="form-control input-lg" type="text" id="email" name="email" ng-model="patient.profile.email" placeholder="Enter email" ng-pattern="/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/" required>
+                  <p ng-show="patientForm.email.$error.required && (!patientForm.email.$pristine || patientForm.$submitted)" class="help-block">Email is required.</p>
+                  <p ng-show="!patientForm.email.$valid && !patientForm.email.$error.required  && (!patientForm.email.$pristine || patientForm.$submitted)" class="help-block">Please provide a valid email address.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Does this patient reside in a care facility?</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                    <input type="radio" name="patient_in_facility" ng-model="patient_in_facility" value="true">
+                    <span></span> Yes
+                  </label>
+                  <label class="css-input css-radio css-radio-primary">
+                    <input type="radio" name="patient_in_facility" ng-model="patient_in_facility" value="false">
+                    <span></span> No
+                  </label>
+                </div>
+              </div>
+              <div class="form-group" ng-show="patient_in_facility == 'true'" ng-class="{ 'has-error' : patient_in_facility == 'true' && patientForm.facility.$invalid && (!patientForm.facility.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="facility_key">Facility Name</label>
+                  <input class="form-control input-lg" type="text" id="facility_key" name="facility_key" ng-model="facility_key" ng-change="searchFacility()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search here" autocomplete="off">
+                  <select class="form-control" ng-show="facility_key && !patientForm.facility_key.$pristine" id="facility" name="facility" ng-options="facility as facility.name + ' (' + facility.address.description + ')' for facility in facilities_list" size="6" ng-model="patient.facility"
+                    ng-change="facilityChosen(patientForm.facility_key)" ng-required="patient_in_facility == 'true'">
+                  </select>
+                  <p ng-show="patient_in_facility == 'true' && patientForm.facility.$error.required && (!patientForm.facility.$pristine || patientForm.$submitted)" class="help-block">Facility is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-show="patient_in_facility == 'false'" ng-class="{ 'has-error' : patient_in_facility == 'false' && patientForm.address.$invalid && (!patientForm.address.$pristine || patientForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="address_key">Address</label>
+                  <input class="form-control input-lg" type="text" id="address_key" name="address_key" ng-model="address_key" ng-change="searchAddress()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter patient address here"
+                    autocomplete="off">
+                  <select class="form-control" ng-show="address_key && !patientForm.address_key.$pristine" id="address" name="address" ng-options="address as address.description for address in addresses_list" size="6" ng-model="patient.profile.address" ng-change="addressChosen(patientForm.address_key)"
+                    ng-required="patient_in_facility == 'false'">
+                  </select>
+                  <p ng-show="patient_in_facility == 'false' && patientForm.address.$error.required && (!patientForm.address.$pristine || patientForm.$submitted)" class="help-block">Address is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-show="patient_in_facility == 'false'">
+                <div class="col-xs-12">
+                  <label for="address_note">Address 2</label>
+                  <input class="form-control input-lg" type="text" id="address_note" name="address_note" ng-model="patient.profile.address.note" placeholder="Address Note">
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : (!patientForm.primary_doctor.$pristine || patientForm.$submitted) && ((primary_doctor_option == 'choose' && patientForm.primary_doctor.$invalid) || ( primary_doctor_option == 'create' && ( !new_doctor.profile.first_name || !new_doctor.profile.last_name || !new_doctor.profile.email ) ) )}">
+                <div class="col-xs-12">
+                  <label for="doctor_key">Primary doctor</label>
+                  <div class="radio">
+                    <label for="primary_doctor_choose">
+                      <input type="radio" id="primary_doctor_choose" ng-model="primary_doctor_option" value="choose">Choose a primary doctor
+                    </label>
+                  </div>
+                  <input class="form-control input-lg push-10-t" type="text" id="doctor_key" name="doctor_key" ng-show="primary_doctor_option == 'choose'" ng-model="doctor_key" ng-change="searchDoctor()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }"
+                    placeholder="Search doctors here" autocomplete="off">
+                  <select class="form-control" ng-show="primary_doctor_option == 'choose' && doctor_key && !patientForm.doctor_key.$pristine" id="primary_doctor" name="primary_doctor" ng-options="doctor as doctor.profile.first_name + ' ' + doctor.profile.last_name for doctor in doctors_list"
+                    size="6" ng-model="patient.primary_doctor" ng-change="doctorChosen(patientForm.doctor_key)" ng-required="primary_doctor_option == 'choose'">
+                  </select>
+                  <p ng-show="primary_doctor_option == 'choose' && patientForm.primary_doctor.$error.required && (!patientForm.primary_doctor.$pristine || patientForm.$submitted)" class="help-block">Primary doctor is required.</p>
+                </div>
+                <div class="col-xs-12">
+                  <div class="radio">
+                    <label for="primary_doctor_create">
+                      <input type="radio" id="primary_doctor_create" ng-model="primary_doctor_option" value="create" ng-click="patientForm.$submitted = false">Create a doctor
+                    </label>
+                  </div>
+                  <label for="doctor_first_name" ng-show="primary_doctor_option == 'create'" class="push-5-t">First Name</label>
+                  <input class="form-control input-lg" type="text" id="doctor_first_name" name="doctor_first_name" ng-show="primary_doctor_option == 'create'" ng-model="new_doctor.profile.first_name" ng-pattern="/^[a-z0-9\s]+$/i" ng-required="primary_doctor_option == 'create'"
+                    placeholder="" autocomplete="off">
+                  <p ng-show="primary_doctor_option == 'create' && patientForm.doctor_first_name.$error.required && (!patientForm.doctor_first_name.$pristine || patientForm.$submitted)" class="help-block">First name is required.</p>
+                  <p ng-show="primary_doctor_option == 'create' && !patientForm.doctor_first_name.$valid &&!patientForm.doctor_first_name.$error.required && (!patientForm.doctor_first_name.$pristine || patientForm.$submitted)" class="help-block">First name can only contain alphanumeric characters.</p>
+                  <label for="doctor_last_name" ng-show="primary_doctor_option == 'create'" class="push-5-t">Last Name</label>
+                  <input class="form-control input-lg" type="text" id="doctor_last_name" name="doctor_last_name" ng-show="primary_doctor_option == 'create'" ng-model="new_doctor.profile.last_name" ng-pattern="/^[a-z0-9\s]+$/i" ng-required="primary_doctor_option == 'create'"
+                    placeholder="" autocomplete="off">
+                  <p ng-show="primary_doctor_option == 'create' && patientForm.doctor_last_name.$error.required && (!patientForm.doctor_last_name.$pristine || patientForm.$submitted)" class="help-block">Last name is required.</p>
+                  <p ng-show="primary_doctor_option == 'create' && !patientForm.doctor_last_name.$valid &&!patientForm.doctor_last_name.$error.required && (!patientForm.doctor_last_name.$pristine || patientForm.$submitted)" class="help-block">Last name can only contain alphanumeric characters.</p>
+                  <label for="doctor_email" ng-show="primary_doctor_option == 'create'" class="push-5-t">Email</label>
+                  <input class="form-control input-lg" type="text" id="doctor_email" name="doctor_email" ng-show="primary_doctor_option == 'create'" ng-model="new_doctor.profile.email" ng-required="primary_doctor_option == 'create'" placeholder="" autocomplete="off">
+                  <p ng-show="primary_doctor_option == 'create' && patientForm.doctor_email.$error.required && (!patientForm.doctor_email.$pristine || patientForm.$submitted)" class="help-block">Email is required.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <span>Would you like to invite this patient to gain access to their health data via the AdvancedCare app? We will send
+                    an e-mail to help the patient set up their AdvancedCare account.</span>
+                </div>
+                <div class="col-xs-12">
+                  <label class="css-input css-checkbox css-checkbox-primary">
+                    <input type="checkbox" ng-checked="invite" ng-model="invite" />
+                    <span></span> &nbsp;Invite
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END General Tab -->
+
+        <!-- Allergies Tab -->
+        <div class="tab-pane fade" id="tab-profile-allergies">
+          <div class="row items-push">
+            <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+              <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th class="col-xs-10">Name</th>
+                      <!-- <th class="col-xs-4">reaction</th> -->
+                      <!-- <th class="col-xs-3">severity</th> -->
+                      <th class="col-xs-2"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="allergy in patient.allergies">
+                      <td>{{ allergy.name }}</td>
+                      <!-- <td>{{ allergy.reaction }}</td> -->
+                      <!-- <td>{{ allergy.severity }}</td> -->
+                      <td class="text-right">
+                        <button class="btn btn-xs btn-danger" type="button" ng-click="removeAllergy(allergy)">
+                          <i class="fa fa-minus"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input class="form-control input-lg" type="text" id="allergy-name" name="allergy-name" ng-model="allergy.name" placeholder="Enter allergy name" value="" autocomplete="off" handle-enter="addAllergy()">
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-xs btn-primary" type="button" ng-click="addAllergy()">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p ng-show="patient.allergies.length == 0" class="text-danger">No allergies registered.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- END Allergies Tab -->
+      </div>
+      <div class="block-content block-content-full bg-gray-lighter">
+        <div class="row items-push">
+          <div class="col-sm-6 col-sm-offset-3">
+            <p ng-show="saveFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+            <p ng-show="saveSuccess" class="text-success">Patient profile has been created.</p>
+          </div>
+        </div>
+        <div class="row text-center">
+          <div class="col-xs-12">
+            <button class="btn btn-sm btn-primary" type="submit">
+              <i class="fa fa-save push-5-r"></i> Save</button>
+            <button class="btn btn-sm btn-warning" type="reset">
+              <i class="fa fa-refresh push-5-r"></i> Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

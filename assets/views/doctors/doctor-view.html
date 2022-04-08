@@ -1,0 +1,71 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+
+  <!-- User Header -->
+  <div class="block">
+      <!-- Basic Info -->
+      <div class="bg-image" style="background-image: url('assets/img/photos/photo2@2x.jpg');">
+          <div class="block-content bg-primary-op text-center overflow-hidden">
+              <div class="buttons-block">
+                <a href="javascript:void(0)" class="btn btn-sm btn-danger pull-right" ng-show="check('doctor', 'delete')" ng-click="delete()"><i class="fa fa-times"></i> Delete Profile</a>
+                <a class="btn btn-sm btn-primary pull-right push-5-r" ui-sref="doctor-edit({doctorId: doctorId})" ng-show="check('doctor', 'edit')"><i class="fa fa-pencil"></i> Edit Profile</a>
+              </div>
+              <div class="push-30-t push animated fadeInDown">
+                  <img class="img-avatar img-avatar96 img-avatar-thumb" src="assets/img/avatars/user_icon.png" alt="">
+              </div>
+              <div class="push-30 animated fadeInUp">
+                  <h2 class="h4 font-w600 text-white push-5">{{ doctor.profile.first_name }} {{ doctor.profile.last_name }}</h2>
+                  <ul class="list-inline">
+                      <li class="h5 text-white-op">Doctor NPI: {{ doctor.npi }}</li>
+                      <li class="h5 text-white-op">MSP: {{ doctor.msp }}</li>
+                      <li class="h5 text-white-op">CPS: {{ doctor.cps }}</li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+      <!-- END Basic Info -->
+  </div>
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <div class="block-content">
+          <div class="row">
+              <div class="col-sm-6">
+                  <!-- General Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <h3 class="block-title">General Information</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="h4 push-5">{{ doctor.profile.first_name }} {{ doctor.profile.last_name }}</div>
+                          <i class="si push-5-r" ng-class="{'si-user': doctor.profile.gender == 'M', 'si-user-female': doctor.profile.gender == 'F'}"></i> {{ doctor.profile.gender == 'M' ? 'Male' : 'Female' }} <br>
+                      </div>
+                  </div>
+                  <!-- END General Info -->
+              </div>
+              <div class="col-sm-6">
+                  <!-- Contact Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <h3 class="block-title">Contact Information</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <address>
+                              <span ng-show="doctor.profile.address.description"><i class="fa fa-map-marker push-5-r"></i> {{ doctor.profile.address.description }}<br><br></span>
+                              <span ng-show="doctor.profile.fax"><i class="fa fa-fax push-5-r"></i> {{ doctor.profile.fax }}<br></span>
+                              <span ng-show="doctor.profile.phone_number"><i class="fa fa-phone push-5-r"></i>
+                                  <a href="tel:{{ doctor.profile.phone_number }}"> {{ doctor.profile.phone_number }}</a><br></span>
+                              <span ng-show="doctor.profile.email"><i class="fa fa-envelope-o push-5-r"></i> {{ doctor.profile.email }}</a></span>
+                          </address>
+                      </div>
+                  </div>
+                  <!-- END Contact Info -->
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

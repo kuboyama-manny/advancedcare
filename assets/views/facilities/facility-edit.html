@@ -1,0 +1,135 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()">
+
+  <!-- Main Content -->
+  <form name="facilityForm" ng-submit="save(facilityForm.$valid)" novalidate>
+    <div class="block" id="main-block">
+        <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+            <li class="active">
+                <a href="#tab-profile-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+            </li>
+        </ul> -->
+        <div class="block-content tab-content">
+            <!-- General Tab -->
+            <div class="tab-pane fade in active" id="tab-profile-general">
+                <div class="row items-push">
+                    <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                        <div class="form-group push-25-t" >
+                            <div class="col-xs-12">
+                                <h3 class="text-center">Facility details</h3>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.name.$invalid && (!facilityForm.name.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                              <label for="name">Facility Name <span style="font-weight: bold;">(*)</span></label>
+                              <input class="form-control input-lg" type="text" id="name" name="name" ng-model="facility.name" placeholder="Enter facility name" required>
+                              <p ng-show="facilityForm.name.$error.required && (!facilityForm.name.$pristine || facilityForm.$submitted)" class="help-block">Facility Name is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.main_phone.$invalid && (!facilityForm.main_phone.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="main_phone">Main Phone <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="main_phone" name="main_phone" ng-model="facility.main_phone" ng-pattern= "/^\+?(\d{1})?[ ]?\(?(\d{3})\)?[ ]?(\d{3})[ -]?(\d{4})+([\dA-Za-z])*$/i" phone-input="" placeholder="Enter Main Phone" required>
+                                <p ng-show="facilityForm.main_phone.$error.required && (!facilityForm.main_phone.$pristine || facilityForm.$submitted)" class="help-block">Main Phone is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <div class="col-xs-12">
+                              <label for="ext_phone">Phone Ext.</label>
+                                <input class="form-control input-lg" type="text" id="ext_phone" name="ext_phoneext_phone" ng-model="facility.ext_phone" ng-pattern= "/^\+?(\d{1})?[ ]?\(?(\d{3})\)?[ ]?(\d{3})[ -]?(\d{4})+([\dA-Za-z])*$/i" placeholder="Enter phone ext.">
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.main_fax.$invalid && (!facilityForm.main_fax.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="main_fax">Main Fax <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="main_fax" name="main_fax" ng-model="facility.main_fax" ng-pattern= "/^\+?(\d{1})?[ ]?\(?(\d{3})\)?[ ]?(\d{3})[ -]?(\d{4})+([\dA-Za-z])*$/i" phone-input="" placeholder="Enter Main Fax" required>
+                                <p ng-show="facilityForm.main_fax.$error.required && (!facilityForm.main_fax.$pristine || facilityForm.$submitted)" class="help-block">Main Fax is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.address.$invalid && (!facilityForm.address.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="address_key">Facility Address <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" name="address_key" ng-model="address_key" ng-change="searchAddress()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter facility address here" autocomplete="off">
+                                <select class="form-control" ng-show="address_key && !facilityForm.address_key.$pristine" id="address" name="address" ng-options="address as address.description for address in addresses_list" size="6" ng-model="facility.address"  ng-change="addressChosen(facilityForm.address_key)" required>
+                                    <option value="">Choose a facility</option>
+                                </select>
+                                <p ng-show="facilityForm.address.$error.required && (!facilityForm.address.$pristine || facilityForm.$submitted)" class="help-block">Address is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group push-50-t" >
+                            <div class="col-xs-12">
+                                <h3 class="text-center">Primary Contact details</h3>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.first_name.$invalid && (!facilityForm.first_name.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                              <label for="first_name">First Name <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="first_name" name="first_name" ng-model="facility.primary_contact.first_name" placeholder="Enter first name" required>
+                                <p ng-show="facilityForm.first_name.$error.required && (!facilityForm.first_name.$pristine || facilityForm.$submitted)" class="help-block">First name is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.last_name.$invalid && (!facilityForm.last_name.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="last_name">Last Name <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="last_name" name="last_name" ng-model="facility.primary_contact.last_name" placeholder="Enter last name" required>
+                                <p ng-show="facilityForm.last_name.$error.required && (!facilityForm.last_name.$pristine || facilityForm.$submitted)" class="help-block">Last name is required.</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12">Gender</label>
+                            <div class="col-xs-12">
+                                <label class="css-input css-radio css-radio-primary push-10-r">
+                                    <input type="radio" name="gender" ng-model="facility.primary_contact.gender" value="F"><span></span> Female
+                                </label>
+                                <label class="css-input css-radio css-radio-primary">
+                                    <input type="radio" name="gender" ng-model="facility.primary_contact.gender" value="M"><span></span> Male
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.email.$invalid && (!facilityForm.email.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="email">Email Address <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="email" name="email" ng-model="facility.primary_contact.email" ng-pattern = "/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/"  placeholder="Enter email" required>
+                                <p ng-show="facilityForm.email.$error.required && (!facilityForm.email.$pristine || facilityForm.$submitted)" class="help-block">Email is required.</p>
+                                <p ng-show="!facilityForm.email.$valid && !facilityForm.email.$error.required  && (!facilityForm.email.$pristine || facilityForm.$submitted)" class="help-block">Please provide a valid email address.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.password.$invalid && (!facilityForm.password.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="password">Password <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="password" id="password" name="password" ng-model="facility.primary_contact.password" placeholder="Enter password">
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : facilityForm.phone_number.$invalid && (!facilityForm.phone_number.$pristine || facilityForm.$submitted)}">
+                            <div class="col-xs-12">
+                                <label for="phone_number">Phone <span style="font-weight: bold;">(*)</span></label>
+                                <input class="form-control input-lg" type="text" id="phone_number" name="phone_number" ng-model="facility.primary_contact.phone_number" ng-pattern= "/^\+?(\d{1})?[ ]?\(?(\d{3})\)?[ ]?(\d{3})[ -]?(\d{4})+([\dA-Za-z])*$/i" phone-input="" placeholder="Enter phone number" required>
+                                <p ng-show="facilityForm.phone_number.$error.required && (!facilityForm.phone_number.$pristine || facilityForm.$submitted)" class="help-block">Phone number is required.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END General Tab -->
+
+        </div>
+        <div class="block-content block-content-full bg-gray-lighter">
+          <div class="row items-push">
+            <div class="col-sm-6 col-sm-offset-3">
+              <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+              <p ng-show="saveSuccess" class="text-success">Facility details have been saved.</p>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-xs-12">
+              <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+              <button class="btn btn-sm btn-warning" type="button" ui-sref="facility-view({facilityId: facility.id})"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+            </div>
+          </div>
+        </div>
+    </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

@@ -1,0 +1,106 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Driver Profile
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Driver</li>
+                <li><a class="link-effect" href="">Profile</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()">
+  <!-- User Header -->
+  <div class="block">
+      <!-- Basic Info -->
+      <div class="bg-image" style="background-image: url('assets/img/photos/photo1@2x.jpg');">
+          <div class="block-content bg-primary-op text-center overflow-hidden">
+              <div class="push-30-t push animated fadeInDown">
+                  <img class="img-avatar img-avatar96 img-avatar-thumb" src="assets/img/avatars/user_icon.png" alt="">
+              </div>
+              <div class="push-30 animated fadeInUp">
+                  <h2 class="h4 font-w600 text-white push-5">{{ driver.profile.first_name }} {{ driver.profile.last_name }}</h2>
+                  <h3 class="h5 text-white-op">driver Id: {{ driver.id }}</h3>
+              </div>
+          </div>
+      </div>
+      <!-- END Basic Info -->
+
+  </div>
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+  <form name="driverForm" ng-submit="save(driverForm.$valid)" novalidate>
+      <div class="block" id="main-block">
+          <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-profile-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+          </ul> -->
+          <div class="block-content tab-content">
+              <!-- General Tab -->
+              <div class="tab-pane fade in active" id="tab-profile-general">
+                  <div class="row items-push">
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group" ng-class="{ 'has-error' : driverForm.first_name.$invalid && (!driverForm.first_name.$pristine || driverForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="first_name">First Name</label>
+                                  <input class="form-control input-lg" type="text" id="first_name" name="first_name" ng-model="driver.profile.first_name" placeholder="Enter first name" required>
+                                  <p ng-show="driverForm.first_name.$error.required && (!driverForm.first_name.$pristine || driverForm.$submitted)" class="help-block">First name is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : driverForm.last_name.$invalid && (!driverForm.last_name.$pristine || driverForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="last_name">Last Name</label>
+                                  <input class="form-control input-lg" type="text" id="last_name" name="last_name" ng-model="driver.profile.last_name" placeholder="Enter last name" required>
+                                  <p ng-show="driverForm.last_name.$error.required && (!driverForm.last_name.$pristine || driverForm.$submitted)" class="help-block">Last name is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : driverForm.phone_number.$invalid && (!driverForm.phone_number.$pristine || driverForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="phone_number">Phone</label>
+                                  <input class="form-control input-lg" type="text" id="phone_number" name="phone_number" ng-model="driver.profile.phone_number" placeholder="Enter phone number" required>
+                                  <p ng-show="driverForm.phone_number.$error.required && (!driverForm.phone_number.$pristine || driverForm.$submitted)" class="help-block">Phone number is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : driverForm.email.$invalid && (!driverForm.email.$pristine || driverForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="email">Email Address</label>
+                                  <input class="form-control input-lg" type="text" id="email" name="email" ng-model="driver.profile.email" placeholder="Enter email" required>
+                                  <p ng-show="driverForm.email.$error.required && (!driverForm.email.$pristine || driverForm.$submitted)" class="help-block">Email is required.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- END General Tab -->
+
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">Driver profile has been saved.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+                <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

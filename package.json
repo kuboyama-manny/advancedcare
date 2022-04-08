@@ -1,0 +1,18 @@
+{
+  "name": "miqare",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "gulp"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.3.2",
+    "less-plugin-clean-css": "^1.5.1",
+    "gulp-sourcemaps": "^2.6.1"
+  }
+}

@@ -1,0 +1,204 @@
+<div class="form-group body" id="properties">
+
+    <form name="barcodeForm" ng-submit="saveBarcodes(barcodeForm.$valid)" novalidate>
+
+        <!-- Barcode and Rx# block-->
+        <div class="row margin-top-5-px">
+            <div class="form-group" >
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <label for="barcodes" class="push-5-t">Barcodes</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="barcodes" name="barcodes" ng-model="barcodesStr" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <label for="rxNumber" class="push-5-t">Rx #</label>
+                        </div>
+                        <div class="col-xs-9">
+                            <input class="form-control" type="text" id="rxnumbers" name="rxnumbers" ng-model="rxnumbersStr" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END Barcode and Rx# block-->
+
+        <!--Save barcodes button-->
+        <div class="row margin-top-5-px">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-9">
+                <button class="btn btn-info btn-block inline-select pull-right"
+                        type="submit">
+                    <i class="fa fa-save push-5-r"></i> Save
+                </button>
+            </div>
+        </div>
+        <!--END barcodes button-->
+
+        <hr />
+
+    </form>
+
+    <form name="propertiesForm" ng-submit="saveProperties(propertiesForm.$valid)" novalidate>
+
+        <!-- Doctor block-->
+        <div class="row margin-top-5-px">
+            <div class="form-group" >
+                <div class="col-xs-12">
+                    <label for="doctor_key">Doctor</label>
+                </div>
+                <div class="col-xs-12">
+                    <div class="col-xs-6">
+                        <div class="radio">
+                          <label for="doctor_choose">
+                            <input type="radio" id="doctor_choose" ng-model="doctor_option" value="choose">Choose a doctor
+                          </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="radio">
+                          <label for="doctor_create">
+                            <input type="radio" id="doctor_create" ng-model="doctor_option" value="create">Create a doctor
+                          </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <!-- choose a doctor -->
+                    <input class="form-control push-10-t" type="text" id="doctor_key" name="doctor_key" ng-show="doctor_option == 'choose'" ng-model="doctor_key" ng-change="searchDoctor()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search doctors here" autocomplete="off">
+
+                    <select class="form-control" ng-show="doctor_option == 'choose' && doctor_key && !propertiesForm.doctor_key.$pristine" id="doctor" name="doctor" ng-options="doctor as doctor.profile.first_name + ' ' + doctor.profile.last_name for doctor in doctors_list" size="6" ng-model="doctor" ng-change="doctorChosen(propertiesForm.doctor_key)">
+                    </select>
+
+                    <!-- create a doctor -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="doctor_first_name" ng-show="doctor_option == 'create'" class="push-5-t">First Name</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="doctor_first_name" name="doctor_first_name" ng-show="doctor_option == 'create'" ng-model="new_doctor.profile.first_name" ng-required="doctor_option == 'create'" placeholder="" autocomplete="off">
+                            <p ng-show="doctor_option == 'create' && propertiesForm.doctor_first_name.$error.required && (!propertiesForm.doctor_first_name.$pristine || propertiesForm.$submitted)" class="help-block">First name is required.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="doctor_last_name" ng-show="doctor_option == 'create'" class="push-5-t">Last Name</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="doctor_last_name" name="doctor_last_name" ng-show="doctor_option == 'create'" ng-model="new_doctor.profile.last_name" ng-required="doctor_option == 'create'" placeholder="" autocomplete="off">
+                            <p ng-show="doctor_option == 'create' && propertiesForm.doctor_last_name.$error.required && (!propertiesForm.doctor_last_name.$pristine || propertiesForm.$submitted)" class="help-block">Last name is required.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="doctor_email" ng-show="doctor_option == 'create'" class="push-5-t">Email</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="doctor_email" name="doctor_email" ng-show="doctor_option == 'create'" ng-model="new_doctor.profile.email" ng-required="doctor_option == 'create'" placeholder="" autocomplete="off">
+                            <p ng-show="doctor_option == 'create' && propertiesForm.doctor_email.$error.required && (!propertiesForm.doctor_email.$pristine || propertiesForm.$submitted)" class="help-block">Email is required.</p>
+                        </div>
+                    </div>
+                    <hr ng-show="doctor_option == 'create'" />
+                </div>
+            </div>
+        </div>
+        <!--END Doctor block-->
+
+        <!-- Patient block-->
+        <div class="row margin-top-5-px">
+            <div class="form-group" >
+                <div class="col-xs-12">
+                    <label for="patient_key">Patient</label>
+                </div>
+                <div class="col-xs-12">
+                    <div class="col-xs-6">
+                        <div class="radio">
+                          <label for="patient_choose">
+                            <input type="radio" id="patient_choose" ng-model="patient_option" value="choose">Choose a patient
+                          </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="radio">
+                          <label for="patient_create">
+                            <input type="radio" id="patient_create" ng-model="patient_option" value="create">Create a patient
+                          </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <!-- choose a patient -->
+                    <input class="form-control push-10-t" type="text" id="patient_key" name="patient_key" ng-show="patient_option == 'choose'" ng-model="patient_key" ng-change="searchPatient()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search patients here" autocomplete="off">
+                    <select class="form-control" ng-show="patient_option == 'choose' && patient_key && !propertiesForm.patient_key.$pristine" id="patient" name="patient" ng-options="patient as patient.first_name + ' ' + patient.last_name for patient in patients_list" size="6" ng-model="patient" ng-change="patientChosen(propertiesForm.patient_key)" >
+                    </select>
+
+                    <!-- create a patient -->
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="patient_first_name" ng-show="patient_option == 'create'" class="push-5-t">First Name</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="patient_first_name" name="patient_first_name" ng-show="patient_option == 'create'" ng-model="new_patient.first_name" ng-required="patient_option == 'create'" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="patient_last_name" ng-show="patient_option == 'create'" class="push-5-t">Last Name</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="patient_last_name" name="patient_last_name" ng-show="patient_option == 'create'" ng-model="new_patient.last_name" ng-required="patient_option == 'create'" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="patient_email" ng-show="patient_option == 'create'" class="push-5-t">Email</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="patient_email" name="patient_email" ng-show="patient_option == 'create'" ng-model="new_patient.email" ng-required="patient_option == 'create'" placeholder="" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label for="phn" ng-show="patient_option == 'create'" class="push-5-t" >PHN</label></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" type="text" id="phn" name="phn" ng-show="patient_option == 'create'" ng-model="new_patient.phn" placeholder="Enter PHN" ng-required="patient_option == 'create'">
+                            <p ng-show="propertiesForm.phn.$error.required && (!propertiesForm.phn.$pristine || propertiesForm.$submitted)" class="help-block">PHN is required.</p>
+                        </div>
+                    </div>
+                    <hr ng-show="patient_option == 'create'" />
+                </div>
+            </div>
+        </div>
+        <!--END patient block-->
+
+        <!-- Notes block-->
+        <div class="row margin-top-5-px">
+            <div class="form-group" >
+                <div class="col-xs-12">
+                    <label for="notes">Notes</label>
+                </div>
+                <div class="col-xs-12">
+                    <textarea class="form-control push-10-t" ng-model="notes" ></textarea>
+                </div>
+            </div>
+        </div>
+        <!--END Notes block-->
+
+        <!--Save properties button-->
+        <div class="row margin-top-5-px">
+            <div class="col-xs-8"></div>
+            <div class="col-xs-4">
+                <button class="btn btn-info btn-block inline-select pull-right"
+                        style="width: 87%;" type="submit">
+                    <i class="fa fa-save push-5-r"></i> Save
+                </button>
+            </div>
+        </div>
+        <!--END properties button-->
+
+    </form>
+</div>

@@ -1,0 +1,54 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Delivery Orders
+                <a data-ui-sref="delivery-order-new" class="btn btn-primary push-20-l" type="button" ng-show="check('delivery_order', 'create')"><i class="si si-plus push-5-r"></i> <span>Add New</span></a>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <a data-ui-sref="delivery-orders-list" class="btn btn-default btn-sm" type="button" ng-show="check('delivery_order', 'view')"><i class="si si-list"></i> <span>List</span></a>
+            <a class="btn btn-info btn-sm" type="button" ng-show="check('delivery_order', 'view')"><i class="fa fa-map-o"></i> <span>Map</span></a>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-narrow" ng-init="loadData()">
+
+    <!-- Maps Row -->
+    <div class="row">
+        <div class="col-md-3">
+          <div class="block" id="drivers-block">
+              <div class="block-header">
+                  <h3 class="block-title">Drivers List</h3>
+              </div>
+              <div class="block-content block-content-full">
+                <select class="form-control" id="driver" name="driver" ng-options="driver as driver.first_name + ' ' + driver.last_name for driver in deliveries" ng-change="driverChosen()" size="15" ng-model="driver" >
+                  <option value="">Choose a driver</option>
+                </select>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-9">
+            <!-- Map Markers Map -->
+            <div class="block" id="main-block">
+                <div class="block-header">
+                    <ul class="block-options">
+                        <li>
+                            <button type="button"><i class="si si-settings"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title">Delivery Map</h3>
+                </div>
+                <!-- Markers Map Container -->
+                <div id="js-map-markers" style="height: 650px;"></div>
+            </div>
+            <!-- END Map Markers Map -->
+        </div>
+    </div>
+    <!-- END Maps Row -->
+</div>
+<!-- END Page Content -->

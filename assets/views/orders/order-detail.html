@@ -1,0 +1,420 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Rx Order details
+                <button ng-show="order.status=='draft' && is_doctor" class="btn btn-sm btn-primary" type="button" ng-click="openSendToPharmacyModal()"><i class="fa fa-send push-5-r"></i> Send to Pharmacy</button>
+                <button ng-show="order.status!='draft' && order.status!='done'" class="btn btn-sm btn-success" type="button" ng-click="scheduleDelivery()"><i class="fa fa-send-o push-5-r"></i> Schedule Delivery</button>
+                <button ng-show="order.status=='sent_to_pharmacy'" class="btn btn-sm btn-warning" type="button" ng-click="waitForPickup()"><i class="fa fa-shopping-basket push-5-r"></i> Ready for Pick-up</button>
+                <button ng-show="order.status=='waiting_for_pickup'" class="btn btn-sm btn-success" type="button" ng-click="donePickup()"><i class="fa fa-check push-5-r"></i> Pick-up Done</button>
+                <p ng-show="statusUpdateError"class="text-danger push-10-t">Error failed. {{ statusUpdateError | etranslate }}</p>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Order</li>
+                <li><a class="link-effect" href="">Detail</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()">
+
+  <!-- Main Content -->
+  <form method="post" onsubmit="return false;">
+      <div class="block" id="main-block">
+          <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+            <li class="active">
+                <a href="#tab-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+            </li>
+          </ul> -->
+          <div class="block-content tab-content">
+              <!-- General Tab -->
+              <!-- <div class="tab-pane fade in active" id="tab-general"> -->
+                  <div class="row">
+                      <div class="col-sm-6">
+                          <!-- Patient Info -->
+                          <div class="block block-bordered">
+                              <div class="block-header bg-gray-lighter">
+                                  <h3 class="block-title">Patient Information</h3>
+                              </div>
+                              <div class="block-content block-content-full">
+                                  <div class="h4 push-15">
+                                    <a ui-sref="patient-view({patientId: order.patient.id})">{{ order.patient.profile.first_name }} {{ order.patient.profile.last_name }}</a>
+                                  </div>
+                                  Id: {{ order.patient.external_id }}
+                                  <address>
+                                      <i class="fa fa-map-marker push-5-r"></i> {{ order.patient.facility.address ? order.patient.facility.address.description : order.patient.profile.address.description }}<br><br>
+                                      <i class="fa fa-phone"></i><a href="tel:{{ order.patient.profile.phone_number }}"> {{ order.patient.profile.phone_number }} </a><br>
+                                      <i class="fa fa-envelope-o"></i> {{ order.patient.profile.email }}<br>
+                                      <i class="fa fa-calendar"></i> {{ order.patient.profile.dob | date: 'MM/dd/yy' }}
+                                  </address>
+                              </div>
+                          </div>
+                          <!-- END Patient Info -->
+                      </div>
+                      <div class="col-sm-6">
+                          <!-- Status -->
+                          <div class="block block-bordered" id="statusBlock">
+                              <div class="block-header bg-gray-lighter">
+                                  <h3 class="block-title">Order Status</h3>
+                              </div>
+                              <div class="block-content block-content-full" >
+                                  <div class="h4 push-15">
+                                    <span class="label" ng-class="{
+                                        'label-default': order.status == 'draft',
+                                        'label-primary': order.status == 'processing' || order.status == 'sent_to_pharmacy',
+                                        'label-success': order.status == 'delivered' || order.status == 'done',
+                                        'label-info': order.status == 'in_delivery',
+                                        'label-warning' : order.status == 'waiting_for_delivery' || order.status == 'waiting_for_pickup',
+                                        'label-danger': order.status == 'canceled_by_pharmacy' || order.status == 'delayed'}">
+                                      {{ is_pharmacist ? order_status_labels_pharmacist[order.status] : order_status_labels[order.status] }}
+                                    </span>
+                                  </div>
+                              </div>
+                          </div>
+                          <!-- END Status -->
+
+                          <!-- Doctor details -->
+                          <div class="block block-bordered" id="statusBlock" ng-show="!order.prescription_png" >
+                              <div class="block-header bg-gray-lighter">
+                                  <h3 class="block-title">Doctor</h3>
+                              </div>
+                              <div class="block-content block-content-full" >
+                                  <div class="h4 push-15">
+                                     <a ui-sref="doctor-view({doctorId: order.doctor.id})">{{ order.doctor.profile.first_name }} {{ order.doctor.profile.last_name }}</a>
+                                   </div>
+                                  NPI: {{ order.doctor.npi }}
+                                  <address>
+                                      <i class="fa fa-fax"></i> {{ order.doctor.profile.fax }}<br>
+                                      <i class="fa fa-phone"></i>
+                                      <a href="tel:{{ order.doctor.profile.phone_number }}"> {{ order.doctor.profile.phone_number }}</a>
+                                      <br>
+                                      <i class="fa fa-envelope-o"></i> {{ order.doctor.profile.email }}<br>
+                                  </address>
+                              </div>
+                          </div>
+                          <!-- END Doctor details  -->
+                      </div>
+                  </div>
+              <!-- </div> -->
+              <!-- END General Tab -->
+
+          </div>
+          <!-- <div class="block-content block-content-full bg-gray-lighter text-center">
+              <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+              <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+          </div> -->
+      </div>
+
+      <div class="block">
+        <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+          <li class="active">
+              <a href="#tab-manifest"><i class="fa fa-fw fa-file-text-o"></i> Order</a>
+          </li>
+        </ul>
+        <div class="block-content tab-content">
+          <!-- Manifest Tab -->
+          <div class="tab-pane fade in active" id="tab-manifest">
+
+              <!-- Order Prescription  -->
+              <div class="row">
+                  <div class="col-md-8 col-md-offset-2 text-center">
+                    <img class="img-responsive" ng-show="order.prescription_png" ng-src="{{ order.prescription_png }}">
+                  </div>
+              </div>
+              <!-- END Order Prescription  -->
+
+              <div class="block block-bordered">
+                  <div class="block-header bg-gray-lighter">
+                      <h3 class="block-title">Items List</h3>
+                  </div>
+                  <div class="block-content tab-content">
+                      <div class="table-responsive">
+                          <table class="table table-manifest">
+                              <thead>
+                                  <tr>
+                                    <th>Drug Name</th>
+                                    <th>Dosage</th>
+                                    <!-- <th>Dosage Every</th>
+                                    <th>Dosage When</th> -->
+                                    <th>Qty</th>
+                                    <th>Duration</th>
+                                    <th>Refill</th>
+                                    <th>Administration</th>
+                                    <!-- <th>Insulin precheck</th> -->
+                                    <!-- <th>Crush With Food</th> -->
+                                    <th style="min-width:108px;" ng-show="order.status == 'draft' && check('order', 'edit')"></th>
+                                  </tr>
+                              </thead>
+                              <tbody ng-repeat="item in order.items">
+                                  <tr>
+                                    <td>{{ item.drug_name }}</td>
+                                    <td>{{ item.dosage_value }} / {{ item.dosage_every }} / {{ item.dosage_when }}</td>
+                                    <td>{{ item.qty }}</td>
+                                    <td>{{ item.duration_value }} {{ item.duration_range }}</td>
+                                    <td>{{ item.refill ? 'Yes' : 'No'}}<span title="{{item.number_of_refills}} Number of Refills" class="label label-default push-5-l" ng-show="item.refill">{{item.number_of_refills}}</span></td>
+                                    <td>
+                                        <div>{{ item.insulin_pre_check ? 'Insulin Precheck' : '' }}</div>
+                                        <div>{{ item.adm_with_food ? 'Administer with food' : '' }}</div>
+                                        <div>{{ item.crush_with_food ? 'Crush with food' : '' }}</div>
+                                    </td>
+                                    <td class="text-right" ng-show="order.status == 'draft' && check('order', 'edit')">
+                                        <button class="btn btn-xs btn-primary" type="button" ng-click="editItem(item)">Edit</button>
+                                        <button class="btn btn-xs btn-warning" type="button" ng-click="deleteItem(item)">Delete</button>
+                                    </td>
+                                  </tr>
+                                  <tr ng-if="item.notes">
+                                    <td colspan="7"><em>Note: {{ item.notes }}</em></td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+              <div class="block block-bordered" ng-show="order.status == 'draft' && check('order', 'edit')">
+                <div class="block-header bg-gray-lighter">
+                    <h3 class="block-title" ng-if="item.id">{{ order.status }} Item Details : {{ item.drug_name }}</h3>
+                    <h3 class="block-title" ng-if="!item.id">Item Details (New Item)</h3>
+                </div>
+                <div class="block-content tab-content">
+                    <div class="row items-push" >
+                        <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <ng-form name="$scope.itemForm" novalidate>
+                              <div class="form-group" ng-class="{ 'has-error' : order.patient.diagnosis.length == 0 || ($scope.itemForm.diagnose_id.$invalid && (!$scope.itemForm.diagnose_id.$pristine || itemFormSubmitted)) }">
+                                  <div class="col-xs-12">
+                                      <label for="patient_key">Patient Diagnosis</label>
+                                      <select class="form-control" id="diagnose_id" name="diagnose_id" ng-options="diagnosis.id as diagnosis.name for diagnosis in order.patient.diagnosis" size="3" ng-model="item.diagnose_id" required>
+                                        <option value="">Choose a diagnosis</option>
+                                      </select>
+                                      <p ng-show="order.patient.diagnosis.length == 0">This patient doesn't have a diagnosis, <a ui-sref="patient-view({patientId: order.patient.id})">create one </a>? </p>
+                                      <p ng-show="$scope.itemForm.diagnose_id.$error.required && (!$scope.itemForm.diagnose_id.$pristine || itemFormSubmitted)" class="help-block">Patient diagnosis is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group hidden" ng-show="!item.id">
+                                  <div class="col-xs-12">
+                                      <select class="form-control" id="formulary_id" name="formulary_id" ng-options="formulary.id as formulary.name for formulary in formulary_list" size="1" ng-change="changeFormulary()" ng-model="formulary_id">
+                                        <option value="">Choose a formulary</option>
+                                      </select>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-show="!item.id">
+                              <!-- <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.drug.$invalid && (!$scope.itemForm.drug.$pristine || itemFormSubmitted)}"> -->
+                                  <div class="col-xs-12">
+                                      <label for="drug_key">Choose a drug</label>
+                                      <input class="form-control input-lg" type="text" name="drug_key" ng-model="drug_key" ng-change="searchDrugs()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" autocomplete="off">
+                                      <select class="form-control" id="drug" name="drug" ng-options="drug.id as drug.name for drug in drugs_list" size="6" ng-model="drug_id" ng-change="searchDrugProducts()">
+                                        <option value="">Choose a drug</option>
+                                      </select>
+                                      <!-- <p ng-show="$scope.itemForm.drug.$error.required && (!$scope.itemForm.drug.$pristine || itemFormSubmitted)" class="help-block">Drug is required.</p> -->
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-show="!item.id" ng-class="{ 'has-error' : $scope.itemForm.drug_product.$invalid && (!$scope.itemForm.drug_product.$pristine || itemFormSubmitted)}">
+                                  <div class="col-xs-12">
+                                      <select class="form-control" id="drug_product" name="drug_product" ng-options="drug_product.id as drug_product.product_name for drug_product in drug_products_list" size="3" ng-model="item.drug_product_id" required>
+                                        <option value="">Choose a drug product</option>
+                                      </select>
+                                      <p ng-show="!$scope.item.id && $scope.itemForm.drug_product.$error.required && (!$scope.itemForm.drug_product.$pristine || itemFormSubmitted)" class="help-block">Drug product is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.qty.$invalid && (!$scope.itemForm.qty.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="qty">Quantity</label>
+                                     <input class="form-control input-lg" type="text" id="qty" name="qty" ng-model="item.qty" placeholder="Enter Quantity" required>
+                                     <p ng-show="$scope.itemForm.qty.$error.required && (!$scope.itemForm.qty.$pristine || itemFormSubmitted)" class="help-block">Quantity is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">Refill</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="refill" ng-model="item.refill" data-ng-value="true"><span></span> Yes
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="refill" ng-model="item.refill" data-ng-value="false"><span></span> No
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group"  ng-class="{ 'has-error' : item.refill && $scope.itemForm.number_of_refills.$invalid && (!$scope.itemForm.number_of_refills.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="number_of_refills">Number of refills</label>
+                                     <input class="form-control input-lg" type="text" id="number_of_refills" name="number_of_refills" ng-model="item.number_of_refills" placeholder="Enter number of refills" ng-required="item.refill">
+                                     <p ng-show="item.refill && $scope.itemForm.number_of_refills.$error.required && (!$scope.itemForm.number_of_refills.$pristine || itemFormSubmitted)" class="help-block">Number of refills is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.dosage_value.$invalid && (!$scope.itemForm.dosage_value.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="qty">Dosage Value</label>
+                                     <input class="form-control input-lg" type="text" id="dosage_value" name="dosage_value" ng-model="item.dosage_value" placeholder="Enter Dosage Value" required>
+                                     <p ng-show="$scope.itemForm.dosage_value.$error.required && (!$scope.itemForm.dosage_value.$pristine || itemFormSubmitted)" class="help-block">Dosage Value is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.dosage_when.$invalid && (!$scope.itemForm.dosage_when.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="qty">Dosage When (Day Frequency)</label>
+                                    <select class="form-control" id="dosage_when" name="dosage_when" size="1" ng-model="item.dosage_when" ng-options="opt as opt for opt in dosage_when_options" required>
+                                    </select>
+                                     <p ng-show="$scope.itemForm.dosage_when.$error.required && (!$scope.itemForm.dosage_when.$pristine || itemFormSubmitted)" class="help-block">Dosage When is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.dosage_every.$invalid && (!$scope.itemForm.dosage_every.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                    <label for="qty">Dosage Every (Hour Frequency)</label>
+                                    <select class="form-control" id="dosage_every" name="dosage_every" size="1" ng-model="item.dosage_every" ng-options="opt as opt for opt in dosage_every_options">
+                                    </select>
+                                     <p ng-show="$scope.itemForm.dosage_every.$error.required && (!$scope.itemForm.dosage_every.$pristine || itemFormSubmitted)" class="help-block">Dosage Every is required.</p>
+                                 </div>
+                              </div>
+
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.duration_value.$invalid && (!$scope.itemForm.duration_value.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="qty">Duration Value</label>
+                                     <input class="form-control input-lg" type="text" id="duration_value" name="duration_value" ng-model="item.duration_value" placeholder="Enter duration_value" required>
+                                     <p ng-show="$scope.itemForm.duration_value.$error.required && (!$scope.itemForm.duration_value.$pristine || itemFormSubmitted)" class="help-block">Duration is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : $scope.itemForm.duration_range.$invalid && (!$scope.itemForm.duration_range.$pristine || itemFormSubmitted)}">
+                                 <div class="col-xs-12">
+                                     <label for="qty">Duration Range</label>
+                                     <select class="form-control" id="duration_range" name="duration_range" size="1" ng-model="item.duration_range" ng-options="opt as opt for opt in duration_range_options" required>
+                                     </select>
+                                     <p ng-show="$scope.itemForm.duration_range.$error.required && (!$scope.itemForm.duration_range.$pristine || itemFormSubmitted)" class="help-block">Duration range is required.</p>
+                                 </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">Administer with food</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="adm_with_food" ng-model="item.adm_with_food" data-ng-value="true"><span></span> Yes
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="adm_with_food" ng-model="item.adm_with_food" data-ng-value="false"><span></span> No
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">Crush with food</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="crush_with_food" ng-model="item.crush_with_food" data-ng-value="true"><span></span> Yes
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="crush_with_food" ng-model="item.crush_with_food" data-ng-value="false"><span></span> No
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">Insulin Precheck</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="insulin_pre_check" ng-model="item.insulin_pre_check" data-ng-value="true"><span></span> Yes
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="insulin_pre_check" ng-model="item.insulin_pre_check" data-ng-value="false"><span></span> No
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">PRN</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="is_prn" ng-model="item.is_prn" data-ng-value="true"><span></span> Yes
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="is_prn" ng-model="item.is_prn" data-ng-value="false"><span></span> No
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <div class="col-xs-12">
+                                      <label for="notes">Notes</label>
+                                      <textarea class="form-control input-lg" id="notes" rows=4 name="notes" ng-model="item.notes" placeholder="Enter Notes"></textarea>
+                                  </div>
+                              </div>
+                              <div class="row items-push">
+                                <div class="col-xs-12">
+                                  <p ng-show="saveItemFailed"class="text-danger">Save failed. {{ saveItemError | etranslate }}</p>
+                                  <p ng-show="saveItemSuccess" class="text-success">Order Item has been saved.</p>
+                                </div>
+                              </div>
+                              <div class="form-group text-center">
+                                <div class="col-xs-12">
+                                  <button class="btn btn-sm btn-primary" type="button" ng-show="!item.id" ng-click="addItem($scope.itemForm)"><i class="fa fa-plus push-5-r"></i> Add</button>
+                                  <button class="btn btn-sm btn-primary" type="button" ng-show="item.id" ng-click="addItem($scope.itemForm)"><i class="fa fa-save push-5-r"></i> Save</button>
+                                  <button class="btn btn-sm btn-warning" type="button" ng-show="item.id" ng-click="cancelItem($scope.itemForm)"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+                                </div>
+                              </div>
+                            </ng-form>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+          <!-- END Manifest Tab -->
+        </div>
+      </div>
+
+  </form>
+  <!-- END Main Content -->
+
+  <!-- Fade In Modal -->
+  <div class="modal fade" id="modal-sendToPharmacy" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <form name="sendToPharmacyForm" ng-submit="sendToPharmacy(sendToPharmacyForm.$valid)" novalidate>
+                <div class="block block-themed block-transparent remove-margin-b">
+                    <div class="block-header bg-primary">
+                        <ul class="block-options">
+                            <li>
+                                <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                            </li>
+                        </ul>
+                        <h3 class="block-title">Send To Pharmacy</h3>
+                    </div>
+                    <div class="block-content">
+                        <div class="form-group" ng-class="{ 'has-error' : sendToPharmacyForm.pharmacy_id.$invalid && sendToPharmacySubmitted }">
+                            <label for="pharmacy_id">Pharmacy</label>
+                            <input class="form-control input-lg" type="text" name="pharmacy_key" ng-model="pharmacy_key" ng-change="searchPharmacy()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter pharmacy name" autocomplete="off">
+                            <select class="form-control" ng-show="pharmacy_key && !sendToPharmacyForm.pharmacy_key.$pristine" id="pharmacy_id" name="pharmacy_id" ng-options="pharmacy as pharmacy.name for pharmacy in pharmacies_list" size="5" ng-model="send_pharmacy.pharmacy" ng-change="pharmacyChosen2(sendToPharmacyForm.pharmacy_key)" required>
+                              <option value="">Choose a pharmacy</option>
+                            </select>
+                            <p ng-show="sendToPharmacyForm.pharmacy_id.$error.required && sendToPharmacySubmitted" class="help-block">Pharmacy is required.</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Delivery Method</label>
+                            <div>
+                                <label class="css-input css-radio css-radio-primary">
+                                    <input type="radio" name="preferred_via" ng-model="send_pharmacy.preferred_via" value="pickup"><span></span> Pickup
+                                </label>
+                                <label class="css-input css-radio css-radio-primary push-10-r">
+                                    <input type="radio" name="preferred_via" ng-model="send_pharmacy.preferred_via" value="delivery" checked="checked"><span></span> Delivery
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <label>Signature</label>
+                          <div id="signature-pad" class="m-signature-pad" style="border: 1px solid #e6e6e6;">
+                            <div class="m-signature-pad--body">
+                              <canvas width="560" height="150"></canvas>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-default" ng-click="clearSignature()" type="button">Clear</button>
+                    <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-check"></i> Confirm</button>
+                </div>
+              </form>
+          </div>
+      </div>
+  </div>
+  <!-- END Fade In Modal -->
+
+</div>
+
+<!-- END Page Content -->

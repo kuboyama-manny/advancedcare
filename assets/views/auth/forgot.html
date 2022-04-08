@@ -1,0 +1,66 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- Forgot password Content -->
+<div class="bg-white pulldown-tall">
+    <div class="content content-boxed overflow-hidden" >
+        <div class="block" id="main-block">
+            <div class="block-content tab-content">
+                <div class="push-30-t push-50 animated fadeIn">
+                    <!-- Login Title -->
+                    <div class="text-center">
+                        <img src="assets/img/logo.png">
+                        <p class="text-muted push-15-t">Restore your access to AdvancedCare Dashboard</p>
+                    </div>
+                    <!-- END Login Title -->
+
+                    <!-- Forgot password Form -->
+                    <form name="forgotForm" class="main-form js-validation-login form-horizontal push-30-t" ng-submit="submitForgotForm(forgotForm.$valid)" novalidate>
+                        <div class="form-group" ng-class="{ 'has-error' : forgotForm.email.$invalid && (!forgotForm.email.$pristine || forgotSubmitted)}">
+                            <div class="col-xs-12" >
+                                <div class="form-material form-material-primary floating">
+                                    <input class="form-control" type="text" name="email" id="email" ng-model="user.email" ng-pattern = "/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/"required>
+                                    <label for="email">Email</label>
+                                </div>
+                                <p ng-show="forgotForm.email.$error.required && (!forgotForm.email.$pristine || forgotSubmitted)" class="help-block">Email is required.</p>
+                                <p ng-show="!forgotForm.email.$valid && !forgotForm.email.$error.required  && (!forgotForm.email.$pristine || forgotForm.$submitted)" class="help-block">Please provide a valid email address.</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : forgotFailed }">
+                            <div class="col-xs-12">
+                                <p ng-show="forgotFailed" class="help-block">Getting reset link failed, {{ error_m | etranslate }}</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="forgotSuccess">
+                            <div class="col-xs-12">
+                                <a data-ui-sref="login" class="link-s-m text-success">We've sent you the password reset link, please follow the instruction.</a>
+                            </div>
+                        </div>
+                        <div class="form-group push-30-t">
+                            <div class="col-xs-12">
+                                <button class="btn btn-sm btn-block btn-primary btn-s btn-large btn-block" type="submit">Get reset link</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center push-50-t">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Forgot password Form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Forgot password Content -->
+
+<!-- Forgot password Footer -->
+<div class="pulldown-tall push-30-t text-center animated fadeInUp">
+    <small class="text-muted"><span class="js-year-copy"></span> &copy; AdvancedCare 1.0</small>
+</div>
+<!-- END Forgot password Footer -->

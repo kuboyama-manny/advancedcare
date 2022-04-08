@@ -1,0 +1,70 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Delivery Orders
+                <a data-ui-sref="delivery-order-new" class="btn btn-primary push-20-l" type="button" ng-show="check('delivery_order', 'create')"><i class="si si-plus push-5-r"></i> <span>Add New</span></a>
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <a class="btn btn-info btn-sm" type="button" ng-show="check('delivery_order', 'view')"><i class="si si-list"></i> <span>List</span></a>
+            <a data-ui-sref="delivery-orders-map" class="btn btn-default btn-sm" type="button" ng-show="check('delivery_order', 'view')"><i class="fa fa-map-o"></i> <span>Map</span></a>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed">
+    <div class="block" id="main-block">
+        <div class="block-content">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                          <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                          <th ng-click="orderby='delivery.first_name'; reverse=!reverse;"><a href="javascript:void(0)">Driver</a></th>
+                          <th ng-click="orderby='time_from'; reverse=!reverse;"><a href="javascript:void(0)">Scheduled Time</a></th>
+                          <th ng-click="orderby='patient.first_name'; reverse=!reverse;"><a href="javascript:void(0)">Patient</a></th>
+                          <th ng-click="orderby='facility.name'; reverse=!reverse;"><a href="javascript:void(0)">Facility</a></th>
+                          <th ng-click="orderby='status'; reverse=!reverse;"><a href="javascript:void(0)">Status</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="order in orders | orderBy:orderby:reverse" ui-sref="delivery-order-detail({orderId: order.id})">  <!-- | limitTo:page_size -->
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.delivery.first_name }} {{ order.delivery.last_name }}</td>
+                            <td>{{ order.time_from | date:'MM/dd/yy HH:mm' }} - {{ order.time_to | date:'MM/dd/yy HH:mm' }}</td>
+                            <td>{{ order.patient.first_name }} {{ order.patient.last_name }}</td>
+                            <td>{{ order.facility.name }}</td>
+                            <td><span class="label" ng-class="{'label-success' : order.status == 'delivered', 'label-info' : order.status == 'in_delivery', 'label-warning' : order.status == 'waiting_for_delivery', 'label-danger' : order.status == 'delayed' }">{{ order_status_labels[order.status] }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p ng-show="orders.length == 0" class="text-danger">No delivery orders found.</p>
+                <form class="form-horizontal">
+                    <div class="form-group col-xs-4 col-sm-2">
+                        <select class="form-control pagination" id="page_size" ng-options="page_size for page_size in page_sizes" ng-model="page_size" ng-change="loadData()">
+                        </select>
+                    </div>
+                    <div class="col-xs-8 col-sm-8 text-center">
+                        <ul class="pagination" ng-show="orders.length > 0">
+                            <li class="paginate_button previous" ng-class="{ 'disabled' : current_page <= 1}">
+                                <a href="javascript:void(0)" ng-click="prevPage()"><i class="fa fa-angle-left"></i></a>
+                            </li>
+                            <li class="paginate_button" >
+                                <select class="form-control" id="current_page" ng-options="page_num for page_num in page_numbers" ng-model="current_page" ng-change="loadData()">
+                                </select>
+                            </li>
+                            <li class="paginate_button next" ng-class="{ 'disabled' : current_page * page_size >= page_total}">
+                                <a href="javascript:void(0)" ng-click="nextPage()"><i class="fa fa-angle-right"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Page Content -->

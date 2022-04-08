@@ -1,0 +1,44 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <div class="block-content">
+          <div class="row">
+              <div class="col-sm-12 text-right push-10">
+                  <a class="btn btn-sm btn-primary push-5-r" ui-sref="smartpen-edit({smartpenId: smartpenId})" ng-show="check('facility_device', 'edit')"><i class="fa fa-pencil"></i> Edit</a>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-danger" ng-show="check('facility_device', 'delete')" ng-click="delete()"><i class="fa fa-times"></i> Delete</a>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-6">
+                  <!-- General Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                        <h3 class="block-title">Nursing Station</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="h4 push-5">{{ smartpen.name }}</div>
+                      </div>
+                  </div>
+                  <!-- END General Info -->
+              </div>
+              <div class="col-sm-6">
+                  <!-- Contact Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                        <h3 class="block-title">Serial Number</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="h4 push-5">{{ smartpen.serial_number }}</div>
+                      </div>
+                  </div>
+                  <!-- END Contact Info -->
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

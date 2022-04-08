@@ -1,0 +1,74 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- Reset password Content -->
+<div class="bg-white pulldown-tall">
+    <div class="content content-boxed overflow-hidden" ng-init="initReset()">
+        <div class="block" id="main-block">
+            <div class="block-content tab-content">
+                <div class="push-30-t push-50 animated fadeIn">
+                    <!-- Login Title -->
+                    <div class="text-center">
+                        <img src="assets/img/logo.png">
+                        <p class="text-muted push-15-t">Enter new password</p>
+                    </div>
+                    <!-- END Login Title -->
+
+                    <!-- Reset password Form -->
+                    <form name="resetForm" class="main-form js-validation-login form-horizontal push-30-t" ng-submit="submitResetForm(resetForm.$valid)" novalidate>
+                        <div class="form-group" ng-class="{ 'has-error' : resetForm.password.$invalid && (!resetForm.password.$pristine || formSubmitted) }">
+                          	<div class="col-xs-12">
+                          		  <div class="form-material form-material-primary floating">
+                              			<input class="form-control" type="password" name="password" id="password" ng-model="reset.new_password" required >
+                              			<label for="password">Password</label>
+                              			<p ng-show="resetForm.password.$error.required && (!resetForm.password.$pristine || formSubmitted)" class="help-block">Password is required.</p>
+                          		  </div>
+                          	</div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : resetForm.confirmpassword.$invalid && (!resetForm.confirmpassword.$pristine || formSubmitted) }">
+                          	<div class="col-xs-12">
+                            		<div class="form-material form-material-primary floating">
+                              			<input class="form-control" type="password" name="confirmpassword" id="confirmpassword" ng-model="reset.confirmpassword" pw-check="password">
+                              			<label for="confirmpassword">Confirm Password</label>
+                              			<p ng-show="resetForm.confirmpassword.$error.pwmatch && (!resetForm.confirmpassword.$pristine || formSubmitted)" class="help-block">Password should match.</p>
+                            		</div>
+                          	</div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : resetFailed }">
+                            <div class="col-xs-12">
+                                <p ng-show="resetFailed" class="help-block">Setting new password failed. {{ error_m | etranslate }}</p>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="resetSuccess" >
+                            <div class="col-xs-12">
+                                <p class="text-success">We've reset your password, please login now.</p>
+                            </div>
+                        </div>
+                        <div class="form-group push-30-t">
+                            <div class="col-xs-12">
+                                <button class="btn btn-sm btn-block btn-danger btn-s btn-large btn-block" type="submit">Set Password</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="font-s13 text-center push-50-t">
+                                    <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- END Reset password Form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Reset password Content -->
+
+<!-- Reset password Footer -->
+<div class="pulldown-tall push-30-t text-center animated fadeInUp">
+    <small class="text-muted"><span class="js-year-copy"></span> &copy; AdvancedCare 1.0</small>
+</div>
+<!-- END Reset password Footer -->

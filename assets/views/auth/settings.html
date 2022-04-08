@@ -1,0 +1,173 @@
+<!-- Page Content -->
+<div class="content content-boxed">
+  <!-- User Header -->
+  <div class="block">
+      <!-- Basic Info -->
+      <div class="block-content text-center overflow-hidden">
+          <div class="push-30-t push animated fadeInDown">
+              <img class="img-avatar img-avatar96 img-avatar-thumb" ng-src="{{ avatar_url }}" err-src="assets/img/avatars/user_icon.png" alt="">
+          </div>
+          <div class="">
+            <button ng-show="me.profile.has_avatar" class="btn btn-sm btn-danger" type="button" ng-click="deleteAvatar()" ng-disabled="deletingAvatar">
+              <span ng-show="!deletingAvatar"><i class="fa fa-trash push-5-r"></i> Delete Avatar</span>
+              <span ng-show="deletingAvatar"><i class="fa fa-spinner fa-spin push-5-r"></i> Deleting ...</span>
+            </button>
+            <button class="btn btn-sm btn-primary" type="button" ng-click="updateAvatar()" ng-disabled="!profile_chosen_file || uploadingAvatar" title="{{ profile_chosen_file ? 'Push to upload chosen avatar' : 'No new avatar chosen!'}}">
+              <span ng-show="!uploadingAvatar"><i class="fa fa-upload push-5-r"></i> Upload Avatar</span>
+              <span ng-show="uploadingAvatar"><i class="fa fa-spinner fa-spin push-5-r"></i> Uploading ...</span>
+            </button>
+            <label class="btn btn-default btn-sm" ng-disabled="uploadingAvatar"><span class="fa fa-file-photo-o"></span>
+              Choose Avatar <input type="file" id="profile_image" name="profile_image" accept="image/jpeg, image/png" style="display: none;" onchange="angular.element(this).scope().setProfileFile(this)">
+            </label>
+            <span ng-show="profile_chosen_file">{{profile_chosen_file.name}}
+              <button class="btn btn-link" ng-click="clearChoosenAvatar()" title="Clear chosen image"><span class="fa fa-close"></span></button>
+            </span>
+            <span ng-show="!profile_chosen_file" class="text-muted">No Image Chosen</span>
+          </div>
+
+          <div class="push-30-t animated fadeInUp">
+              <h2 class="h4 font-w600 push-5">My Profile</h2>
+          </div>
+      </div>
+      <!-- END Basic Info -->
+  </div>
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+      <div class="block" id="main-block">
+          <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+              <li>
+                  <a href="#tab-passwords"><i class="fa fa-fw fa-asterisk"></i> Password</a>
+              </li>
+          </ul>
+          <div class="block-content tab-content">
+
+              <!-- General Tab -->
+              <div class="tab-pane fade in active" id="tab-general">
+                  <form name="settingsForm" ng-submit="updateProfile(settingsForm.$valid)" novalidate>
+                      <div class="row items-push">
+                          <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                              <div class="form-group" ng-class="{ 'has-error' : settingsForm.first_name.$invalid && (!settingsForm.first_name.$pristine || settingsForm.$submitted)}">
+                                  <div class="col-xs-12">
+                                      <label for="first_name">First Name</label>
+                                      <input class="form-control input-lg" type="text" id="first_name" name="first_name" ng-model="me.profile.first_name" placeholder="Enter first name" required>
+                                      <p ng-show="settingsForm.first_name.$error.required && (!settingsForm.first_name.$pristine || settingsForm.$submitted)" class="help-block">First name is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : settingsForm.last_name.$invalid && (!settingsForm.last_name.$pristine || settingsForm.$submitted)}">
+                                  <div class="col-xs-12">
+                                      <label for="last_name">Last Name</label>
+                                      <input class="form-control input-lg" type="text" id="last_name" name="last_name" ng-model="me.profile.last_name" placeholder="Enter last name" required>
+                                      <p ng-show="settingsForm.last_name.$error.required && (!settingsForm.last_name.$pristine || settingsForm.$submitted)" class="help-block">Last name is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : settingsForm.email.$invalid && (!settingsForm.email.$pristine || settingsForm.$submitted)}">
+                                  <div class="col-xs-12">
+                                      <label for="email">Email Address</label>
+                                      <input class="form-control input-lg" type="text" id="email" name="email" ng-model="me.profile.email" placeholder="Enter email" required>
+                                      <p ng-show="settingsForm.email.$error.required && (!settingsForm.email.$pristine || settingsForm.$submitted)" class="help-block">Email is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : settingsForm.phone_number.$invalid && (!settingsForm.phone_number.$pristine || settingsForm.$submitted)}">
+                                  <div class="col-xs-12">
+                                      <label for="phone_number">Phone Number</label>
+                                      <input class="form-control input-lg" type="text" id="phone_number" name="phone_number" ng-model="me.profile.phone_number" placeholder="Enter phone number" required>
+                                      <p ng-show="settingsForm.phone_number.$error.required && (!settingsForm.phone_number.$pristine || settingsForm.$submitted)" class="help-block">Phone number is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <label class="col-xs-12">Gender</label>
+                                  <div class="col-xs-12">
+                                      <label class="css-input css-radio css-radio-primary push-10-r">
+                                          <input type="radio" name="gender" ng-model="me.profile.gender" value="F"><span></span> Female
+                                      </label>
+                                      <label class="css-input css-radio css-radio-primary">
+                                          <input type="radio" name="gender" ng-model="me.profile.gender" value="M"><span></span> Male
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                  <div class="col-xs-12">
+                                      <label for="dob">Date of Birth</label>
+                                      <input data-js-datepicker class="form-control" type="text" id="dob" name="dob" ng-model="me.profile.dob_format" data-date-format="mm/dd/yyyy" placeholder="mm/dd/yyyy">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row items-push">
+                        <div class="col-sm-6 col-sm-offset-3">
+                          <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                          <p ng-show="saveSuccess" class="text-success">Your profile settings have been saved.</p>
+                        </div>
+                      </div>
+                      <div class="row items-push text-center">
+                        <div class="col-xs-12">
+                          <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Update</button>
+                          <button class="btn btn-sm btn-warning" type="button" ui-sref="root()"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+              <!-- END General Tab -->
+
+              <!-- Password Tab -->
+              <div class="tab-pane fade" id="tab-passwords">
+                  <form name="passwordsForm" ng-submit="changePassword(passwordsForm.$valid)" novalidate>
+                      <div class="row items-push">
+                          <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                              <div class="form-group" ng-class="{ 'has-error' : passwordsForm.current_password.$invalid && passwordFormSubmitted }">
+                                  <div class="col-xs-12">
+                                      <label for="current_password">Current Password</label>
+                                      <input class="form-control input-lg" type="password" id="current_password" name="current_password" ng-model="me.current_password" placeholder="Enter current password" required>
+                                      <p ng-show="passwordsForm.current_password.$error.required && passwordFormSubmitted" class="help-block">Current password is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : passwordsForm.password.$invalid && passwordFormSubmitted }">
+                                  <div class="col-xs-12">
+                                      <label for="password">New Password</label>
+                                      <input class="form-control input-lg" type="password" id="password" name="password" ng-model="me.password" placeholder="Enter password" required>
+                                      <p ng-show="passwordsForm.password.$error.required && passwordFormSubmitted" class="help-block">Password is required.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : passwordsForm.confirm_password.$invalid && passwordFormSubmitted }">
+                                  <div class="col-xs-12">
+                                      <label for="password">Confirm New Password</label>
+                                      <input class="form-control input-lg" type="password" id="confirm_password" name="confirm_password" ng-model="me.confirm_password" placeholder="Enter new password" required pw-check="password">
+                                      <p ng-show="passwordsForm.confirm_password.$error.required && passwordFormSubmitted" class="help-block">Confirm password is required.</p>
+                                      <p ng-show="passwordsForm.confirm_password.$error.pwmatch && passwordFormSubmitted" class="help-block">Password should match.</p>
+                                  </div>
+                              </div>
+                              <div class="form-group" ng-class="{ 'has-error' : passwordsForm.password_expiry_days.$invalid && (!passwordsForm.password_expiry_days.$pristine || passwordsForm.$submitted) }">
+                                  <div class="col-xs-12">
+                                      <label for="phone_number">Password Expiry Days</label>
+                                      <input class="form-control input-lg" type="text" maxlength="8" id="password_expiry_days" name="password_expiry_days" ng-model="me.password_expiry_days" placeholder="Enter 0 to switch off" ng-pattern= "/^[0-9]+$/i" required>
+                                      <p ng-show="passwordsForm.password_expiry_days.$error.required && passwordFormSubmitted" class="help-block">Expiry days are required.</p>
+                                      <p ng-show="!passwordsForm.password_expiry_days.$valid && !passwordsForm.password_expiry_days.$error.required && (!passwordsForm.password_expiry_days.$pristine || passwordsForm.$submitted)" class="help-block">Expiry days can only contain number.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row items-push">
+                        <div class="col-sm-6 col-sm-offset-3">
+                          <p ng-show="passwordSaveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                          <p ng-show="passwordSaveSuccess" class="text-success">Your password has been sucessfully updated.</p>
+                        </div>
+                      </div>
+                      <div class="row items-push text-center">
+                        <div class="col-xs-12">
+                          <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Update</button>
+                        </div>
+                      </div>
+                  </form>
+              </div>
+              <!-- END Password Tab -->
+
+          </div>
+      </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

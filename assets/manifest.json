@@ -1,0 +1,18 @@
+/*
+ *  Document   : manifest.json
+ *  Author     : Xiaoning Zhang
+ *  Description: Web Push Notification manifest.
+ *
+ */
+
+{
+  "name": "AdvancedCare Web Push Notification",
+  "short_name": "AdvancedCare Push",
+  "icons": [{
+        "src": "assets/img/favicons/favicon-192x192.png",
+        "sizes": "192x192"
+      }],
+  "start_url": "./index.html?homescreen=1",
+  "display": "standalone",
+  "gcm_sender_id": "548237594052"
+}

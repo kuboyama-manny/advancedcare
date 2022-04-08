@@ -1,0 +1,35 @@
+<div class="block" id="waitingFiles">
+    <button class="btn btn-block btn-info" data-toggle="collapse" data-target="#files-nav-collapse"
+            type="button"
+            id="toggleFiles">Files
+    </button>
+    <!-- Files List -->
+    <div class="collapse in remove-padding" id="files-nav-collapse">
+        <div class="block">
+            <div class="block-content">
+                <table class="js-table-checkable table table-hover table-vcenter">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th><a href="javascript:void(0);" ng-click="orderby='name'; reverse=!reverse;">Name</a></th>
+                        <th class="hidden-xs"><a href="javascript:void(0);" ng-click="orderby='size'; reverse=!reverse;">Size</a></th>
+                        <th class="hidden-xs"><a href="javascript:void(0);" ng-click="orderby='mimetypeFileType'; reverse=!reverse;">Type</a></th>
+                        <th class="hidden-xs"><a href="javascript:void(0);" ng-click="orderby='modifiedOn'; reverse=!reverse;">Modified</a></th>
+                        <th><a href="javascript:void(0);" ng-click="orderby='workflow.status'; reverse=!reverse;">Review status</a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="file in waitingFiles.items | orderBy:orderby:reverse" ng-click="openFile(file)">
+                        <td class="col-md-1"><i class="fa fa-fw push-5-r fa-file-o"></i></td>
+                        <td class="col-md-5 tree-file-names"><a class="font-w600" href="javascript:void(0)">{{ file.name }}</a></td>
+                        <td class="col-md-2 hidden-xs tree-file-names">{{ file.size }} bytes</td>
+                        <td class="col-md-2 hidden-xs tree-file-names">{{ file.mimetypeFileType }}</td>
+                        <td class="col-md-1 hidden-xs tree-file-names">{{ file.displayTime }}</td>
+                        <td class="col-md-1 tree-file-names">{{ file.workflow.status }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

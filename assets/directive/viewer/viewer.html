@@ -1,0 +1,120 @@
+<div class="block-header bg-white">
+
+    <!-- Buttons -->
+    <div class="push">
+        <button class="btn btn-default pull-left" type="button" ng-click="goBack()">
+            <i class="fa fa-chevron-left push-5-l push-5-r"></i>
+            <i class="fa fa-folder-o" aria-hidden="true"></i>
+            <span class="hidden-xs">{{back_button_message}}</span>
+        </button>
+        <button type="button" class="btn btn-info push-15-l" ng-click="goToOlderFile()"><i class="si si-arrow-left"></i> Older</button>
+        <button type="button" class="btn btn-info" ng-click="goToNewerFile()">Newer <i class="si si-arrow-right"></i></button>
+        <button type="button" class="btn btn-info pull-right" ng-click="toggleFullScreen()"><i class="si si-size-fullscreen"></i> Full Screen</button>
+        <button type="button" class="btn btn-warning pull-right push-5-r" ng-click="openReportDocumentModal()"><i class="si si-flag"></i> Report</button>
+    </div>
+    <!-- END Buttons -->
+
+    <!-- File metadata-->
+    <table class="table table-hover table-vcenter">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Received</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="col-md-6 tree-file-names">{{current_nodeRef.name }}</td>
+            <td class="col-md-2">{{current_nodeRef.sizeStr }}</td>
+            <td class="col-md-2">{{current_nodeRef.displayTime }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-hover table-vcenter">
+        <thead>
+        <tr>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>PHN</th>
+            <th>Notes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="col-md-3">{{current_nodeRef["fs:doctor"] }}</td>
+            <td class="col-md-3">{{current_nodeRef["fs:patient"] }}</td>
+            <td class="col-md-3">{{current_nodeRef["fs:phn"] }}</td>
+            <td class="col-md-4">{{current_nodeRef["fs:notes"] }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- END File metadata-->
+
+</div>
+
+<div class="block-content">
+    <div class="row">
+        <div class="block block-opt-refresh-alfresco" id="file_viewer_parent"
+             ng-class="{'col-md-12': !split_fileview, 'col-md-6': split_fileview}">
+            <div id="file_viewer" class="block-content-document"
+                 style="height: 900px; overflow: hidden;">
+                <a href="javascript:void(0)"
+                   class="btn btn-warning pull-right push-5-r"
+                   ng-click="editFile()"
+                   ng-show="enable_pdf_editing && !edit_mode"
+                   ><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Mark-up document</a>
+                <br /><br/>
+                <iframe id="file_viewer_frame" src="{{ editorInitUrl }}"
+                        onLoad="iFrameLoaded('file_viewer_frame');"
+                        style="width: 100%; height: 900px;"></iframe>
+            </div>
+            <div class="wait_block" ng-show="file_viewer_in_process">This file is currently being
+                processed. Please, wait
+            </div>
+        </div>
+        <div class="block block-opt-refresh-alfresco col-md-6" id="file_viewer2_parent"
+             ng-show="split_fileview">
+            <div id="file_viewer2" class="block-content-document"
+                 style="height: 900px; overflow: hidden;">
+                 <iframe id="file_viewer2_frame" src="{{ editorInitUrl }}"
+                         onLoad="iFrameLoaded('file_viewer2_frame');"
+                         style="width: 100%; height: 900px;"></iframe>
+            </div>
+            <div class="wait_block" ng-show="file_viewer2_in_process">This file is currently being
+                processed. Please, wait
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="report-document-modal">
+    <div class="modal-dialog" role="document">
+        <form name="reportDocumentForm" ng-submit="reportDocument(reportDocumentForm.$valid)" novalidate>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Report document</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group" ng-class="{ 'has-error' : reportDocumentForm.comment.$invalid && reportFormSubmitted }">
+                      <label for="comment">Comment</label>
+                      <textarea class="form-control input-lg" rows="3" id="comment" name="comment" ng-model="report.comment" placeholder="Enter the comment" required></textarea>
+                      <p ng-show="reportDocumentForm.comment.$error.required && reportFormSubmitted" class="help-block">Comment is required.</p>
+                  </div>
+                  <div class="form-group">
+                      <p ng-show="reportFormFailed"class="text-danger">Reporting failed. {{ error_m | etranslate }}</p>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-primary" type="submit" ng-disabled="reportFormSubmitting">
+                      <span ng-show="!reportFormSubmitting"><i class="fa fa-save push-5-r"></i> Send</span>
+                      <span ng-show="reportFormSubmitting"><i class="fa fa-spinner fa-spin push-5-r"></i> Sending</span>
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </form>
+    </div><!-- /.modal-dialog -->
+</div>

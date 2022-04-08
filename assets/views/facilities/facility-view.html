@@ -1,0 +1,56 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <div class="block-content">
+          <div class="row">
+              <div class="col-sm-12 text-right push-10">
+                  <a class="btn btn-sm btn-primary push-5-r" ui-sref="facility-edit({facilityId: facilityId})" ng-show="check('facility', 'edit')"><i class="fa fa-pencil"></i> Edit</a>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-danger" ng-show="check('facility', 'delete')" ng-click="delete()"><i class="fa fa-times"></i> Delete</a>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-6">
+                  <!-- General Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                        <h3 class="block-title">General Information</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="h4 push-5">{{ facility.name }}</div>
+                          <address>
+                              <span ng-show="facility.address.description"><i class="fa fa-map-marker push-5-r"></i>{{ facility.address.description }}<br><br></span>
+                              <span ng-show="facility.ext_phone"><i class="fa fa-phone push-5-r"></i> {{ facility.main_phone }}<span ng-if="facility.ext_phone"> (ext: {{ facility.ext_phone }})</span><br></span>
+                              <span ng-show="facility.main_fax"><i class="fa fa-fax push-5-r"></i> {{ facility.main_fax }}</a></span>
+                              <!-- <i class="fa fa-phone push-5-r"></i> {{ facility.profile.phone_number }}<br> -->
+                              <!-- <i class="fa fa-envelope-o push-5-r"></i> {{ facility.profile.email }}</a> -->
+                          </address>
+                      </div>
+                  </div>
+                  <!-- END General Info -->
+              </div>
+              <div class="col-sm-6">
+                  <!-- Contact Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <h3 class="block-title">Primary Contact</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                        <div class="h4 push-5">{{ facility.primary_contact.first_name }} {{ facility.primary_contact.last_name }}</div>
+                        <address>
+                          <span ng-show="facility.primary_contact.phone_number"><i class="fa fa-phone push-5-r"></i> <a href="tel:{{ facility.primary_contact.phone_number }}"> {{ facility.primary_contact.phone_number }}</a><br></span>
+                          <span ng-show="facility.primary_contact.email"><i class="fa fa-envelope-o push-5-r"></i> {{ facility.primary_contact.email }}<br></span>
+                          <span ng-show="facility.primary_contact.gender"><i class="si push-5-r" ng-class="{'si-user': facility.primary_contact.gender == 'M', 'si-user-female': facility.primary_contact.gender == 'F'}"></i> {{ facility.primary_contact.gender == 'M' ? 'Male' :  facility.primary_contact.gender == 'F' ? 'Female' : '' }} <br></span>
+                        </address>
+                      </div>
+                  </div>
+                  <!-- END Contact Info -->
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

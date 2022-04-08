@@ -1,0 +1,106 @@
+<style>
+  header {
+    display: none !important;
+  }
+</style>
+<!-- register Content -->
+<div class="bg-white" ng-class="{ 'pulldown-tall': sessionNotFound , 'pulldown' : !sessionNotFound}">
+    <div class="content content-boxed overflow-hidden" ng-init="initAcceptInvite()">
+      <div class="block" id="main-block">
+          <div class="block-content tab-content">
+              <div class="push-30-t push-50 animated fadeIn">
+                  <!-- Register Title -->
+                  <div class="text-center">
+                      <img src="assets/img/logo.png">
+                      <p class="text-muted push-15-t">Please complete the form to sign up.</p>
+                  </div>
+                  <!-- END Register Title -->
+
+                  <!-- Register Form -->
+                  <div class="form-group" >
+                      <div class="col-sm-6 col-sm-offset-3 text-center">
+                          <p ng-show="sessionNotFound" class="text-danger">Your session appears to be invalid, please contact your pharmacy administrator.</p>
+                      </div>
+                  </div>
+                  <form ng-show="!sessionNotFound" name="acceptForm" class="main-form js-validation-register form-horizontal push-30-t" ng-submit="submitAcceptForm(acceptForm.$valid)" novalidate autocomplete="off">
+                      <div class="form-group" ng-show="inviteuser.role == 'doctor'" ng-class="{ 'has-error' : acceptForm.npi.$invalid && (!acceptForm.npi.$pristine || formSubmitted) }">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating">
+                                  <input class="form-control" type="text" name="npi" id="npi" ng-model="inviteuser.npi" ng-required="inviteuser.role == 'doctor'">
+                                  <label for="npi">Nurse Number *</label>
+                                  <p ng-show="acceptForm.npi.$error.required && (!acceptForm.npi.$pristine || formSubmitted)" class="help-block">Nurse Number is required.</p>
+                                </div>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : acceptForm.first_name.$invalid && (!acceptForm.first_name.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating open">
+                                  <input class="form-control" type="text" name="first_name" id="first_name" ng-model="inviteuser.profile.first_name" required>
+                                  <label for="first_name">First Name *</label>
+                              </div>
+                              <p ng-show="acceptForm.first_name.$error.required && (!acceptForm.first_name.$pristine || formSubmitted)" class="help-block">Fist Name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : acceptForm.last_name.$invalid && (!acceptForm.last_name.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating open">
+                                  <input class="form-control" type="text" name="last_name" id="last_name" ng-model="inviteuser.profile.last_name" required>
+                                  <label for="last_name">Last Name *</label>
+                              </div>
+                              <p ng-show="acceptForm.last_name.$error.required && (!acceptForm.last_name.$pristine || formSubmitted)" class="help-block">Last Name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : acceptForm.email.$invalid && (!acceptForm.email.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating open">
+                                  <input class="form-control" type="text" name="email" id="email" ng-model="inviteuser.profile.email" required>
+                                  <label for="email">Email *</label>
+                              </div>
+                              <p ng-show="acceptForm.email.$error.required && (!acceptForm.email.$pristine || formSubmitted)" class="help-block">Email is required.</p>
+                          </div>
+                      </div>
+                      <!-- skip phone call verify step, required by Nick -->
+                      <!-- <div class="form-group" ng-class="{ 'has-error' : acceptForm.phone_number.$invalid && (!acceptForm.phone_number.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating open">
+                                  <input class="form-control" type="text" name="phone_number" id="phone_number" ng-model="inviteuser.profile.phone_number" required>
+                                  <label for="phone_number">Phone Number *</label>
+                              </div>
+                              <p><em>You will get a verification call at this number.</em></p>
+                              <p ng-show="acceptForm.phone_number.$error.required && (!acceptForm.phone_number.$pristine || formSubmitted)" class="help-block">Phone number is required.</p>
+                          </div>
+                      </div> -->
+                      <div class="form-group">
+                          <div class="col-xs-12">
+                              <div class="form-material form-material-primary floating open">
+                                  <input class="form-control" type="text" name="phone_number" id="phone_number" ng-model="inviteuser.profile.phone_number">
+                                  <label for="phone_number">Phone Number: (format: +12125551212) *</label>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group" >
+                          <div class="col-xs-12">
+                              <p ng-show="submitFailed" class="text-danger">Register failed, please try again. {{ error_m | etranslate }}</p>
+                              <p ng-show="submitSuccess" class="text-success">Thanks for using AdvancedCare, wait a moment while we redirect to you the last step.</p>
+                          </div>
+                      </div>
+                      <div class="form-group push-30-t">
+                          <div class="col-xs-12">
+                              <button class="btn btn-sm btn-block btn-primary btn-s btn-large btn-block" type="submit">Accept Invitation</button>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="col-xs-12">
+                              <div class="font-s13 text-center push-50-t">
+                                  <a data-ui-sref="login" class="link-s text-success"><u>Go to login</u></a>
+                              </div>
+                          </div>
+                      </div>
+                  </form>
+                  <!-- END register Form -->
+              </div>
+          </div>
+      </div>
+    </div>
+</div>
+<!-- END register Content -->

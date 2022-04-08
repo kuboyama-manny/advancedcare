@@ -1,0 +1,245 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+
+  <!-- Main Content -->
+  <form name="pharmacyForm" ng-submit="save(pharmacyForm.$valid)" novalidate>
+      <div class="block" id="main-block">
+          <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-profile-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+          </ul> -->
+          <div class="block-content tab-content">
+              <!-- General Tab -->
+              <div class="tab-pane fade in active" id="tab-profile-general">
+                  <div class="row items-push">
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.name.$invalid && (!pharmacyForm.name.$pristine || pharmacyForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="name">Name</label>
+                                  <input class="form-control input-lg" type="text" id="name" name="name" ng-model="pharmacy.name" ng-pattern= "/^[a-z0-9\s]+$/i" placeholder="Enter pharmacy name" required>
+                                  <p ng-show="pharmacyForm.name.$error.required && (!pharmacyForm.name.$pristine || pharmacyForm.$submitted)" class="help-block">Name is required.</p>
+                                  <p ng-show="!pharmacyForm.name.$valid && !pharmacyForm.name.$error.required  && (!pharmacyForm.name.$pristine || pharmacyForm.$submitted)" class="help-block">Name can only contain alphanumeric characters.</p>
+                              </div>
+                          </div>
+
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="facility">Enter address</label>
+                                  <input class="form-control input-lg" type="text" name="address_key" ng-model="address_key" ng-change="searchAddress()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Enter pharmacy address here" autocomplete="off">
+                                  <select class="form-control" id="place_id" name="place_id" ng-show="address_key && !pharmacyForm.address_key.$pristine" ng-options="address as address.description for address in addresses_list" size="6" ng-model="pharmacy.address" ng-change="addressChosen(pharmacyForm.address_key)">
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="form-group" >
+                              <div class="col-xs-12">
+                                  <label for="address_note">Enter address line 2</label>
+                                  <input class="form-control input-lg" type="text" id="address_note" name="address_note" ng-model="pharmacy.address.note" placeholder="Address line 2">
+                              </div>
+                          </div>
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.type.$invalid && (!pharmacyForm.type.$pristine || pharmacyForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label class="css-input css-checkbox css-checkbox-primary">Is Pro &nbsp;
+                                    <input type="checkbox" ng-checked="pharmacy.is_pro" ng-model="pharmacy.is_pro"><span></span>
+                                  </label>
+                              </div>
+                          </div>
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.connector.type.$invalid && (!pharmacyForm.connector.type.$pristine || pharmacyForm.$submitted)}">
+                              <label class="col-xs-12">Type</label>
+                              <div class="col-xs-12">
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="type" ng-model="pharmacy.connector.type" value="ari" ng-checked="pharmacy.connector.type === 'ari'"><span></span> Ari
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="type" ng-model="pharmacy.connector.type" value="kroll" ng-checked="pharmacy.connector.type === 'kroll'"><span></span> Kroll
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="type" ng-model="pharmacy.connector.type" value="telus" ng-checked="pharmacy.connector.type === 'telus'"><span></span> Telus
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="type" ng-model="pharmacy.connector.type" value="pharma_clik_rx" ng-checked="pharmacy.connector.type === 'pharma_clik_rx'"><span></span> PharmaClik Rx
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="type" ng-model="pharmacy.connector.type" value="none"  ng-checked="pharmacy.connector.type === 'none'"><span></span> None
+                                  </label>
+                              </div>
+                          </div>
+
+                          <div ng-show="pharmacy.connector.type !== 'none'">
+                            <div class="form-group" ng-class="{ 'has-error' : pharmacy.connector.type !== 'none' && pharmacyForm.connector_username.$invalid && (!pharmacyForm.connector_username.$pristine || pharmacyForm.$submitted)}">
+                                <div class="col-xs-12">
+                                    <label for="connector_username">Enter Username</label>
+                                    <input class="form-control input-lg" type="text" name="connector_username" ng-model="pharmacy.connector.username" ng-required="pharmacy.connector.type !== 'none'">
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-class="{ 'has-error' : pharmacy.connector.type !== 'none' && pharmacyForm.connector_password.$invalid && (!pharmacyForm.connector_password.$pristine || pharmacyForm.$submitted)}">
+                                <div class="col-xs-12">
+                                    <label for="connector_password">Enter Password</label>
+                                    <input class="form-control input-lg" type="password" name="connector_password" ng-model="pharmacy.connector.password" ng-required="pharmacy.connector.type !== 'none'">
+                                </div>
+                            </div>
+                          </div>
+
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="working_hours">Working Hours</label>
+                                  <table class="table table-hover" >
+                                      <tbody>
+                                          <tr>
+                                              <th class="col-xs-5">Day</th>
+                                              <th class="col-xs-5">Operation</th>
+                                              <th class="col-xs-2"></th>
+                                          </tr>
+                                          <tr ng-repeat="(key, item) in pharmacy.working_hours">
+                                              <td>{{ dayNames[key] }}</td>
+                                              <td>{{ item[0].h | doubledigits }}:{{ item[0].m | doubledigits }} - {{ item[1].h | doubledigits }}:{{ item[0].m | doubledigits }}</td>
+                                              <td class="text-right">
+                                                  <button class="btn btn-xs btn-danger" type="button" ng-click="removeHour(key)"><i class="fa fa-minus"></i></button>
+                                              </td>
+                                          </tr>
+                                          <tr ng-show="noWorkingHours()">
+                                              <td colspan="3">
+                                                  <p class="text-danger">No working hours set</p>
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td>
+                                                  <select class="form-control" ng-model="newhour.day">
+                                                      <option value="">Choose a day</option>
+                                                      <option value="wd">Weekdays (Mon-Fri)</option>
+                                                      <option value="mon">Monday</option>
+                                                      <option value="tue">Tuesday</option>
+                                                      <option value="wed">Wednesday</option>
+                                                      <option value="thu">Thursday</option>
+                                                      <option value="fri">Friday</option>
+                                                      <option value="we">Weekends (Sat-Sun)</option>
+                                                      <option value="sat">Saturday</option>
+                                                      <option value="sun">Sunday</option>
+                                                  </select>
+                                              </td>
+                                              <td colspan="2">
+                                                  <select class="form-control half-width" ng-model="newhour.open">
+                                                      <option value="">Open</option>
+                                                      <option value="12:00">12:00</option>
+                                                      <option value="12:30">12:30</option>
+                                                      <option value="1:00">1:00</option>
+                                                      <option value="1:30">1:30</option>
+                                                      <option value="2:00">2:00</option>
+                                                      <option value="2:30">2:30</option>
+                                                      <option value="3:00">3:00</option>
+                                                      <option value="3:30">3:30</option>
+                                                      <option value="4:00">4:00</option>
+                                                      <option value="4:30">4:30</option>
+                                                      <option value="5:00">5:00</option>
+                                                      <option value="5:30">5:30</option>
+                                                      <option value="6:00">6:00</option>
+                                                      <option value="6:30">6:30</option>
+                                                      <option value="7:00">7:00</option>
+                                                      <option value="7:30">7:30</option>
+                                                      <option value="8:00">8:00</option>
+                                                      <option value="8:30">8:30</option>
+                                                      <option value="9:00">9:00</option>
+                                                      <option value="9:30">9:30</option>
+                                                      <option value="10:00">10:00</option>
+                                                      <option value="10:30">10:30</option>
+                                                      <option value="11:00">11:00</option>
+                                                      <option value="11:30">11:30</option>
+                                                      <option value="12:00">12:00</option>
+                                                      <option value="12:30">12:30</option>
+                                                      <option value="13:00">13:00</option>
+                                                      <option value="13:30">13:30</option>
+                                                      <option value="14:00">14:00</option>
+                                                      <option value="14:30">14:30</option>
+                                                  </select>
+                                                  -
+                                                  <select class="form-control half-width" ng-model="newhour.close">
+                                                      <option value="">Close</option>
+                                                      <option value="11:00">11:00</option>
+                                                      <option value="11:30">11:30</option>
+                                                      <option value="12:00">12:00</option>
+                                                      <option value="12:30">12:30</option>
+                                                      <option value="13:00">13:00</option>
+                                                      <option value="13:30">13:30</option>
+                                                      <option value="14:00">14:00</option>
+                                                      <option value="14:30">14:30</option>
+                                                      <option value="15:00">15:00</option>
+                                                      <option value="15:30">15:30</option>
+                                                      <option value="16:00">16:00</option>
+                                                      <option value="16:30">16:30</option>
+                                                      <option value="17:00">17:00</option>
+                                                      <option value="17:30">17:30</option>
+                                                      <option value="18:00">18:00</option>
+                                                      <option value="18:30">18:30</option>
+                                                      <option value="19:00">19:00</option>
+                                                      <option value="19:30">19:30</option>
+                                                      <option value="20:00">20:00</option>
+                                                      <option value="20:30">20:30</option>
+                                                      <option value="21:00">21:00</option>
+                                                      <option value="21:30">21:30</option>
+                                                      <option value="22:00">22:00</option>
+                                                      <option value="22:30">22:30</option>
+                                                      <option value="23:00">23:00</option>
+                                                      <option value="23:30">23:30</option>
+                                                  </select>
+                                              </td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                                  <a class="link-effect" href="javascript:void(0)" ng-click="addHour()">+ Add another hour</a>
+                              </div>
+                          </div>
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.main_phone.$invalid && (!pharmacyForm.main_phone.$pristine || pharmacyForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="main_phone">Main Phone</label>
+                                  <input class="form-control input-lg" type="text" id="main_phone" name="main_phone" ng-model="pharmacy.main_phone" placeholder="Enter main phone" required>
+                                  <p ng-show="pharmacyForm.main_phone.$error.required && (!pharmacyForm.main_phone.$pristine || pharmacyForm.$submitted)" class="help-block">Main phone number is required.</p>
+                              </div>
+                          </div>
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.rx_phone.$invalid && (!pharmacyForm.rx_phone.$pristine || pharmacyForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="rx_phone">Rx Phone</label>
+                                  <input class="form-control input-lg" type="text" id="rx_phone" name="rx_phone" ng-model="pharmacy.rx_phone" placeholder="Enter Rx phone" required>
+                                  <p ng-show="pharmacyForm.rx_phone.$error.required && (!pharmacyForm.rx_phone.$pristine || pharmacyForm.$submitted)" class="help-block">Rx phone number is required.</p>
+                              </div>
+                          </div>
+
+                          <div class="form-group" ng-class="{ 'has-error' : pharmacyForm.fax.$invalid && (!pharmacyForm.fax.$pristine || pharmacyForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="fax">Fax</label>
+                                  <input class="form-control input-lg" type="text" id="fax" name="fax" ng-model="pharmacy.main_fax" placeholder="Enter main fax" required>
+                                  <p ng-show="pharmacyForm.fax.$error.required && (!pharmacyForm.fax.$pristine || pharmacyForm.$submitted)" class="help-block">Fax is required.</p>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!-- END General Tab -->
+
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">pharmacy profile has been saved.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save Changes</button>
+                <button class="btn btn-sm btn-warning" type="button" ui-sref="pharmacy-view({pharmacyId: pharmacy.id})"><i class="fa fa-undo push-5-r"></i> Cancel</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

@@ -1,0 +1,226 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                New Delivery Order
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Delivery Orders</li>
+                <li><a class="link-effect" href="">Create</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+
+  <!-- Main Content -->
+  <form name="orderForm" ng-submit="save(orderForm.$valid)" novalidate>
+      <div class="block">
+          <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+              <li class="">
+                  <a href="#tab-orders"><i class="fa fa-fw fa-file-text-o"></i> Orders</a>
+              </li>
+          </ul> -->
+          <div class="block-content tab-content">
+              <!-- General Tab -->
+              <div class="tab-pane fade in active" id="tab-general">
+                  <div class="row items-push">
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group" ng-class="{ 'has-error' : orderForm.time_from_format.$invalid && (!orderForm.time_from_format.$pristine || orderForm.$submitted)}">
+                              <label class="col-xs-12" for="dob">Time From</label>
+                              <div class="col-xs-12">
+                                <div class="dropdown" ng-class="{ 'has-error' : orderForm.time_from.$invalid && (!orderForm.time_from.$pristine || orderForm.$submitted)}">
+                                    <a class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);return false;">
+                                      <div class="input-group date">
+                                        <input type="text" class="form-control" data-ng-model="order.time_from_format" data-date-time-input="YYYY-MM-DD hh:mm A" ng-change="onTimeFromSet()">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                      </div>
+                                    </a>
+                                    <ul class="dropdown-menu " role="menu" aria-labelledby="dLabel">
+                                      <datetimepicker name="time_from" data-ng-model="order.time_from_format" data-datetimepicker-config="{ dropdownSelector: '#dropdown1', renderOn: 'time-to-changed'}" data-before-render="beforeRenderStartDate($view, $dates, $leftDate, $upDate, $rightDate)" data-on-set-time="onTimeFromSet(newDate, oldDate)" ng-required="true"/>
+                                    </ul>
+                                    <p ng-show="orderForm.time_from_format.$error.required && (!orderForm.time_from_format.$pristine || orderForm.$submitted)" class="help-block">Time From is required.</p>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="form-group" ng-class="{ 'has-error' : orderForm.time_to_format.$invalid && (!orderForm.time_to_format.$pristine || orderForm.$submitted)}">
+                              <label class="col-xs-12" for="dob">Time To</label>
+                              <div class="col-xs-12">
+                                <div class="dropdown" ng-class="{ 'has-error' : orderForm.time_to.$invalid && (!orderForm.time_to.$pristine || orderForm.$submitted)}">
+                                  <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#" href="javascript:void(0);return false;">
+                                    <div class="input-group date">
+                                      <input type="text" class="form-control" data-ng-model="order.time_to_format" data-date-time-input="YYYY-MM-DD hh:mm A" ng-change="onTimeToSet()">
+                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                  </a>
+                                  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <datetimepicker name="time_to" data-ng-model="order.time_to_format" data-datetimepicker-config="{ dropdownSelector: '#dropdown2', renderOn: 'time-from-changed'}" data-before-render="beforeRenderEndDate($view, $dates, $leftDate, $upDate, $rightDate)" data-on-set-time="onTimeToSet(newDate, oldDate)" ng-required="true"/>
+                                  </ul>
+                                  <p ng-show="orderForm.time_to_format.$error.required && (!orderForm.time_to_format.$pristine || orderForm.$submitted)" class="help-block">Time To is required.</p>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-xs-12">Recipient</label>
+                              <div class="col-xs-12">
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="recipient_type" ng-model="recipient" value="patient"><span></span> Patient
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary">
+                                      <input type="radio" name="recipient_type" ng-model="recipient" value="facility"><span></span> Facility
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-show="recipient=='patient'" ng-class="{ 'has-error' : recipient=='patient' && orderForm.patient.$invalid && (!orderForm.patient.$pristine || orderForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="patient_key">Patient Name</label>
+                                  <input class="form-control input-lg" type="text" name="patient_key" ng-model="patient_key" ng-change="searchPatient()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search patients here" autocomplete="off">
+                                  <select class="form-control" ng-show="patient_key && !orderForm.patient_key.$pristine" id="patient" name="patient" ng-options="patient as patient.first_name + ' ' + patient.last_name for patient in patients_list" size="6" ng-model="order.recipient.patient" ng-required="recipient=='patient'" ng-change="patientChosen(orderForm.patient_key)">
+                                  </select>
+                                  <p ng-show="recipient=='patient' && orderForm.patient.$error.required && (!orderForm.patient.$pristine || orderForm.$submitted)" class="help-block">Patient is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group" ng-show="recipient=='facility'" ng-class="{ 'has-error' : recipient=='facility' && orderForm.facility.$invalid && (!orderForm.facility.$pristine || orderForm.$submitted)}">
+                              <div class="col-xs-12">
+                                  <label for="facility_key">Facility Name</label>
+                                  <input class="form-control input-lg" type="text" name="facility_key" ng-model="facility_key" ng-change="searchFacility()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search facilities here" autocomplete="off">
+                                  <select class="form-control" ng-show="facility_key && !orderForm.facility_key.$pristine" id="facility" name="facility" ng-options="facility as facility.name + ' (' + facility.address.description + ')' for facility in facilities_list" size="6" ng-model="order.recipient.facility" ng-required="recipient=='facility'" ng-change="facilityChosen(orderForm.facility_key)">
+                                    <option value="">Choose a recipient facility</option>
+                                  </select>
+                                  <p ng-show="recipient=='facility' && orderForm.facility.$error.required && (!orderForm.facility.$pristine || orderForm.$submitted)" class="help-block">Facility is required.</p>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-xs-12">{{ recipient | capitalize }} Sign Required</label>
+                              <div class="col-xs-12">
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="recipient_sign_required" ng-model="order.recipient_sign_required" value="true"><span></span> Yes
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary">
+                                      <input type="radio" name="recipient_sign_required" ng-model="order.recipient_sign_required" value="false"><span></span> No
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="patient_key">Assign a driver</label>
+                                  <select class="form-control" id="delivery_id" name="delivery_id" ng-options="driver.id as driver.profile.first_name + ' ' + driver.profile.last_name for driver in drivers_list" size="1" ng-model="order.delivery_id" >
+                                    <option value="">Choose a driver</option>
+                                  </select>
+                                  <p class="help-block">The chosen driver will be notified.</p>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="col-xs-12">Delivery Sign Required</label>
+                              <div class="col-xs-12">
+                                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                      <input type="radio" name="delivery_sign_required" ng-model="order.delivery_sign_required" value="true"><span></span> Yes
+                                  </label>
+                                  <label class="css-input css-radio css-radio-primary">
+                                      <input type="radio" name="delivery_sign_required" ng-model="order.delivery_sign_required" value="false"><span></span> No
+                                  </label>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="notes">Notes</label>
+                                  <!-- <input class="form-control input-lg" type="text" id="npi" name="npi" ng-model="order.npi" placeholder="Enter NPI" required> -->
+                                  <textarea class="form-control input-lg" id="notes" rows=6 name="notes" ng-model="order.notes" placeholder="Enter Notes"></textarea>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group">
+                              <div class="col-xs-12">
+                                  <label for="orders">Orders</label>
+                                  <div class="table-responsive">
+                                      <table class="table table-hover table-striped">
+                                          <thead>
+                                              <tr>
+                                                <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                                                <th ng-click="orderby='[patient.first_name, patient.last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Patient</a></th>
+                                                <th ng-click="orderby='[doctor.first_name, doctor.last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Doctor</a></th>
+                                                <th ng-click="orderby='pharmacy.name'; reverse=!reverse;"><a href="javascript:void(0)">Pharmacy</a></th>
+                                                <th></th>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              <tr ng-repeat="rx_order in rx_orders | orderBy:orderby:reverse">  <!-- | limitTo:page_size -->
+                                                <td>{{ rx_order.id }}</td>
+                                                <td>{{ rx_order.patient.first_name }} {{ rx_order.patient.last_name }}</td>
+                                                <td>{{ rx_order.doctor.first_name }} {{ rx_order.doctor.last_name }}</td>
+                                                <td>{{ rx_order.pharmacy.name }}</td>
+                                                <td class="text-right">
+                                                  <button class="btn btn-xs btn-danger" type="button" ng-click="removeRxOrder(rx_order)"><i class="fa fa-minus"></i></button>
+                                                </td>
+                                              </tr>
+                                          </tbody>
+                                      </table>
+                                      <p ng-show="rx_orders.length == 0" class="text-danger">No Orders Added.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group">
+                              <label class="col-xs-12" for="dob">Add Orders</label>
+                              <div class="col-xs-12">
+                                  <select class="form-control" id="order_id" name="order_id" ng-options="order as '#' + order.id + ' / ' + order.patient.first_name + ' ' +  order.patient.last_name + ' / ' + order.doctor.first_name + ' ' +  order.doctor.last_name + ' / ' + order.pharmacy.name for order in orders_list_filtered " size="6" ng-model="rx_order">
+                                    <option value="">Choose a order</option>
+                                  </select>
+                                  <p ng-show="orders_list_filtered.length == 0 && rx_orders.length == 0" class="text-danger push-10-t">The patient you selected has no rx orders yet</span>
+                              </div>
+                          </div>
+                          <div class="form-group text-right">
+                            <div class="col-xs-12">
+                              <button ng-disabled="orders_list_filtered.length == 0" class="btn btn-xs btn-primary" type="button" ng-click="addRxOrder()"><i class="fa fa-plus push-5-r"></i> Add</button>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                          <div class="form-group" ng-show="rx_orders.length == 0" ng-class="{ 'has-error' : orderForm.pharmacy.$invalid && (!orderForm.pharmacy.$pristine || orderForm.$submitted) }">
+                              <div class="col-xs-12">
+                                  <label for="facility_key">Pharmacy Name</label>
+                                  <input class="form-control input-lg" type="text" name="pharmacy_key" ng-model="pharmacy_key" ng-change="searchPharmacy()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search pharmacists here" autocomplete="off">
+                                  <select class="form-control" id="pharmacy" name="pharmacy" ng-options="pharmacy as pharmacy.name + ' (' + pharmacy.address.description + ')' for pharmacy in pharmacies_list" size="6" ng-model="order.pharmacy" ng-required="rx_orders.length == 0" ng-change="pharmacyChosen(orderForm.pharmacy_key)">
+                                    <option value="">Choose a pharmacy</option>
+                                  </select>
+                                  <p ng-show="orderForm.pharmacy.$error.required && (!orderForm.pharmacy.$pristine || orderForm.$submitted)" class="help-block">Pharmacy is required if you didn't add an order.</p>
+                              </div>
+                          </div>
+                      </div>
+
+                  </div>
+              </div>
+              <!-- END General Tab -->
+
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">Deliver Order has been created.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save</button>
+                <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

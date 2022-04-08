@@ -1,0 +1,82 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Invite a user to pharmacy
+            </h1>
+            <a ui-sref="pharmacy-view({pharmacyId: pharmacyId})" class="btn btn-sm btn-primary push-10-t" title="Back to pharmacy"><i class="fa fa-reply push-5-r"></i> {{pharmacy.name}}</a>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Pharmacies</li>
+                <li><a class="link-effect" href="">Invite a user</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()">
+  <!-- Main Content -->
+  <form name="inviteForm" ng-submit="sendInvite(inviteForm)" novalidate>
+      <div class="block">
+          <div class="block-content tab-content">
+              <div class="row items-push">
+                  <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.role.$invalid && (!inviteForm.first_name.$pristine || inviteFormSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="type">User Type</label>
+                              <select name="type" ng-model="inviteuser.role" ng-init="inviteuser.role = inviteuser.role || 'pharmacist'" class="form-control">
+                                  <option value="delivery">Driver</option>
+                                  <option value="pharmacist">Pharmacist</option>
+                                  <option value="pharmacy_admin">Pharmacy Admin</option>
+                              </select>
+                              <p ng-show="inviteForm.role.$error.required && (!inviteForm.role.$pristine || inviteFormSubmitted)" class="help-block">First name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.first_name.$invalid && (!inviteForm.first_name.$pristine || inviteFormSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="first_name">First Name</label>
+                              <input class="form-control input-lg" type="text" id="first_name" name="first_name" ng-model="inviteuser.profile.first_name" placeholder="Enter first name" required>
+                              <p ng-show="inviteForm.first_name.$error.required && (!inviteForm.first_name.$pristine || inviteFormSubmitted)" class="help-block">First name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.last_name.$invalid && (!inviteForm.last_name.$pristine || inviteFormSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="last_name">Last Name</label>
+                              <input class="form-control input-lg" type="text" id="last_name" name="last_name" ng-model="inviteuser.profile.last_name" placeholder="Enter last name" required>
+                              <p ng-show="inviteForm.last_name.$error.required && (!inviteForm.last_name.$pristine || inviteFormSubmitted)" class="help-block">Last name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.email.$invalid && (!inviteForm.email.$pristine || inviteFormSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="email">Email Address</label>
+                              <input class="form-control input-lg" type="text" id="email" name="email" ng-model="inviteuser.profile.email" placeholder="Enter email" required>
+                              <p ng-show="inviteForm.email.$error.required && (!inviteForm.email.$pristine || inviteFormSubmitted)" class="help-block">Email is required.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="inviteFailed"class="text-danger">Invitation failed. {{ invite_error_m | etranslate }}</p>
+                <p ng-show="inviteSuccess" class="text-success">Invitation has been sent to this user.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-paper-plane push-5-r"></i> Invite</button>
+                <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

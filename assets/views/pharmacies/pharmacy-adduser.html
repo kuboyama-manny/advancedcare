@@ -1,0 +1,55 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Add existing user to pharmacy
+            </h1>
+            <a ui-sref="pharmacy-view({pharmacyId: pharmacyId})" class="btn btn-sm btn-primary push-10-t" title="Back to pharmacy"><i class="fa fa-reply push-5-r"></i> {{pharmacy.name}}</a>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Pharmacies</li>
+                <li><a class="link-effect" href="">Add a user</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData()">
+  <!-- Main Content -->
+  <div class="block-content block-content-full">
+    <div class="row items-push">
+      <div class="col-sm-6 col-sm-offset-3">
+        <div class="form-group">
+          <label>Select User Type</label>
+          <select class="form-control" id="role" name="user_role" ng-model="user_role">
+              <option value="pharmacist">Pharmacist</option>
+              <option value="delivery">Driver</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Search User</label>
+          <input class="form-control input-lg" type="text" name="user_key" ng-model="user_key" ng-change="searchUsers()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Name, Email or Phone Number" autocomplete="off">
+        </div>
+        <div class="form-group" ng-show="user_key && !pharmacyForm.user_key.$pristine" >
+          <label>Choose User</label>
+          <select class="form-control" id="existing_user" name="existing_user" ng-options="user as user.first_name + ' ' + user.last_name + ' (' + user.login + ')' for user in users_list" size="6" ng-model="chosenUser" ng-change="userChosen(pharmacyForm.user_key)">
+            </select>
+        </div>
+        <div class="form-group">
+          <p ng-show="addExistingUserFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+          <p ng-show="addExistingUserSuccess" class="text-success">User is added to this pharmacy.</p>
+          <button class="btn btn-primary" type="button" ng-disabled="!chosenUser || chosenUser.role != 'pharmacist'" ng-click="addExistingUser('pharmacist', false)"><i class="fa fa-plus"></i> Pharmacist</button>
+          <button class="btn btn-warning" type="button" ng-disabled="!chosenUser || chosenUser.role != 'pharmacist'" ng-click="addExistingUser('admin', false)"><i class="fa fa-user"></i> Admin</button>
+          <button class="btn btn-primary" type="button" ng-disabled="!chosenUser || chosenUser.role != 'delivery'" ng-click="addExistingUser('driver', true)"><i class="fa fa-truck"></i> Driver</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

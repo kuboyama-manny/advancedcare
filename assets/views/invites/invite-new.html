@@ -1,0 +1,99 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+    <div class="row items-push">
+        <div class="col-sm-7">
+            <h1 class="page-heading">
+                Invite a user
+            </h1>
+        </div>
+        <div class="col-sm-5 text-right hidden-xs">
+            <ol class="breadcrumb push-10-t">
+                <li>Users</li>
+                <li><a class="link-effect" href="">Invite a user</a></li>
+            </ol>
+        </div>
+    </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+  <!-- Main Content -->
+  <form name="inviteForm" ng-submit="save(inviteForm.$valid)" novalidate>
+      <div class="block">
+          <div class="block-content tab-content">
+              <div class="row items-push">
+                  <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.role.$invalid && (!inviteForm.first_name.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="type">User Type</label>
+                              <select name="type" ng-model="newuser.role_id" ng-init="newuser.role_id = newuser.role_id || '1'" class="form-control">
+                                  <option ng-repeat="role in roles" value='{{role.id}}'>{{ role.name }}</option>
+                              </select>
+                              <p ng-show="inviteForm.role.$error.required && (!inviteForm.role.$pristine || formSubmitted)" class="help-block">First name is required.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.first_name.$invalid && (!inviteForm.first_name.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="first_name">First Name</label>
+                              <input class="form-control input-lg" type="text" id="first_name" name="first_name" ng-model="newuser.profile.first_name" ng-pattern= "/^[a-z0-9\s]+$/i"placeholder="Enter first name" required>
+                              <p ng-show="inviteForm.first_name.$error.required && (!inviteForm.first_name.$pristine || formSubmitted)" class="help-block">First name is required.</p>
+                              <p ng-show="!inviteForm.first_name.$valid && !inviteForm.first_name.$error.required && (!inviteForm.first_name.$pristine || formSubmitted)" class="help-block">First Name can only contain alphanumeric characters.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.last_name.$invalid && (!inviteForm.last_name.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="last_name">Last Name</label>
+                              <input class="form-control input-lg" type="text" id="last_name" name="last_name" ng-model="newuser.profile.last_name" ng-pattern= "/^[a-z0-9\s]+$/i" placeholder="Enter last name" required>
+                              <p ng-show="inviteForm.last_name.$error.required && (!inviteForm.last_name.$pristine || formSubmitted)" class="help-block">Last name is required.</p>
+                              <p ng-show="!inviteForm.last_name.$valid && inviteForm.last_name.$error.required && (!inviteForm.last_name.$pristine || formSubmitted)" class="help-block">Last Name can only contain alphanumeric characters.</p>
+                          </div>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : inviteForm.email.$invalid && (!inviteForm.email.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="email">Email Address</label>
+                              <input class="form-control input-lg" type="text" id="email" name="email" ng-model="newuser.profile.email" placeholder="Enter email" required>
+                              <p ng-show="inviteForm.email.$error.required && (!inviteForm.email.$pristine || formSubmitted)" class="help-block">Email is required.</p>
+                          </div>
+                      </div>
+                      <!-- <div class="form-group" ng-class="{ 'has-error' : inviteForm.phone_number.$invalid && (!inviteForm.phone_number.$pristine || formSubmitted)}">
+                          <div class="col-xs-12">
+                              <label for="phone_number">Phone</label>
+                              <input class="form-control input-lg" type="text" id="phone_number" name="phone_number" ng-model="newuser.profile.phone_number" placeholder="Enter phone number" required>
+                              <p ng-show="inviteForm.phone_number.$error.required && (!inviteForm.phone_number.$pristine || formSubmitted)" class="help-block">Phone number is required.</p>
+                          </div>
+                      </div> -->
+                      <!-- <div class="form-group">
+                          <label class="col-xs-12">Gender</label>
+                          <div class="col-xs-12">
+                              <label class="css-input css-radio css-radio-primary push-10-r">
+                                  <input type="radio" name="gender" ng-model="newuser.profile.gender" value="F"><span></span> Female
+                              </label>
+                              <label class="css-input css-radio css-radio-primary">
+                                  <input type="radio" name="gender" ng-model="newuser.profile.gender" value="M"><span></span> Male
+                              </label>
+                          </div>
+                      </div> -->
+                  </div>
+              </div>
+          </div>
+          <div class="block-content block-content-full bg-gray-lighter">
+            <div class="row items-push">
+              <div class="col-sm-6 col-sm-offset-3">
+                <p ng-show="saveFailed"class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                <p ng-show="saveSuccess" class="text-success">Invitation has been sent to this user.</p>
+              </div>
+            </div>
+            <div class="row text-center">
+              <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-paper-plane push-5-r"></i> Invite</button>
+                <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+              </div>
+            </div>
+          </div>
+      </div>
+  </form>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

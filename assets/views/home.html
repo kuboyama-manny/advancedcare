@@ -1,0 +1,305 @@
+<!-- Stats -->
+<div class="content bg-white border-b">
+    <div class="row items-push text-uppercase">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Documents</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> Today (Missing)</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="docs()">{{ documents.orders_today }}</a>
+            <a class="h2 font-w300 text-warning animated flipInX" href="javascript:void(0)" ng-click="toDocSearch('today')" >({{ documents.orders_today_missing }})</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Documents</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Week (Missing)</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="docs()">{{ documents.orders_this_week }}</a>
+            <a class="h2 font-w300 text-warning animated flipInX" href="javascript:void(0)" ng-click="toDocSearch('week')">({{ documents.orders_this_week_missing }})</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Documents</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Month (Missing)</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="docs()">{{ documents.orders_this_month }}</a>
+            <a class="h2 font-w300 text-warning animated flipInX" href="javascript:void(0)" ng-click="toDocSearch('month')">({{ documents.orders_this_month_missing }})</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Documents</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Year (Missing)</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="docs()">{{ documents.orders_this_year }}</a>
+            <a class="h2 font-w300 text-warning animated flipInX" href="javascript:void(0)" ng-click="toDocSearch('year')">({{ documents.orders_this_year_missing }})</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Rx Orders</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> Today</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="orders()">{{ dataset.orders_today }}</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Rx Orders</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Week</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="orders()">{{ dataset.orders_this_week }}</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Deliveries</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> Today</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="delivery-orders-list()">{{ dataset.deliveries_today }}</a>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-w700 text-gray-darker animated fadeIn">Deliveries</div>
+            <div class="text-muted animated fadeIn"><small><i class="si si-calendar"></i> This Week</small></div>
+            <a class="h2 font-w300 text-primary animated flipInX" ui-sref="delivery-orders-list()">{{ dataset.deliveries_this_week }}</a>
+        </div>
+    </div>
+</div>
+<!-- END Stats -->
+
+<!-- Documents graph -->
+<div class="content hidden">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Dashboard Chart -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Documents</h3>
+                </div>
+                <div class="block-content block-content-full bg-gray-lighter text-center">
+                    <!-- Chart.js Chart (.js-dash-chartjs-lines is initialized in js/controllers.js -> 'DashboardCtrl' Controller), for more examples you can check out http://www.chartjs.org/docs/ -->
+                    <div style="height: 374px;"><canvas class="js-dash-chartjs-lines-docs"></canvas></div>
+                </div>
+                <div class="block-content text-center">
+                    <div class="row items-push text-center">
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-graph fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">Sales Growth</div>
+                            <div class="h4 font-w300 text-muted" ng-class="{'text-success' : documents.sales_growth > 0, 'text-danger' : documents.sales_growth < 0}">{{ documents.sales_growth | number:0 }}%</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-users fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">New Customers</div>
+                            <div class="h4 font-w300 text-muted">{{ documents.new_customers | number:0 }}</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-clock fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">AVG Processing Time</div>
+                            <div class="h4 font-w300 text-muted">?? min.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Main Dashboard Chart -->
+        </div>
+        <div class="col-lg-4">
+            <!-- Latest Sales Widget -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Latest Documents</h3>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                    <div class="row items-push">
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 24 hrs</small></div>
+                            <div class="font-w600">{{ documents.orders_in_24hours | number:0 }} Documents</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 7 days</small></div>
+                            <div class="font-w600">{{ documents.orders_in_7days | number:0 }} Documents</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> This Month</small></div>
+                            <div class="font-w600">{{ documents.orders_this_month | number:0 }} Documents</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="pull-t pull-r-l">
+                        <!-- Slick slider (data-js-slider attribute is initialized in js/directives.js) -->
+                        <!-- For more info and examples you can check out http://kenwheeler.github.io/slick/ -->
+                        <div class="js-slider remove-margin-b">
+                            <div>
+                                <table class="table remove-margin-b font-s13">
+                                    <tbody>
+                                        <tr ng-repeat="order in documents.latest_orders.list | startFrom:0 | limitTo:10">
+                                            <td class="font-w600"><a ui-sref="order-detail({orderId: order.id})">{{ order.patient.first_name }} {{ order.patient.last_name }}</a></td>
+                                            <td class="hidden-xs text-muted text-right" style="width: 95px;">{{ order.status_at | date: 'MM/dd HH:mm' }}</td>
+                                            <td class="font-w600 text-success text-right" style="width: 70px;">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- END Slick slider -->
+                    </div>
+                </div>
+            </div>
+            <!-- END Latest Sales Widget -->
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="content">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Dashboard Chart -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Orders Summary</h3>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-info push-15-l" ng-click="queryStat('week')">This Week</button>
+                        <button type="button" class="btn btn-info push-15-l" ng-click="queryStat('month')">This Month</button>
+                        <button type="button" class="btn btn-info push-15-l" ng-click="queryStat('year')">This Year</button>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+                <div class="block-content block-content-full bg-gray-lighter text-center">
+                    <div style="height: 374px;">
+                      <canvas ng-show="period == 'week'" class="js-dash-chartjs-week"></canvas>
+                      <canvas ng-show="period == 'month'" class="js-dash-chartjs-month"></canvas>
+                      <canvas ng-show="period == 'year'" class="js-dash-chartjs-year"></canvas>
+                      </div>
+                    <div id="legendDiv" class="legendDiv"></div>
+                </div>
+                <div class="block-content text-center">
+                    <div class="row items-push text-center">
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-graph fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">Sales Growth</div>
+                            <div class="h4 font-w300 text-muted" ng-class="{'text-success' : dataset.sales_growth > 0, 'text-danger' : dataset.sales_growth < 0}">{{ dataset.sales_growth | number:0 }}%</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-users fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">New Customers</div>
+                            <div class="h4 font-w300 text-muted">{{ dataset.new_customers | number:0 }}</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-clock fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">AVG Processing Time</div>
+                            <div class="h4 font-w300 text-muted">?? min.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Main Dashboard Chart -->
+        </div>
+        <div class="col-lg-4">
+            <!-- Latest Sales Widget -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Latest Orders</h3>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                    <div class="row items-push">
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 24 hrs</small></div>
+                            <div class="font-w600">{{ dataset.orders_in_24hours | number:0 }} Orders</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 7 days</small></div>
+                            <div class="font-w600">{{ dataset.orders_in_7days | number:0 }} Orders</div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> This Month</small></div>
+                            <div class="font-w600">{{ dataset.orders_this_month | number:0 }} Orders</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="pull-t pull-r-l">
+                        <!-- Slick slider (data-js-slider attribute is initialized in js/directives.js) -->
+                        <!-- For more info and examples you can check out http://kenwheeler.github.io/slick/ -->
+                        <div class="js-slider remove-margin-b">
+                            <div>
+                                <table class="table remove-margin-b font-s13">
+                                    <tbody>
+                                        <tr ng-repeat="order in dataset.latest_orders.list | startFrom:0 | limitTo:10">
+                                            <td class="font-w600"><a ui-sref="order-detail({orderId: order.id})">{{ order.patient.first_name }} {{ order.patient.last_name }}</a></td>
+                                            <td class="hidden-xs text-muted text-right" style="width: 95px;">{{ order.status_at | date: 'MM/dd HH:mm' }}</td>
+                                            <td class="font-w600 text-success text-right" style="width: 70px;">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- END Slick slider -->
+                    </div>
+                </div>
+            </div>
+            <!-- END Latest Sales Widget -->
+        </div>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="content hidden">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Dashboard Chart -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Delivery Orders</h3>
+                </div>
+                <div class="block-content block-content-full bg-gray-lighter text-center">
+                    <!-- Chart.js Chart (.js-dash-chartjs-lines is initialized in js/controllers.js -> 'DashboardCtrl' Controller), for more examples you can check out http://www.chartjs.org/docs/ -->
+                    <div style="height: 374px;"><canvas class="js-chartjs-bars"></canvas></div>
+                </div>
+                <div class="block-content text-center">
+                    <div class="row items-push text-center">
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-graph fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">Delivery Growth</div>
+                            <div class="h4 font-w300 text-muted" ng-class="{'text-success' : dataset.delivery_growth > 0, 'text-danger' : dataset.delivery_growth < 0}">{{ dataset.delivery_growth | number:0 }}%</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-users fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">Assigned Drivers</div>
+                            <div class="h4 font-w300 text-muted">{{ dataset.assigned_drivers | number:0 }}</div>
+                        </div>
+                        <div class="col-xs-12 col-lg-4 visible-lg">
+                            <div class="push-10"><i class="si si-clock fa-2x"></i></div>
+                            <div class="h5 font-w300 text-muted">On-time Delivery</div>
+                            <div class="h4 font-w300 text-muted">{{ dataset.delivery_on_time | number:0 }}%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Main Dashboard Chart -->
+        </div>
+        <div class="col-lg-4">
+            <!-- Latest Sales Widget -->
+            <div class="block">
+                <div class="block-header">
+                    <h3 class="block-title">Latest Deliveries</h3>
+                </div>
+                <div class="block-content bg-gray-lighter">
+                    <div class="row items-push">
+                        <div class="col-xs-6">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 24 hrs</small></div>
+                            <div class="font-w600">{{ dataset.delivery_in_24hours | number:0 }} Deliveries</div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="text-muted"><small><i class="si si-calendar"></i> 7 days</small></div>
+                            <div class="font-w600">{{ dataset.delivery_in_7days | number:0 }} Deliveries</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="pull-t pull-r-l">
+                        <div class="js-slider remove-margin-b">
+                            <div>
+                                <table class="table remove-margin-b font-s13">
+                                    <tbody>
+                                        <tr ng-repeat="order in dataset.latest_delivery_orders.orders | startFrom:0 | limitTo:10">
+                                            <td class="font-w600"><a ui-sref="delivery-order-detail({orderId: order.id})">{{ order.patient.first_name }} {{ order.patient.last_name }}</a></td>
+                                            <td class="hidden-xs text-muted text-right" style="width: 95px;">{{ order.delivery.ping.ping_at | date: 'MM/dd HH:mm' }}</td>
+                                            <td class="font-w600 text-right" style="width: 70px;"><a href="#" class="btn btn-xs" ng-class="{'btn-success' : order.status == 'delivered', 'btn-info' : order.status == 'in_delivery', 'btn-warning' : text.status == 'waiting_for_delivery', 'btn-danger' : order.status == 'delayed' }">{{ order_status_labels[order.status] }}</a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- END Slick slider -->
+                    </div>
+                </div>
+            </div>
+            <!-- END Latest Sales Widget -->
+        </div>
+    </div>
+</div>
+
+<!-- END Page Content -->

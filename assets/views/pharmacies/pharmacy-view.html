@@ -1,0 +1,107 @@
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+      <div class="block-content">
+          <div class="row">
+              <div class="col-sm-12 text-right push-10">
+                  <a class="btn btn-sm btn-primary pull-right" ui-sref="pharmacy-edit({pharmacyId: pharmacyId})" ng-show="check('pharmacy', 'edit')"><i class="fa fa-pencil"></i> Edit</a>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-6">
+                  <!-- General Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <h3 class="block-title">General Information</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="h4 push-5">{{ pharmacy.name }}</div>
+                          <i class="si push-5-r si-badge"></i> {{ pharmacy.type | capitalize }} <br>
+                          <span ng-repeat="(key, item) in pharmacy.working_hours">
+                            <i class="si push-5-r si-clock"></i> {{ dayNames[key] }} {{ item[0].h | doubledigits }}:{{ item[0].m | doubledigits }}-{{ item[1].h | doubledigits }}:{{ item[0].m | doubledigits }} <br>
+                          </span>
+                      </div>
+                  </div>
+                  <!-- END General Info -->
+              </div>
+              <div class="col-sm-6">
+                  <!-- Contact Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <h3 class="block-title">Contact Information</h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <address>
+                              <span ng-show="pharmacy.address.description"><i class="fa fa-map-marker push-5-r"></i> {{ pharmacy.address.description }}<br></span>
+                              <span ng-show="pharmacy.address.note"><i class="fa fa-map-pin push-5-r"></i> {{ pharmacy.address.note }}<br><br></span>
+                              <span ng-show="pharmacy.main_phone"><i class="fa fa-phone push-5-r"></i><a href="tel:{{ pharmacy.main_phone }}"> {{ pharmacy.main_phone }}</a><br></span>
+                              <span ng-show="pharmacy.rx_phone "><i class="fa fa-phone push-5-r"></i><a href="tel:{{ pharmacy.rx_phone  }}"> {{ pharmacy.rx_phone  }}</a><br></span>
+                              <span ng-show="pharmacy.main_fax"><i class="fa fa-fax push-5-r"></i> {{ pharmacy.main_fax }}<br></span>
+                          </address>
+                      </div>
+                  </div>
+                  <!-- END Contact Info -->
+              </div>
+          </div>
+
+          <div class="row items-push">
+
+              <div class="col-sm-12">
+                  <!-- General Info -->
+                  <div class="block block-bordered">
+                      <div class="block-header">
+                          <div class="left-inner-addon pull-right">
+                              <i class="fa fa-search"></i>
+                              <input class="form-control" type="text" name="user_key" ng-model="user_key" placeholder="Search User List" autocomplete="off">
+                          </div>
+                          <h3 class="block-title">                            
+                            <div class="col-md-2 col-xs-4 push-10-l push-5-t"><i class="fa fa-fw fa-key"></i> User List</div>
+                            <div class="col-md-6 col-xs-6">
+                              <a class="btn btn-sm btn-primary push-10-l push-5-t" ui-sref="pharmacy-adduser({pharmacyId: pharmacyId})" ng-show="check('person_invite', 'create')"><i class="fa fa-plus push-5-r"></i> Add Existing User</a>
+                              <a class="btn btn-sm btn-success push-10-l push-5-t" ui-sref="pharmacy-invite({pharmacyId: pharmacyId})" ng-show="check('person_invite', 'create')"><i class="fa fa-plus push-5-r"></i> Invite New User</a>
+                            </div>                            
+                          </h3>
+                      </div>
+                      <div class="block-content block-content-full">
+                          <div class="table-responsive">
+                              <table class="table table-hover table-striped">
+                                  <thead>
+                                      <tr>
+                                        <th ng-click="orderby='id'; reverse=!reverse;"><a href="javascript:void(0)">ID</a></th>
+                                        <th ng-click="orderby='[first_name, last_name]'; reverse=!reverse;"><a href="javascript:void(0)">Name</a></th>
+                                        <th ng-click="orderby='role'; reverse=!reverse;"><a href="javascript:void(0)">Role</a></th>
+                                        <th ng-click="orderby='status'; reverse=!reverse;"><a href="javascript:void(0)">Status</a></th>
+                                        <th></th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr ng-repeat="user in pharmacy_access | orderBy:orderby:reverse | filter:user_key as filteredItems">
+                                          <td>{{ user.id }}</td>
+                                          <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                          <td>{{ user.role | capitalize }}</td>
+                                          <td>{{ user.status | capitalize }}</td>
+                                          <td class="text-right">
+                                              <button class="btn btn-xs btn-success" type="button" ng-click="approveAccess(user.id)" ng-show="user.status == 'waiting'"><i class="fa fa-check"></i> Approve</button>
+                                              <button class="btn btn-xs btn-danger" type="button" ng-click="declineAccess(user.id)" ng-show="user.status == 'waiting'"><i class="fa fa-times"></i> Decline</button>
+                                              <button class="btn btn-xs btn-danger" type="button" ng-click="removeAccess(user.id, user.role)" ng-show="user.status != 'waiting'"><i class="fa fa-minus"></i></button>
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                              <p ng-show="!filteredItems || filteredItems.length == 0" class="text-danger">No Users found.</p>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- END General Info -->
+              </div>
+
+          </div>
+
+      </div>
+  </div>
+  <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

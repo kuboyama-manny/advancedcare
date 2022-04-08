@@ -1,0 +1,91 @@
+<!-- Page Content -->
+<style type="text/css">
+    /* fix for popup modal drop down @important! */
+    html, body {
+        position: relative;
+    }
+
+    .km-pane-wrapper {
+        position: relative;
+    }
+
+    .user-form {
+        width: 100%;
+        padding: 10px 25px 10px 10px;
+        margin: 0px;
+        text-align: right;
+    }
+
+    .user-form label {
+        width: 90px;
+    }
+
+    .user-form input {
+        font-size: 14px;
+        height: 30px;
+        width: 150px;
+        margin-right: 20px;
+    }
+
+    .user-form button {
+        height: 30px;
+        font-size: 16px;
+        padding: 4px 10px 4px 10px;
+    }
+
+    .no-bottom {
+        margin-bottom: 0px !important;
+    }
+
+    .title {
+        font-size: 24px;
+        padding: 10px 10px 10px 25px;
+    }
+
+    .doctors {
+        padding-top: 15px;
+        padding-right: 30px;
+        padding-bottom: 15px;
+    }
+
+    .doctors label {
+        margin-right: 20px;
+    }
+
+    .doctors input {
+        width: 180px;
+    }
+
+    .no-top-padding {
+        padding-top: 0px;
+    }
+</style>
+<div class="content content-boxed" ng-init="loadData()">
+    <!-- User Header -->
+    <div class="block">
+        <!-- Basic Info -->
+        <div class="row items-push">
+            <div class="col-sm-7 title no-bottom">
+                Patient Appointment Scheduler
+            </div>
+            <div class="col-sm-5 no-bottom doctors" align="right">
+                <label>Doctors</label>
+                <input ng-model="doctor_name" readonly/>
+            </div>
+        </div>
+        <!-- END Basic Info -->
+    </div>
+    <!-- END User Header -->
+
+    <!-- Main Content -->
+    <div class="block" id="main-block">
+        <div class="block-content no-top-padding">
+            <div class="row">
+                <div id="scheduler"></div>
+            </div>
+        </div>
+    </div>
+    <!-- END Main Content -->
+
+</div>
+<!-- END Page Content -->

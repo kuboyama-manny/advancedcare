@@ -1,0 +1,1418 @@
+<!-- Page Content -->
+
+<div class="content content-boxed" ng-init="loadData(); mode='view';">
+  <!-- User Header -->
+  <!-- Basic Info -->
+  <div>
+    <div class="row">
+      <div class="col-md-2 col-xs-4">
+        <img class="img-avatar img-avatar96 img-avatar-thumb" ng-src="{{ patient.avatar_url }}" err-src="assets/img/avatars/user_icon.png" alt="">
+      </div>
+      <div class="col-md-6 col-xs-6 mar-title-name-container">
+        <h2 class="h4 font-w600 text-white push-5 mar-title-name">{{ patient.profile.first_name }} {{ patient.profile.last_name }} , {{ patient.profile.address.note }}</h2><br>
+        <h3 class="h5 text-white-op mar-title-name">{{ patient.primary_doctor.profile.first_name }} {{ patient.primary_doctor.profile.last_name }}</h3>
+      </div>
+    </div>
+  </div>
+  <!-- END Basic Info -->
+  <!-- END User Header -->
+
+  <!-- Main Content -->
+  <div class="block" id="main-block">
+    <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+      <li>
+        <a href="#tab-profile-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+      </li>
+      <li>
+        <a href="#tab-profile-medications"><i class="fa fa-fw fa-asterisk"></i> Medications</a>
+      </li>
+      <li class="active">
+        <a href="#tab-profile-mar"><i class="fa fa-fw fa-check"></i> MAR</a>
+      </li>
+      <li>
+        <a href="#tab-profile-notes"><i class="fa fa-fw fa-file-o"></i> Notes</a>
+      </li>
+    </ul>
+    <div class="block-content tab-content">
+      <!-- General Tab -->
+      <div class="tab-pane fade" id="tab-profile-general">
+
+        <div class="block" ng-show="!diagnosisPanel">
+          <div class="block-content">
+            <div class="row">
+              <div class="col-sm-3">
+                <!-- General Info -->
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">General Information</h3>
+                  </div>
+                  <div class="block-content block-content-full">
+                    <div class="h4 push-5">{{ patient.profile.first_name }} {{ patient.profile.last_name }}</div>
+                    <i class="si si-tag push-5-r"></i> {{ patient.phn }}<br>
+                    <i class="si push-5-r" ng-class="{'si-user': patient.profile.gender == 'M', 'si-user-female': patient.profile.gender == 'F'}"></i> {{ patient.profile.gender == 'M' ? 'Male' : 'Female' }} <br>
+                    <i class="si si-calendar push-5-r"></i> {{ patient.profile.dob_format }} <br>
+                  </div>
+                </div>
+                <!-- END General Info -->
+              </div>
+              <div class="col-sm-5">
+                <!-- Contact Info -->
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">Contact Information</h3>
+                  </div>
+                  <div class="block-content block-content-full">
+                    <address>                                          
+                                          <span ng-if="patient.facility"><h4>{{ patient.facility.name }}</h4><i class="fa fa-map-marker push-5-r"></i>{{ patient.facility.address.description }}</span>
+                                          <a href = "http://maps.google.com/?q={{ patient.profile.address.description }}"><span ng-if="patient.profile.address"><i class="fa fa-map-marker push-5-r"></i> {{ patient.profile.address.description }} </span></a>
+                                          <span ng-if="patient.profile.address.note"><br><i class="fa fa-map-pin push-5-r"></i> {{ patient.profile.address.note }} </span>
+                                          <!-- <i class="fa fa-map-marker push-5-r"></i>  {{ patient_in_facility == 'true' ? patient.facility.address.description : patient.profile.address.description }}<br><br> -->
+                                          <br><br>
+                                          <a href = "tel:{{ patient.profile.phone_number }}"><i class="fa fa-phone push-5-r"></i> {{ patient.profile.phone_number }}<br></a>
+                                          <a href = "mailto:{{ patient.profile.email }}"<i class="fa fa-envelope-o push-5-r"></i> {{ patient.profile.email }}</a>
+                                      </address>
+                  </div>
+                </div>
+                <!-- END Contact Info -->
+              </div>
+              <div class="col-sm-4">
+                <!-- Primary Care -->
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">Primary Care</h3>
+                  </div>
+                  <div class="block-content block-content-full">
+                    <div class="h4 push-5">{{ primary_doctor.profile.first_name }} {{ primary_doctor.profile.last_name }}</div>
+                    <address>
+                                          <a href = "tel:{{ primary_doctor.profile.fax }}"><span ng-if="primary_doctor.profile.fax"><i class="fa fa-fax push-5-r"></i> {{ primary_doctor.profile.fax }} <br></span></a>
+                                          <a href = "tel:{{ primary_doctor.profile.phone_number }}"> <span ng-if="primary_doctor.profile.phone_number"><i class="fa fa-phone push-5-r"></i> {{ primary_doctor.profile.phone_number }}<br></span></a>
+                                          <a href = "mailto:{{ primary_doctor.profile.email }}"><span ng-if="primary_doctor.profile.email"><i class="fa fa-envelope-o push-5-r"></i> {{ primary_doctor.profile.email }}</span></a>
+                                      </address>
+                  </div>
+                </div>
+                <!-- END Primary Care -->
+              </div>
+            </div>
+            <!-- ng-show="!patient.has_login" -->
+            <div class="row">
+              <div class="col-sm-12">
+                <p>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-primary push-15-r" type="button" ng-click="sendInvite(patient.id)"><i class="fa fa-envelope push-5-r"></i> <span>Invite</span></a>
+                  <span ng-show="error_invite_m" class="text-danger">{{ error_invite_m | etranslate }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-8">
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">Diagnoses <a href="javascript:void(0)" class="btn btn-xs btn-primary push-15-l" ng-click="newDiagnose()"><i class="fa fa-plus"></i></a></h3>
+                  </div>
+                  <div class="block-content-full">
+                    <div class="table-responsive">
+                      <table class="table table-hover table-striped">
+                        <tbody>
+                          <tr ng-repeat="diagnose in patient.diagnosis | orderBy:orderby:reverse" ng-click="viewDiagnose(diagnose.id)">
+                            <td>{{ diagnose.name }}</td>
+                            <td>{{ diagnose.created_at | date:'MM/dd/yyyy' }}</td>
+                            <td>{{ diagnose.status | capitalize }} <a href="javascript:void(0)" class="pull-right" ng-click="viewDiagnose(diagnose.id)"><i class="fa fa-chevron-right"></i></a></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p ng-show="patient.diagnosis.length == 0" class="text-danger">No Diagnoses Added.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">Allergies</h3>
+                  </div>
+                  <div class="block-content-full">
+                    <div class="table-responsive ">
+                      <table class="table table-hover table-striped">
+                        <tbody>
+                          <tr ng-repeat="allergy in patient.allergies">
+                            <td>{{ allergy.name }}</td>
+                            <!-- <td>{{ allergy.reaction }}</td> -->
+                            <!-- <td>{{ allergy.severity }}</td> -->
+                            <!-- <td class="text-right">
+                                                        <button class="btn btn-xs btn-danger" type="button" ng-click="removeAllergy(allergy)"><i class="fa fa-minus"></i></button>
+                                                      </td> -->
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p ng-show="patient.allergies.length == 0" class="text-danger">No allergies registered.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block" ng-show="diagnosisPanel">
+          <div class="block-content">
+            <div class="row items-push">
+              <div class="col-sm-6">
+                <h4><a href="javascript:void(0)" ng-click="cancelDiagnose()"><i class="fa fa-chevron-left"></i> Back</a></h4>
+              </div>
+              <div class="col-sm-6 text-right" ng-show="!diagnosisInEdit">
+                <!-- <h5>Diagnosis Status {{ diagnosis.status }}</h5> -->
+                <h5 class="text-primary">Diagnosis Status: <span class="label" ng-class="{'label-success' : diagnosis.status == 'active', 'label-warning' : diagnosis.status == 'inactive'}">{{ diagnosis.status | capitalize}}</span></h5>
+              </div>
+            </div>
+            <div class="row items-push" ng-show="!diagnosisInEdit">
+              <div class="col-md-10">
+                <h4 class="push-10 text-primary">{{ diagnosis.name }} <a href="javascript:void(0)" class="btn btn-sm btn-primary push-20-l" type="button" ng-click="editDiagnose()"><i class="si si-pencil push-5-r"></i> <span>Edit</span></a></h4>
+                <div class="row">
+                  <div class="col-xs-4 col-sm-3">
+                    <strong>Diagnosed by :</strong>
+                  </div>
+                  <div class="col-xs-8 col-sm-3">
+                    {{ diagnosis.created_by }}
+                  </div>
+                  <div class="col-xs-4 col-sm-3">
+                    <strong>Diagnosed on :</strong>
+                  </div>
+                  <div class="col-xs-8 col-sm-3">
+                    {{ diagnosis.created_at | date:'MM/dd/yyyy' }}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4 col-sm-3">
+                    <strong>Goal :</strong>
+                  </div>
+                  <div class="col-xs-8 col-sm-9">
+                    {{ diagnosis.goal }}
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-4 col-sm-3">
+                    <strong>Plan :</strong>
+                  </div>
+                  <div class="col-xs-8 col-sm-9">
+                    {{ diagnosis.plan }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" ng-show="diagnosisInEdit">
+              <div class="col-sm-7">
+                <div class="block block-bordered">
+                  <div class="block-header">
+                    <h3 class="block-title">{{ diagnosis.id ? 'Edit' : 'New' }} Diagnosis</h3>
+                  </div>
+                  <div class="block-content block-content-full">
+                    <form name="diagnosisForm" ng-submit="saveDiagnosis(diagnosisForm.$valid)" novalidate>
+                      <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_name.$invalid && diagnosisSubmitted }">
+                        <label for="diagnosis_name">Name</label>
+                        <input class="form-control input-lg" type="text" id="diagnosis_name" name="diagnosis_name" ng-model="diagnosis.name" placeholder="Enter name" required>
+                        <p ng-show="diagnosisForm.diagnosis_name.$error.required && diagnosisSubmitted" class="help-block">Name is required.</p>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_goal.$invalid && diagnosisSubmitted }">
+                        <label for="diagnosis_goal">Goal</label>
+                        <input class="form-control input-lg" type="text" id="diagnosis_goal" name="diagnosis_goal" ng-model="diagnosis.goal" placeholder="Enter goal">
+                        <p ng-show="diagnosisForm.diagnosis_goal.$error.required && diagnosisSubmitted" class="help-block">Goal is required.</p>
+                      </div>
+                      <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_plan.$invalid && diagnosisSubmitted }">
+                        <label for="diagnosis_plan">Plan</label>
+                        <input class="form-control input-lg" type="text" id="diagnosis_plan" name="diagnosis_plan" ng-model="diagnosis.plan" placeholder="Enter plan">
+                        <p ng-show="diagnosisForm.diagnosis_plan.$error.required && diagnosisSubmitted" class="help-block">Plan is required.</p>
+                      </div>
+                      <div class="form-group">
+                        <p ng-show="saveFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                        <p ng-show="saveSuccess" class="text-success">Diagnosis details has been saved.</p>
+                      </div>
+                      <div class="form-group text-center">
+                        <button class="btn btn-sm btn-primary btn-block" type="submit"><i class="fa fa-save push-5-r"></i> Save</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" ng-show="!diagnosisInEdit">
+              <div class="col-sm-12">
+                <h6 class="text-primary">Medications</h6>
+                <div class="table-responsive">
+                  <table class="table table-hover table-striped">
+                    <thead>
+                      <tr>
+                        <th>Medication</th>
+                        <th>Dosage</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="medication in diagnosis.medications">
+                        <td>{{ medication.drug_product_name }}</td>
+                        <td>{{ medication.dosage }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p ng-show="!diagnosis.medications || diagnosis.medications.length == 0" class="text-danger">No medications found.</p>
+                </div>
+              </div>
+            </div>
+            <div class="row" ng-show="!diagnosisInEdit">
+              <div class="col-sm-12">
+                <h6 class="text-primary">NOTES</h6>
+                <div class="table-responsive">
+                  <table class="table table-hover table-striped">
+                    <thead>
+                      <tr>
+                        <th>Date/Time</th>
+                        <th>Added By</th>
+                        <th>Note</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="note in diagnosis.notes">
+                        <td>{{ note.created_at | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ note.created_by }}</td>
+                        <td>{{ note.content }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p ng-show="diagnosis.notes.length == 0" class="text-danger">No notes found.</p>
+                  <form name="diagnosisNoteForm" ng-submit="saveDiagnosisNote(diagnosisNoteForm.$valid)" novalidate>
+                    <div class="form-group" ng-class="{ 'has-error' : diagnosisNoteForm.content.$invalid && diagnosisNoteSubmitted }">
+                      <textarea class="form-control input-lg" id="content" rows="3" name="content" ng-model="diagnosisNote.content" placeholder="Enter Notes" required></textarea>
+                      <p ng-show="diagnosisNoteForm.content.$error.required && diagnosisNoteSubmitted" class="help-block">Note is required.</p>
+                    </div>
+                    <div class="form-group">
+                      <p ng-show="saveNoteFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+                      <p ng-show="saveNoteSuccess" class="text-success">Note has been saved.</p>
+                    </div>
+                    <div class="form-group">
+                      <button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-plus push-5-r"></i> Add Note</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END General Tab -->
+
+      <!-- Medications Tab -->
+      <div class="tab-pane fade" id="tab-profile-medications">
+        <div class="row items-push" ng-show="!medReviewNew && !medReviewView && !medReviewEdit">
+          <div class="col-sm-12 form-horizontal">
+            <h6 class="text-primary clearfix">MEDICATIONS
+              <select class="pull-right" ng-model="med_show_for" ng-change="toggleStatus()">
+                            <option value="active">Active Only</option>
+                            <option value="inactive">InActive Only</option>
+                            <option value="">All</option>
+                        </select>
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>Diagnosis</th>
+                    <th>Medication</th>
+                    <th>Quantity</th>
+                    <th>Dosage</th>
+                    <th>Total Refills</th>
+                    <th>First Prescribed</th>
+                    <th>Supply Left</th>
+                    <th>Refills Left</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="medication in medications_loaded">
+                    <td>{{ medication.diagnosis_name }}</td>
+                    <td>
+                      {{ medication.drug_product_name }}<br> DIN: {{ medication.din }}
+                    </td>
+                    <td>{{ medication.qty }}
+                      <td>
+                        {{ medication.dosage_value }} <br> {{ medication.dosage_every }} <br> {{ medication.dosage_when }}
+                      </td>
+                      <td>{{ medication.number_of_refills }}</td>
+                      <td>{{ medication.info }}</td>
+                      <td>{{ medication.remaining_pills > 0 ? medication.remaining_pills : 0 }}</td>
+                      <td>{{ medication.remaining_refills }}</td>
+                      <td>{{ medication.status }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p ng-show="!patient.medications || patient.medications.length == 0" class="text-danger">No medications.</p>
+            </div>
+          </div>
+        </div>
+        <div class="row items-push" ng-show="!medReviewNew && !medReviewView && !medReviewEdit && (is_admin || is_pharmacist)">
+          <div class="col-sm-12">
+            <button class="btn btn-primary" type="button" ng-click="startMedReview()"><i class="fa fa-pencil-square-o"></i> Start Medical Review</button>
+          </div>
+        </div>
+        <div class="row items-push" ng-show="!medReviewNew && !medReviewView && !medReviewEdit">
+          <div class="col-sm-12 form-horizontal">
+            <h6 class="text-primary">OPEN MEDICAL REVIEWS</h6>
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Created At</th>
+                    <th>Doctor</th>
+                    <th>Pharmacist</th>
+                    <th>Pharmacy</th>
+                    <th>Status At</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="med_review in patient.med_reviews.list | orderBy:created_at:true | filter: progressFilter" ng-click="chooseMedReview(med_review)">
+                    <td>{{ med_review.id }}</td>
+                    <td>{{ med_review.created_at | date:'MM/dd/yyyy' }}</td>
+                    <td>{{ med_review.doctor.first_name }} {{ med_review.doctor.last_name }}</td>
+                    <td>{{ med_review.pharmacist.first_name }} {{ med_review.pharmacist.last_name }}</td>
+                    <td>{{ med_review.pharmacy.name }}</td>
+                    <td>{{ med_review.status_at | date:'MM/dd/yyyy' }}</td>
+                    <td>
+                      <span class="label" ng-class="{'label-default' : med_review.status == 'draft' || med_review.status == 'doctor_draft', 'label-primary' : med_review.status == 'sent_to_doctor', 'label-success' : med_review.status == 'sent_to_pharmacy' }">{{ med_review_status_simple_labels[med_review.status] }}</span>
+                      <span ng-show="med_review.status == 'sent_to_pharmacy'" class="label" ng-class="{'label-warning' : med_review.result == 'amended' }">{{ med_review_status_simple_labels[med_review.result] }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p ng-show="!patient.med_reviews || patient.med_reviews.list.length == 0" class="text-danger">No in-progress medical reviews.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row items-push" ng-show="!medReviewNew && !medReviewView && !medReviewEdit">
+          <div class="col-sm-12 form-horizontal">
+            <h6 class="text-primary">COMPLETED MEDICAL REVIEW</h6>
+            <div class="table-responsive">
+              <table class="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Created At</th>
+                    <th>Doctor</th>
+                    <th>Pharmacist</th>
+                    <th>Pharmacy</th>
+                    <th>Result At</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="med_review in patient.med_reviews.list | orderBy:created_at:true | filter: completedFilter " ng-click="chooseMedReview(med_review)">
+                    <td>{{ med_review.id }}</td>
+                    <td>{{ med_review.created_at | date:'MM/dd/yyyy' }}</td>
+                    <td>{{ med_review.doctor.first_name }} {{ med_review.doctor.last_name }}</td>
+                    <td>{{ med_review.pharmacist.first_name }} {{ med_review.pharmacist.last_name }}</td>
+                    <td>{{ med_review.pharmacy.name }}</td>
+                    <td>{{ med_review.status_at | date:'MM/dd/yyyy' }}</td>
+                    <td>
+                      <span class="label" ng-show="med_review.result" ng-class="{'label-success' : med_review.result == 'approved', 'label-warning' : med_review.result == 'amended', 'label-danger' : med_review.result == 'declined'}">{{ med_review_status_simple_labels[med_review.result] }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p ng-show="!patient.med_reviews || patient.med_reviews.list.length == 0" class="text-danger">No archived medical reviews.</p>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row items-push" ng-show="medReviewNew || medReviewView || medReviewEdit">
+          <div class="col-sm-12 form-horizontal">
+            <form name="medicalReviewForm" novalidate>
+              <div class="row push-15">
+                <div class="col-sm-4">
+                  <h6 class="text-primary">MEDICAL REVIEW</h6>
+                </div>
+                <div class="col-sm-8 text-right">
+                  <a href="javascript:void(0)" class="btn btn-default" ng-show="!medReviewEdit" ng-click="cancelMedReview()"><i class="fa fa-chevron-left"></i> Back</a>
+
+                  <a href="javascript:void(0)" class="btn btn-success push-5-l" ng-show="medReviewNew && (is_pharmacist || is_admin)" ng-click="saveMedReview(medicalReviewForm)"><i class="fa fa-save"></i> Save</a>
+                  <a href="javascript:void(0)" class="btn btn-primary" ng-show="(is_pharmacist || is_admin) && medReviewNew" ng-click="saveMedReview(medicalReviewForm, 'sent_to_doctor')"><i class="fa fa-paper-plane"></i> Submit</a>
+
+                  <a href="javascript:void(0)" class="btn btn-success push-5-l" ng-show="(is_pharmacist || is_admin) && medReviewView && chosenMedReview.status == 'draft'" ng-click="updateMedReview()"><i class="fa fa-save"></i> Save</a>
+                  <a href="javascript:void(0)" class="btn btn-primary" ng-show="(is_pharmacist || is_admin) && (medReviewView && chosenMedReview.status == 'draft')" ng-click="updateMedReview('sent_to_doctor')"><i class="fa fa-paper-plane"></i> Submit</a>
+                  <a href="javascript:void(0)" class="btn btn-danger" ng-show="(is_pharmacist || is_admin) && (medReviewView && chosenMedReview.status == 'draft')" ng-click="deleteMedReview()"><i class="fa fa-times"></i> Delete</a>
+
+                  <a href="javascript:void(0)" class="btn btn-info push-5-l" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && !medReviewEdit" ng-click="medReviewEdit = true"><i class="fa fa-edit"></i> Edit</a>
+
+                  <a href="javascript:void(0)" class="btn btn-info push-5-l" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && medReviewEdit " ng-click="saveMedReviewDoctor()"><i class="fa fa-save"></i> Save</a>
+                  <a href="javascript:void(0)" class="btn btn-default" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && medReviewEdit" ng-click="medReviewEdit = false"><i class="fa fa-undo"></i> Cancel</a>
+
+                  <a href="javascript:void(0)" class="btn btn-success" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && !medReviewEdit" ng-click="approveMedReview()"><i class="fa fa-check"></i> Approve</a>
+                  <a href="javascript:void(0)" class="btn btn-warning" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && !medReviewEdit" ng-click="amendMedReview()"><i class="fa fa-rotate-left"></i> Amended</a>
+                  <a href="javascript:void(0)" class="btn btn-danger" ng-show="is_doctor && medReviewView && (chosenMedReview.status == 'doctor_draft' || chosenMedReview.status == 'sent_to_doctor') && !medReviewEdit" ng-click="declineMedReview()"><i class="fa fa-close"></i> Decline</a>
+
+                  <p class="text-danger push-5-t" ng-show="medReviewFailed">{{ med_review_error_m | etranslate }}</p>
+                </div>
+              </div>
+
+              <div class="row" ng-show="medReviewNew">
+                <div class="col-sm-3" ng-class="{ 'has-error' : medicalReviewForm.medr_doctor_id.$error.required && medReviewFormSubmitted }">
+                  <label for="drug_key">Submit to</label>
+                  <select class="form-control" id="medr_doctor_id" name="medr_doctor_id" ng-options="doctor.id as doctor.profile.first_name + ' ' + doctor.profile.last_name for doctor in doctors_list2" size="1" ng-model="medical_review.doctor_id" required>
+                                  <option value="">Choose a doctor</option>
+                                </select>
+                  <p class="text-danger" ng-show="medicalReviewForm.medr_doctor_id.$error.required && medReviewFormSubmitted"><em>Doctor is required</em></p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : medicalReviewForm.medr_pharmacy_id.$error.required && medReviewFormSubmitted }">
+                  <label for="drug_key">Pharmacy</label>
+                  <select class="form-control" id="medr_pharmacy_id" name="medr_pharmacy_id" ng-options="pharmacy.id as pharmacy.name for pharmacy in pharmacies_list" size="1" ng-model="medical_review.pharmacy_id" required>
+                                  <option value="">Choose a pharmacy</option>
+                                </select>
+                  <p class="text-danger" ng-show="medicalReviewForm.medr_pharmacy_id.$error.required && medReviewFormSubmitted"><em>Pharmacy is required</em></p>
+                </div>
+                <div class="col-sm-4" ng-show="!is_pharmacist" ng-class="{ 'has-error' : medicalReviewForm.medr_pharmacist_id.$error.required && medReviewFormSubmitted }">
+                  <label for="drug_key">Pharmacist</label>
+                  <select class="form-control" id="medr_pharmacist_id" name="medr_pharmacist_id" ng-options="pharmacist.id as pharmacist.profile.first_name + ' ' + pharmacist.profile.last_name for pharmacist in pharmacists_list" size="1" ng-model="medical_review.pharmacist_id"
+                    ng-show="!is_pharmacist" ng-required="!is_pharmacist">
+                                  <option value="">Choose a pharmacist</option>
+                                </select>
+                  <p class="text-danger" ng-show="medicalReviewForm.medr_pharmacist_id.$error.required && medReviewFormSubmitted"><em>Pharmacist is required</em></p>
+                </div>
+              </div>
+
+              <div class="table-responsive" ng-show="medReviewNew">
+                <table class="table table-manifest">
+                  <thead>
+                    <tr>
+                      <th>Diagnosis</th>
+                      <th>Medication</th>
+                      <th>Dosage</th>
+                      <th>First Prescribed</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="medication in medications_loaded">
+                    <tr>
+                      <td class="compact">
+                        <label class="css-input css-checkbox css-checkbox-primary">
+                                              <input type="checkbox" id="medr_check_{{ medication.id }}" name="medr_check_{{ medication.id }}" ng-model="medication.clone.checked"><span></span>
+                                              <strong>{{ medication.diagnosis_name }}</strong>
+                                            </label>
+                      </td>
+                      <td class="compact">
+                        {{ medication.drug_product_name }}<br> DIN: {{ medication.din }}
+                      </td>
+                      <td class="compact">
+                        {{ medication.dosage_value }} / {{ medication.dosage_every }} / {{ medication.dosage_when }}
+                      </td>
+                      <td class="compact">{{ medication.info }}</td>
+                    </tr>
+                    <tr>
+                      <td class="no-border no-padding-t" colspan="4">
+                        <hr>
+                        <div class="col-xs-12">
+                          <div class="row">
+                            <div class="col-sm-4">
+                              <strong>Physician: </strong>{{ medication.doctor_name }}<br>
+                              <strong>Last Fill Date: </strong>{{ medication.created_at | date:'MM/dd/yyyy' }}
+                            </div>
+                            <div class="col-sm-2">
+                              <strong>Rx: </strong>{{ medication.order_id }}
+                            </div>
+                            <div class="col-sm-5">
+                              <strong>Notes: </strong>{{ medication.notes }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="no-border no-padding-t" colspan="4">
+                        <hr>
+                        <div class="col-xs-12">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_goal_{{ medication.id }}">Goal</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_goal_{{ medication.id }}" name="medr_goal_{{ medication.id }}" ng-model="medication.clone.goal" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_{{ medication.id }}">Dosage</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_dosage_{{ medication.id }}" name="medr_dosage_{{ medication.id }}" ng-model="medication.clone.dosage" />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}">Plan</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_plan_{{ medication.id }}" name="medr_plan_{{ medication.id }}" ng-model="medication.clone.plan" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_when_{{ medication.id }}">Dosage When</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <!-- <input class="form-control" type="text" id="medr_dosage_whenx_{{ medication.id }}" name="medr_dosage_whenx_{{ medication.id }}" ng-model="medication.clone.dosage_when" /> -->
+                              <select class="form-control" id="medr_dosage_when_{{ medication.id }}" name="medr_dosage_when_{{ medication.id }}" ng-options="opt as opt for opt in dosage_when_options" ng-model="medication.clone.dosage_when">
+                                                    </select>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_assessment_{{ medication.id }}">Assessment</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_assessment_{{ medication.id }}" name="medr_assessment_{{ medication.id }}" ng-model="medication.clone.assessment" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_every_{{ medication.id }}">Dosage Every</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <!-- <input class="form-control" type="text" id="medr_dosage_everyx_{{ medication.id }}" name="medr_dosage_everyx_{{ medication.id }}" value="{{ medication.dosage_every }}" /> -->
+                              <select class="form-control" id="medr_dosage_every_{{ medication.id }}" name="medr_dosage_every_{{ medication.id }}" ng-options="opt as opt for opt in dosage_every_options" ng-model="medication.clone.dosage_every">
+                                                    </select>
+                            </div>
+                          </div>
+                          <div class="row push-30">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}">Pharmacist Notes</label>
+                            </div>
+                            <div class="col-sm-10">
+                              <textarea class="form-control" id="medr_note_{{ medication.id }}" name="medr_note_{{ medication.id }}" rows="3" placeholder="Enter Notes" ng-model="medication.clone.pharmacist_notes"></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p ng-show="!medications_loaded || medications_loaded.length == 0" class="text-danger">No medications.</p>
+              </div>
+
+              <div class="row" ng-show="medReviewView && chosenMedReview.status == 'draft'">
+                <div class="col-sm-3">
+                  <label>Doctor</label>
+                  <select class="form-control" ng-options="doctor.id as doctor.profile.first_name + ' ' + doctor.profile.last_name for doctor in doctors_list2" size="1" ng-model="chosenMedReview.doctor_id">
+                                </select>
+                </div>
+                <div class="col-sm-3">
+                  <label>Pharmacy</label>
+                  <select class="form-control" ng-options="pharmacy.id as pharmacy.name for pharmacy in pharmacies_list" size="1" ng-model="chosenMedReview.pharmacy_id">
+                                </select>
+                </div>
+                <div class="col-sm-4">
+                  <label>Pharmacist</label>
+                  <h5 ng-show="is_pharmacist" class="text-primary">{{ chosenMedReview.pharmacist.first_name }} {{ chosenMedReview.pharmacist.last_name }}</h5>
+                  <select class="form-control" ng-options="pharmacist.id as pharmacist.profile.first_name + ' ' + pharmacist.profile.last_name for pharmacist in pharmacists_list" size="1" ng-model="chosenMedReview.pharmacist_id" ng-show="!is_pharmacist">
+                                </select>
+                </div>
+              </div>
+
+              <div class="row items-push push-30-t" ng-show="medReviewView && chosenMedReview.status != 'draft'">
+                <div class="col-xs-12">
+                  <div class="row items-push">
+                    <div class="col-sm-4" ng-show="chosenMedReview.pharmacist_submitted_at">
+                      <label><strong>Submitted at:</strong></label> {{ chosenMedReview.pharmacist_submitted_at | date:'MM/dd/yyyy HH:mm a' }}
+                    </div>
+                    <div class="col-sm-4">
+                      <label><strong>Pharmacy:</strong></label> {{ chosenMedReview.pharmacy.name }}
+                    </div>
+                    <div class="col-sm-4">
+                      <label><strong>Prepared By:</strong></label> {{ chosenMedReview.pharmacist.first_name }} {{ chosenMedReview.pharmacist.last_name }}
+                    </div>
+                  </div>
+                  <div class="row items-push">
+                    <div class="col-sm-4" ng-show="chosenMedReview.doctor_submitted_at">
+                      <label><strong>Reviewed at:</strong></label> {{ chosenMedReview.doctor_submitted_at | date:'MM/dd/yyyy HH:mm a' }}
+                    </div>
+                    <div class="col-sm-4">
+                      <label><strong>Physician:</strong></label> {{ patient.primary_doctor.profile.first_name }} {{ patient.primary_doctor.profile.last_name }}
+                    </div>
+                    <div class="col-sm-4">
+                      <label><strong>Fax:</strong></label> {{ patient.primary_doctor.profile.fax }}
+                    </div>
+                  </div>
+                  <div class="row items-push">
+                    <div class="col-sm-4">
+                      <label><strong>Patient Name:</strong></label> {{ patient.profile.first_name }} {{ patient.profile.last_name }}<br>
+                      <label><strong>Date of Birth:</strong></label> {{ patient.profile.dob | date:'MM/dd/yyyy' }}<br>
+                      <label><strong>Gender:</strong></label> {{ patient.profile.gender == 'M' ? 'Male' : 'Female' }}
+                    </div>
+                    <div class="col-sm-8">
+                      <span ng-if="patient.facility"><label><strong>Facility:</strong></label> {{ patient.facility.name }}</span>
+                      <span ng-if="patient.profile.address"><label><strong>Address :</strong></label> {{ patient.profile.address.description }} </span>
+                      <span ng-if="patient.profile.address.note"><br><label><strong>Ward:</strong></label> {{ patient.profile.address.note }} </span>
+                    </div>
+                  </div>
+                  <div class="row items-push">
+                    <div class="col-xs-6 col-sm-4">
+                      <img class="img-responsive" ng-show="chosenMedReview.pharmacist_sign_png" ng-src="{{ chosenMedReview.pharmacist_sign_png }}">
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <img class="img-responsive" ng-show="chosenMedReview.patient_sign_png" ng-src="{{ chosenMedReview.patient_sign_png }}">
+                    </div>
+                    <div class="col-xs-6 col-sm-4">
+                      <img class="img-responsive" ng-show="chosenMedReview.doctor_sign_png" ng-src="{{ chosenMedReview.doctor_sign_png }}">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="table-responsive" ng-show="medReviewView && (chosenMedReview.status == 'draft') && (is_pharmacist || is_admin)">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Diagnosis</th>
+                      <th>Medication</th>
+                      <th>Dosage</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="item in chosenMedReview.items">
+                    <tr>
+                      <td class="compact push-30-t">
+                        <label class="css-input css-checkbox css-checkbox-primary">
+                                              <input type="checkbox" ng-checked="item.checked" ng-model="item.checked"><span></span>
+                                              <strong>{{ medication.diagnosis_name }}</strong>
+                                              {{ item.diagnosis_name }}
+                                            </label>
+                      </td>
+                      <td class="compact push-30-t">
+                        {{ item.drug_product_name }}<br> DIN: {{ item.din }}
+                      </td>
+                      <td class="compact push-30-t">
+                        {{ item.dosage_when }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="no-border no-padding-t" colspan="3">
+                        <hr>
+                        <div class="col-xs-12">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_goal_{{ medication.id }}">Goal</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_goal_{{ medication.id }}" name="medr_goal_{{ medication.id }}" ng-model="item.goal" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_{{ medication.id }}">Dosage</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_dosage_{{ medication.id }}" name="medr_dosage_{{ medication.id }}" ng-model="item.dosage" />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}">Plan</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_plan_{{ medication.id }}" name="medr_plan_{{ medication.id }}" ng-model="item.plan" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_when_{{ medication.id }}">Dosage When</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <select class="form-control" id="medr_dosage_every_{{ medication.id }}" name="medr_dosage_every_{{ medication.id }}" ng-options="opt as opt for opt in dosage_when_options" ng-model="item.dosage_when">
+                                                    </select>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_assessment_{{ medication.id }}">Assessment</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <input class="form-control" type="text" id="medr_assessment_{{ medication.id }}" name="medr_assessment_{{ medication.id }}" ng-model="item.assessment" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label for="medr_dosage_every_{{ medication.id }}">Dosage Every</label>
+                            </div>
+                            <div class="col-sm-4">
+                              <select class="form-control" id="medr_dosage_every_{{ medication.id }}" name="medr_dosage_every_{{ medication.id }}" ng-options="opt as opt for opt in dosage_every_options" ng-model="item.dosage_every">
+                                                    </select>
+                            </div>
+                          </div>
+                          <div class="row push-30">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}">Pharmacist Notes</label>
+                            </div>
+                            <div class="col-sm-10">
+                              <textarea class="form-control" id="medr_note_{{ medication.id }}" name="medr_note_{{ medication.id }}" rows="3" ng-model="item.pharmacist_notes" placeholder="Enter Notes">{{ item.pharmacist_notes }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="table-responsive" ng-show="medReviewView && (chosenMedReview.status != 'draft') && (is_pharmacist || is_admin)">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Diagnosis</th>
+                      <th>Medication</th>
+                      <th>Rx Order</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="item in chosenMedReview.items">
+                    <tr>
+                      <td>
+                        <label class="css-input input-disabled css-checkbox css-checkbox-default">
+                                                <input type="checkbox" ng-checked="item.checked" ng-disabled="true"><span></span>
+                                                {{ item.diagnosis_name }}
+                                              </label>
+                      </td>
+                      <td>
+                        {{ item.drug_product_name }}<br> DIN: {{ item.din }}
+                      </td>
+                      <td>
+                        <strong>Rx:</strong> {{ item.order_id }}<br> Last Fill Date: {{ item.last_refill_at | date:'MM/dd/yyyy' }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="no-border" colspan="3">
+                        <div class="col-xs-12 col-sm-offset-1 col-sm-11">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Goal: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.goal }}
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.dosage }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Plan: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.plan }}
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage When: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.dosage_when }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Assessment: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.assessment }}
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage Every: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              {{ item.dosage_every }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}"><strong>Pharmacy Notes: </strong></label>
+                            </div>
+                            <div class="col-sm-10">
+                              {{ item.pharmacist_notes }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label for="medr_plan_{{ medication.id }}"><strong>Doctor Notes: </strong></label>
+                            </div>
+                            <div class="col-sm-10">
+                              {{ item.doctor_notes }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="table-responsive" ng-show="medReviewView && (chosenMedReview.status != 'draft') && (is_doctor)">
+                <table class="table table-hover table-striped">
+                  <thead>
+                    <tr>
+                      <th>Diagnosis</th>
+                      <th>Medication</th>
+                      <th>Rx Order</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="item in chosenMedReview.items">
+                    <tr>
+                      <td>
+                        <label class="css-input input-disabled css-checkbox" ng-class="{ 'css-checkbox-default': !medReviewEdit, 'css-checkbox-primary': medReviewEdit }">
+                                                <input type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-disabled="!medReviewEdit"><span></span>
+                                                {{ item.diagnosis_name }}
+                                              </label>
+                      </td>
+                      <td>
+                        {{ item.drug_product_name }}<br> DIN: {{ item.din }}
+                      </td>
+                      <td>
+                        <strong>Rx:</strong> {{ item.order_id }}<br> Last Fill Date: {{ item.last_refill_at | date:'MM/dd/yyyy' }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="no-border" colspan="3">
+                        <div class="col-xs-12 col-sm-offset-1 col-sm-11">
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Goal: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.goal }}</span>
+                              <input class="form-control" type="text" ng-model="item.goal" ng-show="medReviewEdit" value="{{ item.goal }}" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.dosage }}</span>
+                              <input class="form-control" type="text" ng-model="item.dosage" ng-show="medReviewEdit" value="{{ item.dosage }}" />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Plan: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.plan }}</span>
+                              <input class="form-control" type="text" ng-model="item.plan" ng-show="medReviewEdit" value="{{ item.plan }}" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage When: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.dosage_when }}</span>
+                              <input class="form-control" type="text" ng-model="item.dosage_when" ng-show="medReviewEdit" value="{{ item.dosage_when }}" />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Assessment: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.assessment }}</span>
+                              <input class="form-control" type="text" ng-model="item.assessment" ng-show="medReviewEdit" value="{{ item.assessment }}" />
+                            </div>
+                            <div class="col-sm-2">
+                              <label><strong>Dosage Every: </strong></label>
+                            </div>
+                            <div class="col-sm-4">
+                              <span ng-show="!medReviewEdit">{{ item.dosage_every }}</span>
+                              <input class="form-control" type="text" ng-model="item.dosage_every" ng-show="medReviewEdit" value="{{ item.dosage_every }}" />
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label class="push-10-t"><strong>Pharmacist Notes: </strong></label>
+                            </div>
+                            <div class="col-sm-10">
+                              <p class="push-10-t">{{ item.pharmacist_notes }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2">
+                              <label><strong>Doctor Notes: </strong></label>
+                            </div>
+                            <div class="col-sm-10">
+                              <p class="push-30" ng-show="!medReviewEdit">{{ item.doctor_notes }}</p>
+                              <textarea class="form-control input-lg" rows="3" ng-model="item.doctor_notes" ng-show="medReviewEdit" placeholder="Enter Notes">{{ item.doctor_notes }}</textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- END Medications Tab -->
+
+      <!-- Mar Tab -->
+      <div class="tab-pane fade in active" id="tab-profile-mar">
+        <div class="block" id="main-block">
+          <div class="block-content">
+            <div class="row text-right">
+              <div class="date-arrow" ng-click="preDate()">
+                <</div>
+                  <div class="date">{{cur_date | date: 'MMM dd'}}</div>
+                  <div class="date-arrow" ng-click="NextDate()">></div>
+              </div>
+              <div class="row">
+                <div class="table-responsive">
+                  <table class="table table-hover ">
+                    <thead>
+                      <tr>
+                        <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">MEDICATION</a></th>
+                        <th ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">DIRECTIONS</a></th>
+                        <th colspan="4"><a href="javascript:void(0)">SCHEDULE</a></th>
+                        <th ng-click="orderby='active_since'; reverse=!reverse;"><a href="javascript:void(0)">Notes / Alerts</a></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="item in medications | orderBy:orderby:reverse" class="mar-tr">
+                        <td class="mar-image">
+                          <div class="mar-span "><img ng-src="{{get_product_image(item)}}" width=8 0px></div>
+                        </td>
+                        <td class="mar-name ">
+                          <div class="mar-span "><span>{{item.drug_product_name}}</span><br><span class="small">{{item.dosage_when}}<br>{{item.din}}</span></div>
+                        </td>
+                        <td ng-repeat="column in time_columns" ng-click="click_Column(column, item)" class=" mar-column">
+                          <div class="mar-span text-center mar-td-font"><span ng-class="{'med-schedule-grey': get_column_color(column, item.drug_product_id)=='grey',
+                                    'med-schedule-red': get_column_color(column, item.drug_product_id)=='red','med-schedule-status0': get_column_color(column, item.drug_product_id)=='status0','med-schedule-status1': get_column_color(column, item.drug_product_id)=='status1','med-schedule-status2': get_column_color(column, item.drug_product_id)=='status2','med-schedule-status3': get_column_color(column, item.drug_product_id)=='status3',}"> {{get_column_time(column, item.drug_product_id)}}<br>{{get_column_time_NS( column, item.drug_product_id)}}
+                                  </span>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="mar-span text-left mar-note">
+                            <span ng-repeat="note in get_content(item)">{{note}}<br/></span>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td ng-click="orderby='name'; reverse=!reverse;"><a href="javascript:void(0)">PRN MEDICATION(S)</a></td>
+                      </tr>
+                      <tr ng-repeat="item in prn_medications" class="mar-tr">
+                        <td class="mar-image">
+                          <div class="mar-span "><img ng-src="{{get_product_image(item)}}" width=8 0px></div>
+                        </td>
+                        <td class="mar-name ">
+                          <div class="mar-span "><span>{{item.drug_product_name}}</span><br><span class="small">{{item.dosage_when}}<br>{{item.din}}</span></div>
+                        </td>
+                        <td ng-show="havingPrnMed(item) == false" colspan="4">
+                          <div ng-click="prn_createMedSchedule(time_columns[0], item)" class="mar-span text-center mar-needed">As Needed
+                          </div>
+                        </td>
+                        <td ng-show="havingPrnMed(item)" ng-repeat="column in time_columns" ng-click="click_prn_Column(column, item)" class=" mar-column">
+                          <div class="mar-span text-center mar-td-font med-schedule-status0"><span> {{get_prn_column_time(column, item.drug_product_id)}}
+                                  </span>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="mar-span text-left ">
+                            <span ng-repeat="note in get_prn_content(item)">{{note}}<br/></span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END Mar Tab -->
+
+        <!-- Notes Tab -->
+        <div class="tab-pane fade" id="tab-profile-notes">
+          <div class="row items-push">
+            <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th class="col-xs-4">Created At</th>
+                    <!-- <th class="col-xs-2">ID</th> -->
+                    <th class="col-xs-8">Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- | orderBy:orderby:reverse -->
+                  <tr ng-repeat="note in patient.notes ">
+                    <td>{{ note.created_at | date:'MM/dd/yyyy' }}</td>
+                    <!-- <td>{{ note.id }}</td> -->
+                    <td>{{ note.content }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p ng-show="patient.notes.length == 0" class="text-danger">No notes are available.</p>
+            </div>
+          </div>
+        </div>
+        <!-- END Notes Tab -->
+      </div>
+
+    </div>
+    <!-- END Main Content -->
+
+    <!-- Fade In Modal -->
+    <div class="modal fade" id="modal-signature" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="block block-themed block-transparent remove-margin-b">
+            <div class="block-header bg-primary">
+              <ul class="block-options">
+                <li>
+                  <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                </li>
+              </ul>
+              <h3 class="block-title">Sign the medical review <span id="role"></span></h3>
+            </div>
+            <div class="block-content">
+              <div id="signature-pad" class="m-signature-pad">
+                <div class="m-signature-pad--body">
+                  <canvas width="560" height="150"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-default" ng-click="clearSignature()" type="button">Clear</button>
+            <button class="btn btn-sm btn-primary" ng-click="signSignature()" type="button"><i class="fa fa-check"></i> Sign</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END Fade In Modal -->
+
+
+    <!-- Fade In Modal -->
+    <div class="modal modal-middle fade" id="modal-create-med-schedule" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content modal-mar-contain">
+          <div>
+            <div class="text-center modal-mar-heading">
+              <h4 class="text-center">{{new_med_schedule_name}}</h4>
+            </div>
+            <div>
+              <div class="modal-mar-content">
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right ">Drug:</h4>
+                    </div>
+                  </div>
+
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <h4>{{cur_medication.drug_product_name}}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right ">Dose:</h4>
+                    </div>
+                  </div>
+
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <div class="col-sm-5">
+                        <div class="form-group">
+                          <div class="col-xs-12">
+                            <input class="form-control" type="text" ng-model="new_med_schedule_dose" placeholder="Enter the dose!">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-7">
+                        <select ng-model="current_unit" ng-options="unit as unit.text for unit in unit_arr track by unit.value">
+                          </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Scheduled at:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <div class="col-sm-5">
+                        <div class="form-group">
+                          <div class="col-xs-12">
+                            <input data-js-datepicker class="form-control" type="text" ng-model="schedule_date" data-date-format="yyyy-mm-dd" placeholder="mm/dd/yyyy">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-7">
+                        <select ng-model="schedule_time" ng-options="time as time.text for time in time_columns track by time.name">
+                          </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Repeats:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <select ng-model="selectedRepeatsModel" ng-options="selectedRepeat as selectedRepeat.text for selectedRepeat in selectedRepeatsModel_arr track by selectedRepeat.id">
+                          </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10" ng-show="selectedRepeatsModel.id !=1">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Repeat every:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <select ng-model="selectedCycleModel" ng-options="cycle as cycle for cycle in cycle_arr">
+                          </select>
+                      <label ng-show="selectedRepeatsModel.id==2" class="repeatsModel">days</label>
+                      <label ng-show="selectedRepeatsModel.id==3" class="repeatsModel">Weeks</label>
+                      <label ng-show="selectedRepeatsModel.id==4" class="repeatsModel">Months</label>
+                      <label ng-show="selectedRepeatsModel.id==5" class="repeatsModel">Years</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10" ng-show="selectedRepeatsModel.id == 3">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Repeat on:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <label ng-repeat="day in week_arr">
+                            <input type='checkbox' ng-model="checkWeeklyModel[day.value]" class = "repeatsModel"/>{{day.text}}
+                          </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Notes:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <input type="text" ng-model="new_med_schedule_notes" placeholder="Enter notes here..">
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10 text-center" ng-show="new_flag == 0">
+                  <div class="btn text-center full-btn" ng-click="deleteMedSchedule(selectedRepeatsModel.id, selectedCycleModel, checkWeeklyResults)"> Delete MAR Schedule
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer modal-mar-footer">
+            <div class="col-xs-6 text-center green_btn" ng-click="createNewMedSchedule()"> Ok</div>
+            <div class="col-xs-6 text-center pink_btn" data-dismiss="modal"> cancel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END Fade In Modal -->
+
+    <!-- Fade In Modal -->
+    <div class="modal modal-middle fade" id="modal-perform" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content modal-mar-contain">
+          <div>
+            <div class="modal-mar-heading">
+              <h4 class="text-center">Administer medication</h4>
+            </div>
+            <div>
+              <div class="modal-mar-content">
+                <div class="row padding-10">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right ">Drug:</h4>
+                    </div>
+                  </div>
+
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <h4>{{cur_medication.drug_product_name}}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right ">Drug:</h4>
+                    </div>
+                  </div>
+
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <h4>{{cur_med_schedule.dose + unit_arr[cur_med_schedule.unit].text}}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Scheduled at:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <label>{{cur_med_schedule.scheduled_at | date:' MMMM dd, yyyy / hh:mm ' }}</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row padding-10">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Performed at:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <label>{{today | date:' MMMM dd, yyyy / ' }}</label>
+                      <input type="time" id="InputTime" name="input" ng-value="InputTime" placeholder="HH:mm:ss" min="08:00:00" max="24:00:00" required />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10 margin-top-10-min">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Status:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <label class="btn margin-left-10 width-default-button" ng-class="{'btn-success':status.id==1, 'btn-warning':status.id==2 || status.id==3, 'btn-danger':status.id==4}" ng-model="checkstatus[status.id-1]" uib-btn-checkbox ng-change="changestatus(status.id)"
+                        ng-repeat="status in status_arr" ng-if="$index < 2">{{status.text}}</label>
+                      <br />
+                      <label class="btn margin-left-10 margin-top-10 width-default-button" ng-class="{'btn-success':status.id==1, 'btn-warning':status.id==2 || status.id==3, 'btn-danger':status.id==4}" ng-model="checkstatus[status.id-1]" uib-btn-checkbox ng-change="changestatus(status.id)"
+                        ng-repeat="status in status_arr" ng-if="$index >= 2">{{status.text}}</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10" ng-show="checkStatusResults[0] != 0">
+                  <div class="col-md-3">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Reason:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-9">
+                    <div class="modal-mar-right">
+                      <input type="text" placeholder="reason" ng-model="cur_med_schedule_reason">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer modal-mar-footer">
+            <div class="col-xs-6 text-center green_btn" ng-click="performMedSchedule()">Ok</div>
+            <div class="col-xs-6 text-center pink_btn" data-dismiss="modal">cancel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END Fade In Modal -->
+
+    <!-- Fade In Modal -->
+    <div class="modal modal-middle fade" id="modal-prn-create-med-schedule" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content modal-mar-contain">
+          <div>
+            <div class="modal-mar-heading">
+              <h4 class="text-center">Administer Medication</h4>
+            </div>
+            <div>
+              <div class="modal-mar-content">
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right ">Drug:</h4>
+                    </div>
+                  </div>
+
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <h4>{{cur_medication.drug_product_name}}</h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Performed at:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <label>{{today | date:' MMMM dd, yyyy hh:mm:ss ' }}</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row padding-10">
+                  <div class="col-md-4">
+                    <div class="modal-mar-left">
+                      <h4 class="text-right">Reason:</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="modal-mar-right">
+                      <input type="text" placeholder="Please add a reason here.." ng-model="new_med_schedule_reason">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer modal-mar-footer">
+            <div class="col-xs-6 text-center green_btn" data-dismiss="modal" ng-click="createNewPrnMedSchedule()"> Ok</div>
+            <div class="col-xs-6 text-center pink_btn" data-dismiss="modal"> cancel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END Fade In Modal -->
+
+    <!-- Fade In Modal -->
+    <div class="modal modal-middle fade" id="modal-invitation-success" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="block block-themed block-transparent remove-margin-b">
+            <div class="block-header bg-success">
+              <ul class="block-options">
+                <li>
+                  <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                </li>
+              </ul>
+              <h3 class="block-title">Invitation success<span id="role"></span></h3>
+            </div>
+            <div class="block-content">
+              <p>An invitation has been successfully sent to the patient.</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-default" type="button" data-dismiss="modal"><i class="fa fa-check"></i> Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END Fade In Modal -->
+
+  </div>
+  <!-- END Page Content -->

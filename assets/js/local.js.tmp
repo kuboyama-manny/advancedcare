@@ -1,0 +1,26 @@
+/*
+ *  Document   : local.js
+ *  Author     : Xiaoning Zhang (xiaoningdev@gmail.com)
+ *  Description: define local variables that different for each deployment servers.
+ *
+ */
+
+(function() {
+    "use strict";
+
+    window.HOME_URL = '{HOME_URL}';
+    window.API_URL = '{API_URL}';
+    window.ALFRESCO_URL = '{ALFRESCO_URL}';
+    window.ANNOTATION_URL = '{ANNOTATION_URL}';
+    window.VIDEO_URL = '{VIDEO_URL}';
+
+    // why we hardcode alfresco logins here?
+    window.ALFRESCO_USER1 = '{ALFRESCO_USER1}';
+    window.ALFRESCO_PASS1 = '{ALFRESCO_PASS1}';
+    window.ALFRESCO_USER2 = '{ALFRESCO_USER2}';
+    window.ALFRESCO_PASS2 = '{ALFRESCO_PASS2}';
+
+    // set to true or false at your local.
+    window.ENABLE_PDF_EDITING = {ENABLE_PDF_EDITING};
+
+})();

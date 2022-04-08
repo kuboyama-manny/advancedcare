@@ -1,0 +1,312 @@
+<!-- Page Header -->
+<div class="content bg-gray-lighter">
+  <div class="row items-push">
+    <div class="col-sm-7">
+      <h1 class="page-heading">
+        New Rx Order
+      </h1>
+    </div>
+    <div class="col-sm-5 text-right hidden-xs">
+      <ol class="breadcrumb push-10-t">
+        <li>Rx Orders</li>
+        <li><a class="link-effect" href="">Create</a></li>
+      </ol>
+    </div>
+  </div>
+</div>
+<!-- END Page Header -->
+
+<!-- Page Content -->
+<div class="content content-boxed" ng-init="initData()">
+  <form name="orderForm" ng-submit="save(orderForm.$valid)" novalidate>
+
+    <div class="block">
+      <!-- <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+              <li class="active">
+                  <a href="#tab-general"><i class="fa fa-fw fa-pencil"></i> General</a>
+              </li>
+          </ul> -->
+      <div class="block-content tab-content">
+        <!-- General Tab -->
+        <!-- <div class="tab-pane fade in active" id="tab-general"> -->
+        <div class="row items-push">
+          <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+            <div class="form-group" ng-class="{ 'has-error' : orderForm.patient_id.$invalid && (!orderForm.patient_id.$pristine || orderForm.$submitted) }">
+              <div class="col-xs-12">
+                <label for="patient_key">Patient Name</label>
+                <input class="form-control input-lg" type="text" name="patient_key" ng-model="patient_key" ng-change="searchPatient()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search patients here">
+                <select class="form-control" ng-show="patient_key && !orderForm.patient_key.$pristine" id="patient_id" name="patient_id" ng-options="patient as patient.first_name + ' ' + patient.last_name for patient in patients_list" size="6" ng-model="order.patient"
+                  ng-change="patientChosen(orderForm.patient_key)" required>
+                                    <option value="">Choose a patient</option>
+                                  </select>
+                <p ng-show="diagnosis_list.length == 0">This patient doesn't have a diagnosis, <a ui-sref="patient-view({patientId: order.patient.id})">create one </a>? </p>
+                <p ng-show="orderForm.patient_id.$error.required && (!orderForm.patient_id.$pristine || orderForm.$submitted)" class="help-block">Patient is required.</p>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : orderForm.pharmacy_id.$invalid && (!orderForm.pharmacy_id.$pristine || orderForm.$submitted) }">
+              <div class="col-xs-12">
+                <label for="pharmacy_key">Pharmacy</label>
+                <input class="form-control input-lg" type="text" name="pharmacy_key" ng-model="pharmacy_key" ng-change="searchPharmacy()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search pharmacies here">
+                <select class="form-control" ng-show="pharmacy_key && !orderForm.pharmacy_key.$pristine" id="pharmacy_id" name="pharmacy_id" ng-options="pharmacy as pharmacy.name for pharmacy in pharmacies_list" size="6" ng-model="order.pharmacy" ng-change="pharmacyChosen(orderForm.pharmacy_key)"
+                  ng-required="is_pharmacist">
+                                    <option value="">Choose a pharmacy</option>
+                                  </select>
+                <p ng-show="orderForm.pharmacy_id.$error.required && (!orderForm.pharmacy_id.$pristine || orderForm.$submitted)" class="help-block">Pharmacy is required.</p>
+              </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : orderForm.doctor.$invalid && (!orderForm.doctor.$pristine || orderForm.$submitted) }">
+              <div class="col-xs-12">
+                <label for="doctor_key">Primary doctor</label>
+                <input class="form-control input-lg" type="text" id="doctor_key" name="doctor_key" ng-model="doctor_key" ng-change="searchDoctor()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }" placeholder="Search doctors here" autocomplete="off">
+                <select class="form-control" ng-show="doctor_key && !orderForm.doctor_key.$pristine" id="doctor" name="doctor" ng-options="doctor as doctor.profile.first_name + ' ' + doctor.profile.last_name for doctor in doctors_list" size="6" ng-model="order.doctor"
+                  ng-change="doctorChosen(orderForm.doctor_key)" ng-required="!is_doctor">
+                                  </select>
+                <p ng-show="orderForm.doctor.$error.required && (!orderForm.doctor.$pristine || orderForm.$submitted)" class="help-block">Primary doctor is required.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- </div> -->
+        <!-- END General Tab -->
+      </div>
+    </div>
+
+    <div class="block">
+      <ul class="nav nav-tabs nav-justified push-20" data-toggle="tabs" data-js-tabs>
+        <li class="active">
+          <a href="#tab-orders"><i class="fa fa-fw fa-file-text-o"></i> Order</a>
+        </li>
+      </ul>
+      <div class="block-content tab-content">
+        <div class="tab-pane fade in active" id="tab-orders">
+          <div class="row items-push">
+            <div class="col-sm-6 col-sm-offset-3 form-horizontal">
+              <div class="form-group">
+                <label class="col-xs-12">Preferred Delivery Method</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="preferred_via" ng-model="order.preferred_via" value="pickup"><span></span> Pickup
+                            </label>
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="preferred_via" ng-model="order.preferred_via" value="delivery" checked=""><span></span> Delivery
+                            </label>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.diagnose_id.$invalid && (!orderForm.diagnose_id.$pristine || orderForm.$submitted) }">
+                <div class="col-xs-12">
+                  <label for="patient_key">Patient Diagnosis <button ng-disabled="!order.patient_id" title="Add New Diagnosis" class="btn btn-xs btn-primary push-10-l" data-uib-popover-template="'diagnosis-new-inline.html'"  data-popover-placement="right" data-popover-is-open="isOpenNewDiagnosis" data-popover-trigger="click outsideClick" type="button"><span class="fa fa-plus"></span></button><span ng-show="diagnosisSaveSuccess" class="text-success"> Diagnosis added successfully.</span></label>
+                  <select class="form-control" id="diagnose_id" name="diagnose_id" ng-options="diagnosis.id as diagnosis.name for diagnosis in diagnosis_list" size="3" ng-model="order.item.diagnose_id">
+                              <option value="">Choose a diagnosis</option>
+                            </select>
+                </div>
+              </div>
+              <div class="form-group hidden">
+                <div class="col-xs-12">
+                  <select class="form-control" id="formulary_id" name="formulary_id" ng-options="formulary.id as formulary.name for formulary in formulary_list" size="1" ng-change="changeFormulary()" ng-model="formulary_id">
+                              <option value="">Choose a formulary</option>
+                            </select>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.drug.$invalid && (!orderForm.drug.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="drug_key">Choose a drug</label>
+                  <input class="form-control input-lg" type="text" name="drug_key" ng-model="drug_key" ng-change="searchDrugs()" ng-model-options="{updateOn: 'default blur', debounce: {default: 500, blur: 0} }">
+                  <select class="form-control" id="drug" name="drug" ng-options="drug.id as drug.name for drug in drugs_list" size="6" ng-model="drug_id" ng-change="searchDrugProducts()" required>
+                              <option value="">Choose a drug</option>
+                            </select>
+                  <p ng-show="orderForm.drug.$error.required && (!orderForm.drug.$pristine || orderForm.$submitted)" class="help-block">Drug is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.drug_product.$invalid && (!orderForm.drug_product.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <select class="form-control" id="drug_product" name="drug_product" ng-options="drug_product.id as drug_product.product_name for drug_product in drug_products_list" size="3" ng-model="order.item.drug_product_id" required>
+                              <option value="">Choose a drug product</option>
+                            </select>
+                  <p ng-show="orderForm.drug_product.$error.required && (!orderForm.drug_product.$pristine || orderForm.$submitted)" class="help-block">Drug product is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.qty.$invalid && (!orderForm.qty.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Quantity</label>
+                  <input class="form-control input-lg" type="text" id="qty" name="qty" ng-model="order.item.qty" ng-pattern="/^[0-9]+$/i" placeholder="Enter Quantity" required>
+                  <p ng-show="orderForm.qty.$error.required && (!orderForm.qty.$pristine || orderForm.$submitted)" class="help-block">Quantity is required.</p>
+                  <p ng-show="!orderForm.qty.$valid && !orderForm.qty.$error.required && (!orderForm.qty.$pristine || orderForm.$submitted)" class="help-block">Quantity can only contain number.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Refill</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="refill" ng-model="order.item.refill" value="true"><span></span> Yes
+                            </label>
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="refill" ng-model="order.item.refill" value="false"><span></span> No
+                            </label>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : order.item.refill === 'true' && orderForm.number_of_refills.$invalid && (!orderForm.number_of_refills.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="number_of_refills">Number of refills</label>
+                  <input class="form-control input-lg" type="text" id="number_of_refills" name="number_of_refills" ng-model="order.item.number_of_refills" placeholder="Enter number of refills" ng-pattern="/^[0-9]+$/i" ng-required="order.item.refill === 'true'">
+                  <p ng-show="(order.item.refill === 'true') && orderForm.number_of_refills.$error.required && (!orderForm.number_of_refills.$pristine || orderForm.$submitted)" class="help-block">Number of refills is required.</p>
+                  <p ng-show="!orderForm.number_of_refills.$valid && !orderForm.number_of_refills.$error.required && (!orderForm.number_of_refills.$pristine || orderForm.$submitted)" class="help-block">Number of refills can only contain number.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.dosage_value.$invalid && (!orderForm.dosage_value.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Dosage Value</label>
+                  <input class="form-control input-lg" type="text" id="dosage_value" name="dosage_value" ng-model="order.item.dosage_value" ng-pattern="/^[0-9]+$/i" placeholder="Enter Dosage Value" required>
+                  <p ng-show="orderForm.dosage_value.$error.required && (!orderForm.dosage_value.$pristine || orderForm.$submitted)" class="help-block">Dosage Value is required.</p>
+                  <p ng-show="!orderForm.dosage_value.$valid && !orderForm.dosage_value.$error.required && (!orderForm.dosage_value.$pristine || orderForm.$submitted)" class="help-block">Dosage can only contain number.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.dosage_when.$invalid && (!orderForm.dosage_when.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Dosage When (Day Frequency)</label>
+                  <select class="form-control" id="dosage_when" name="dosage_when" size="1" ng-model="order.item.dosage_when" ng-options="opt as opt for opt in dosage_when_options" required>
+                            </select>
+                  <p ng-show="orderForm.dosage_when.$error.required && (!orderForm.dosage_when.$pristine || orderForm.$submitted)" class="help-block">Dosage When is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.dosage_every.$invalid && (!orderForm.dosage_every.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Dosage Every (Hour Frequency)</label>
+                  <select class="form-control" id="dosage_every" name="dosage_every" size="1" ng-model="order.item.dosage_every" ng-options="opt as opt for opt in dosage_every_options">
+                          </select>
+                  <p ng-show="orderForm.dosage_every.$error.required && (!orderForm.dosage_every.$pristine || orderForm.$submitted)" class="help-block">Dosage Every is required.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.duration_value.$invalid && (!orderForm.duration_value.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Duration Value</label>
+                  <input class="form-control input-lg" type="text" id="duration_value" name="duration_value" ng-model="order.item.duration_value" placeholder="Enter duration_value" ng-pattern="/^[0-9]+$/i" required>
+                  <p ng-show="orderForm.duration_value.$error.required && (!orderForm.duration_value.$pristine || orderForm.$submitted)" class="help-block">Duration is required.</p>
+                  <p ng-show="!orderForm.duration_value.$valid && !orderForm.duration_value.$error.required && (!orderForm.duration_value.$pristine || orderForm.$submitted)" class="help-block">Duration can only contain number.</p>
+                </div>
+              </div>
+              <div class="form-group" ng-class="{ 'has-error' : orderForm.duration_range.$invalid && (!orderForm.duration_range.$pristine || orderForm.$submitted)}">
+                <div class="col-xs-12">
+                  <label for="qty">Duration Range</label>
+                  <select class="form-control" id="duration_range" name="duration_range" size="1" ng-model="order.item.duration_range" ng-options="opt as opt for opt in duration_range_options" required>
+                           </select>
+                  <p ng-show="orderForm.duration_range.$error.required && (!orderForm.duration_range.$pristine || orderForm.$submitted)" class="help-block">Duration range is required.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Administer with food</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="adm_with_food" ng-model="order.item.adm_with_food" value="true"><span></span> Yes
+                            </label>
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="adm_with_food" ng-model="order.item.adm_with_food" value="false"><span></span> No
+                            </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Crush with food</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="crush_with_food" ng-model="order.item.crush_with_food" value="true"><span></span> Yes
+                            </label>
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="crush_with_food" ng-model="order.item.crush_with_food" value="false"><span></span> No
+                            </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">Insulin Precheck</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="insulin_pre_check" ng-model="order.item.insulin_pre_check" value="true"><span></span> Yes
+                            </label>
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="insulin_pre_check" ng-model="order.item.insulin_pre_check" value="false"><span></span> No
+                            </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-12">PRN</label>
+                <div class="col-xs-12">
+                  <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" name="is_prn" ng-model="order.item.is_prn" value="true"><span></span> Yes
+                            </label>
+                  <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" name="is_prn" ng-model="order.item.is_prn" value="false"><span></span> No
+                            </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-xs-12">
+                  <label for="notes">Notes</label>
+                  <textarea class="form-control input-lg" id="notes" rows=4 name="notes" ng-model="order.item.notes" placeholder="Enter Notes"></textarea>
+                </div>
+              </div>
+              <!-- <div class="form-group text-right">
+                      <div class="col-xs-12">
+                        <button class="btn btn-xs btn-primary" type="button" ng-click="addItem(orderForm)"><i class="fa fa-plus push-5-r"></i> Add</button>
+                      </div>
+                    </div> -->
+              <!-- </n-form> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="block-content block-content-full bg-gray-lighter">
+      <div class="row items-push">
+        <div class="col-sm-6 col-sm-offset-3">
+          <p ng-show="saveFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+          <p ng-show="saveSuccess" class="text-success">Rx Order has been created.</p>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-xs-12">
+          <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-save push-5-r"></i> Save</button>
+          <button class="btn btn-sm btn-warning" type="reset"><i class="fa fa-refresh push-5-r"></i> Reset</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+<script id="diagnosis-new-inline.html" type="text/ng-template">
+  <div class="block">
+    <div class="block-header">
+      <h3 class="block-title">Add New Diagnosis</h3>
+    </div>
+
+    <div class="block-content block-content-full">
+      <form name="diagnosisForm" ng-submit="saveNewDiagnosis(diagnosisForm.$valid)" novalidate>
+        <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_name.$invalid && diagnosisSubmitted }">
+          <label for="diagnosis_name">Name</label>
+          <input class="form-control input-lg" type="text" id="diagnosis_name" name="diagnosis_name" ng-model="newDiagnosis.name" ng-pattern="/^[a-zA-Z$][0-9a-zA-Z_$]*$/" placeholder="Enter name" required>
+          <p ng-show="diagnosisForm.diagnosis_name.$error.required && diagnosisSubmitted" class="help-block">Name is required.</p>
+          <p ng-show="!diagnosisForm.diagnosis_name.$valid && !diagnosisForm.diagnosis_name.$error.required && (!diagnosisForm.diagnosis_name.$pristine || diagnosisSubmitted)" class="help-block">Name can only contain alphanumeric characters.It should begin with a letter.</p>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_goal.$invalid && diagnosisSubmitted }">
+          <label for="diagnosis_goal">Goal</label>
+          <input class="form-control input-lg" type="text" id="diagnosis_goal" name="diagnosis_goal" ng-model="newDiagnosis.goal" ng-pattern="/^[a-zA-Z$][0-9a-zA-Z_$]*$/" placeholder="Enter goal" required>
+          <p ng-show="diagnosisForm.diagnosis_goal.$error.required && diagnosisSubmitted" class="help-block">Goal is required.</p>
+          <p ng-show="!diagnosisForm.diagnosis_goal.$valid && !diagnosisForm.diagnosis_goal.$error.required&& (!diagnosisForm.diagnosis_goal.$pristine || diagnosisSubmitted)" class="help-block">Goal can only contain alphanumeric characters.It should begin with a letter.</p>
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : diagnosisForm.diagnosis_plan.$invalid && diagnosisSubmitted }">
+          <label for="diagnosis_plan">Plan</label>
+          <input class="form-control input-lg" type="text" id="diagnosis_plan" name="diagnosis_plan" ng-model="newDiagnosis.plan" placeholder="Enter plan" required>
+          <p ng-show="diagnosisForm.diagnosis_plan.$error.required && diagnosisSubmitted" class="help-block">Plan is required.</p>
+        </div>
+        <div class="form-group">
+          <p ng-show="diagnosisSaveFailed" class="text-danger">Save failed. {{ error_m | etranslate }}</p>
+        </div>
+        <div class="form-group text-center">
+          <button class="btn btn-sm btn-primary btn-block" type="submit" ng-disabled="diagnosisSubmitting">
+                  <span ng-show="!diagnosisSubmitting"><i class="fa fa-save push-5-r"></i> Save</span>
+                  <span ng-show="diagnosisSubmitting"><i class="fa fa-spinner fa-spin push-5-r"></i> Saving</span>
+                </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</script>
+
+<!-- END Page Content -->

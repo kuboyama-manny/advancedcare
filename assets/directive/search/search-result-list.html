@@ -1,0 +1,67 @@
+<div class="block">
+    <button class="btn btn-block btn-info" data-toggle="collapse" data-target="#files-nav-collapse"
+            type="button"
+            id="toggleFiles">
+        <span ng-show="searchIsDone">
+            '{{request}}' : {{page_total}} results found
+        </span>
+        <span ng-show="!searchIsDone">
+            searching... <i class="fa fa-spinner fa-spin"></i>
+        </span>
+    </button>
+    <div class="collapse in remove-padding" id="files-nav-collapse">
+        <div class="block" id="search-result-block">
+            <div class="block-content" ng-show="searchResults.length > 0">
+                <div class="table-responsive">
+                <table class="js-table-checkable table table-hover">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th><a href="javascript:void(0);" ng-click="changeSorting('cm:name')">Name</a></th>
+                        <th><a href="javascript:void(0);" ng-click="changeSorting('.size')">Size</a></th>
+                        <th><a href="javascript:void(0);" ng-click="changeSorting('.mimetype')">Type</a></th>
+                        <th><a href="javascript:void(0);" ng-click="changeSorting('cm:modified')">Modified</a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="result in searchResults" ng-click="openFile(result)">
+                        <td class="col-md-1"><i class="fa fa-fw push-5-r fa-file-o"></i></td>
+                        <td class="col-md-4 tree-file-names"><a class="font-w600">{{result.name}}</a></td>
+                        <td class="col-md-2">{{result.size }} bytes</td>
+                        <td class="col-md-2">{{result.mimetypeFileType}}</td>
+                        <td class="col-md-1">{{result.displayTime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <form class="form-horizontal">
+                    <div class="form-group col-xs-4 col-sm-2">
+                        <select class="form-control pagination" id="page_size" ng-options="page_size for page_size in page_sizes" ng-model="page_size" ng-change="search()">
+                        </select>
+                    </div>
+                    <div class="col-xs-8 col-sm-8 text-center">
+                        <ul class="pagination" ng-show="page_total > 0">
+                            <li class="paginate_button previous" ng-class="{ 'disabled' : current_page <= 1}">
+                                <a href="javascript:void(0)" ng-click="prevPage()"><i class="fa fa-angle-left"></i></a>
+                            </li>
+                            <li class="paginate_button" >
+                                <select class="form-control" id="current_page" ng-options="page_num for page_num in page_numbers" ng-model="current_page" ng-change="search()">
+                                </select>
+                            </li>
+                            <li class="paginate_button next" ng-class="{ 'disabled' : current_page * page_size >= page_total}">
+                                <a href="javascript:void(0)" ng-click="nextPage()"><i class="fa fa-angle-right"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+                </div>
+            </div>
+            <div class="block-content" ng-show="searchIsDone && searchResults.length == 0">
+                Search suggestions:
+                <ul>
+                    <li>Check your spelling.</li>
+                    <li>Using fewer words in the search may increase the number of results.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
